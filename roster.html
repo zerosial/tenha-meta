@@ -1,0 +1,322 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>S1~S15 장수·전법 로스터 (T1+)</title><style>
+:root{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;
+--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;
+--cmd:#2f6091;--act:#b23a2e;--pas:#3f7a5e;--chase:#8f6e22;--leg:#8a6a24;--hero:#6f4f95;}
+@media(prefers-color-scheme:dark){:root{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;
+--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;
+--cmd:#5a93c9;--act:#dc6353;--pas:#5fa37e;--chase:#c7a250;--leg:#c7a250;--hero:#a98bd1;}}
+:root[data-theme="light"]{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;--cmd:#2f6091;--act:#b23a2e;--pas:#3f7a5e;--chase:#8f6e22;--leg:#8a6a24;--hero:#6f4f95;}
+:root[data-theme="dark"]{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;--cmd:#5a93c9;--act:#dc6353;--pas:#5fa37e;--chase:#c7a250;--leg:#c7a250;--hero:#a98bd1;}
+*{box-sizing:border-box;}html,body{margin:0;}
+body{background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.serif{font-family:"Nanum Myeongjo","Apple SD Gothic Neo",Batang,Georgia,serif;}
+.cn{font-family:"Nanum Myeongjo",Batang,serif;color:var(--soft);}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px;}.num{font-variant-numeric:tabular-nums;}
+.cover{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:18px 0;padding:30px 30px;position:relative;overflow:hidden;}
+.cover .seal{position:absolute;top:24px;right:26px;width:92px;height:92px;border:3px solid var(--seal);border-radius:14px;color:var(--seal);display:grid;place-content:center;text-align:center;transform:rotate(4deg);font-family:"Nanum Myeongjo",serif;font-weight:800;line-height:1.05;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 4px var(--seal);}
+.cover .seal b{font-size:20px;display:block;}.cover .seal span{font-size:8.5px;letter-spacing:.06em;}
+.cover .eye{letter-spacing:.32em;text-transform:uppercase;color:var(--seal);font-weight:700;font-size:11px;margin:0 0 10px;}
+.cover h1{font-family:"Nanum Myeongjo",serif;font-size:32px;line-height:1.16;font-weight:800;margin:6px 0;}
+.cover h1 em{font-style:normal;color:var(--seal);}
+.cover .tag{color:var(--soft);font-size:14px;margin:8px 0 0;max-width:62ch;}
+.cover dl{margin:22px 0 0;border-top:1px solid var(--line2);}
+.cover dl>div{display:flex;gap:14px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.cover dt{width:110px;color:var(--faint);font-weight:600;flex:none;}.cover dd{margin:0;font-weight:600;}
+@media(max-width:560px){.cover .seal{display:none;}.cover h1{font-size:25px;}}
+section{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:13px 0;padding:24px 26px;}
+.kick{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin:0 0 15px;}
+.kick .no{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:15px;}
+.kick h2{font-family:"Nanum Myeongjo",serif;font-size:21px;font-weight:800;margin:0;}
+.kick .src{margin-left:auto;font-size:11px;color:var(--faint);}
+.lede{color:var(--soft);font-size:12.5px;margin:0 0 14px;max-width:82ch;}
+h3.sub{font-size:14px;font-weight:800;margin:18px 0 9px;display:flex;align-items:center;gap:8px;}
+h3.sub::before{content:"";width:8px;height:8px;background:var(--seal);border-radius:2px;transform:rotate(45deg);}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:100px;line-height:1.5;white-space:nowrap;}
+.b-new{background:var(--newbg);color:var(--new);border:1px solid var(--new);}
+.b-ok{background:var(--okbg);color:var(--ok);border:1px solid var(--ok);}
+.ty{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;color:#fff;white-space:nowrap;}
+.ty-지휘{background:var(--cmd);}.ty-액티브{background:var(--act);}.ty-패시브{background:var(--pas);}.ty-추격{background:var(--chase);}.ty-x{background:var(--faint);}
+.gr{display:inline-block;font-size:9.5px;font-weight:800;white-space:nowrap;}.gr-전설{color:var(--leg);}.gr-영웅{color:var(--hero);}.gr-희귀{color:var(--faint);}
+.scroll{overflow-x:auto;border:1px solid var(--line2);border-radius:8px;}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--paper);min-width:560px;}
+thead th{background:var(--panel2);text-align:left;padding:7px 9px;font-weight:700;font-size:11px;letter-spacing:.03em;color:var(--soft);text-transform:uppercase;border-bottom:2px solid var(--line2);white-space:nowrap;}
+tbody td{padding:5px 9px;border-bottom:1px solid var(--line);vertical-align:middle;}
+tbody tr.new{background:var(--newbg);}
+td.r{text-align:right;font-variant-numeric:tabular-nums;}.rk{color:var(--faint);font-variant-numeric:tabular-nums;width:2rem;}.kr{font-weight:800;}
+.barcell{display:flex;align-items:center;gap:7px;}.bar{position:relative;background:var(--panel2);border-radius:2px;height:12px;flex:1;min-width:40px;}
+.bar>span{position:absolute;inset:0 auto 0 0;background:var(--seal);border-radius:2px;}.bar>span.nw{background:var(--new);}
+.barcell b{width:26px;text-align:right;font-variant-numeric:tabular-nums;font-size:11.5px;}
+.note{background:var(--panel);border:1px solid var(--line2);border-left:4px solid var(--bronze);border-radius:5px;padding:11px 13px;font-size:12px;color:var(--soft);margin:12px 0;}.note b{color:var(--ink);}
+.foot{color:var(--faint);font-size:11px;line-height:1.6;margin-top:12px;}
+.themebtn{position:fixed;top:12px;right:12px;z-index:9;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+/* tactic cards */
+.tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+.tcard{border:1px solid var(--line2);border-radius:7px;padding:10px 12px;background:var(--panel);}
+.tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin:0 0 5px;}
+.tcard .knm{font-weight:800;font-size:13.5px;}.tcard .won{font-size:10.5px;}
+.tcard .sj{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--seal2);padding:1px 7px;border-radius:100px;}
+.tcard .eff{font-size:11px;color:var(--ink);line-height:1.5;}
+.tcard .effcn{font-size:10px;color:var(--faint);line-height:1.45;margin-top:4px;}
+.sjhead{display:flex;align-items:center;gap:9px;margin:16px 0 9px;}
+.sjb{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;background:var(--seal);padding:2px 12px;border-radius:5px;}
+.sjhead .ln{flex:1;height:1px;background:var(--line2);}
+/* prep tags */
+.prep{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pbox{border:1px solid var(--line2);border-radius:8px;overflow:hidden;}.pbox .ph{padding:8px 12px;background:var(--panel2);font-weight:800;font-size:13px;}
+.pbox .pbody{padding:9px 12px;}.taglist{display:flex;flex-wrap:wrap;gap:5px;}
+.tg{display:inline-flex;gap:5px;align-items:baseline;border-radius:100px;padding:2px 9px;font-size:11.5px;font-weight:700;border:1px solid var(--line2);background:var(--paper);}
+.tg.ok{background:var(--okbg);border-color:var(--ok);}.tg.new{background:var(--newbg);border-color:var(--new);}.tg .c{font-size:9.5px;color:var(--faint);}
+.tabs{display:flex;gap:6px;margin:0 0 12px;}
+.tabs button{font-family:inherit;font-size:12.5px;font-weight:800;padding:5px 14px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--soft);cursor:pointer;}
+.tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.hist{display:grid;gap:7px;}
+.hrow{display:grid;grid-template-columns:40px 1fr 1fr;gap:10px;align-items:start;border-bottom:1px solid var(--line);padding:6px 0;}
+.hrow .s{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:14px;}
+.hrow .lb{font-size:9.5px;color:var(--faint);text-transform:uppercase;margin-bottom:2px;}
+@media(max-width:720px){.tgrid,.prep{grid-template-columns:1fr;}}
+@media print{body{background:#fff;}.wrap{max-width:none;padding:0;}.themebtn{display:none;}
+section,.cover{border:none;border-radius:0;margin:0;padding:10mm 8mm;}.cover{page-break-after:always;}
+.tcard,.hrow,.pbox,tr{break-inside:avoid;}.hidden-print-show{display:block!important;}}
+@page{size:A4;margin:10mm;}
+</style></head><body><button class="themebtn" onclick="(function(){var r=document.documentElement;var c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');})()">◐ 테마</button><div class="wrap"><div class="cover"><div class="seal"><span>ROSTER</span><b>S1~15</b><span>T1+</span></div>
+     <p class="eye">FULL ROSTER · GENERALS &amp; TACTICS (T1+)</p>
+     <h1 class="serif"><em>S1~S15</em> 장수·전법 로스터<br><span style="font-size:19px;color:var(--soft)">T1 이상 통산 등장</span></h1>
+     <p class="tag serif">중국 서버 전 시즌 T0·T1 진용 통산 집계. 시즌별 히스토리는 T0 / 전체(T0+T1) 2탭. <span class="badge b-new">번역</span>=S1 미수록(임시 한글).</p>
+     <dl><div><dt>범위</dt><dd class="num">S1~S15 (S16 미공개)</dd></div><div><dt>장수</dt><dd class="num">82명 집계</dd></div><div><dt>전법</dt><dd class="num">공식 59 + 신규 214</dd></div><div><dt>기준일</dt><dd class="num">2026-07-21</dd></div></dl></div>
+     <section><div class="kick"><span class="no">壹</span><h2 class="serif">장수 로스터 · T1+ 통산 TOP 50</h2></div>
+     <div class="scroll"><table><thead><tr><th class="rk">#</th><th>장수</th><th>구분</th><th class="r">T0</th><th style="width:32%">T1+ 통산</th><th class="r">시즌</th></tr></thead><tbody><tr class=""><td class="rk">1</td><td class="kr">조조</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">22</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:100%"></span></div><b>53</b></div></td>
+     <td class="r num">13</td></tr><tr class="new"><td class="rk">2</td><td class="kr">강유</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">16</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:68%"></span></div><b>36</b></div></td>
+     <td class="r num">10</td></tr><tr class=""><td class="rk">3</td><td class="kr">제갈량(2)</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">16</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:66%"></span></div><b>35</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">4</td><td class="kr">유비</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">13</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:58%"></span></div><b>31</b></div></td>
+     <td class="r num">12</td></tr><tr class="new"><td class="rk">5</td><td class="kr">좌자</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">15</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:58%"></span></div><b>31</b></div></td>
+     <td class="r num">9</td></tr><tr class="new"><td class="rk">6</td><td class="kr">육손</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">12</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:53%"></span></div><b>28</b></div></td>
+     <td class="r num">11</td></tr><tr class=""><td class="rk">7</td><td class="kr">주유</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:51%"></span></div><b>27</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">8</td><td class="kr">손권</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:49%"></span></div><b>26</b></div></td>
+     <td class="r num">11</td></tr><tr class=""><td class="rk">9</td><td class="kr">조운</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">10</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:47%"></span></div><b>25</b></div></td>
+     <td class="r num">11</td></tr><tr class=""><td class="rk">10</td><td class="kr">제갈량</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">7</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:45%"></span></div><b>24</b></div></td>
+     <td class="r num">10</td></tr><tr class=""><td class="rk">11</td><td class="kr">대교</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">6</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:43%"></span></div><b>23</b></div></td>
+     <td class="r num">6</td></tr><tr class=""><td class="rk">12</td><td class="kr">견희</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:42%"></span></div><b>22</b></div></td>
+     <td class="r num">5</td></tr><tr class="new"><td class="rk">13</td><td class="kr">낙진</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:42%"></span></div><b>22</b></div></td>
+     <td class="r num">8</td></tr><tr class="new"><td class="rk">14</td><td class="kr">감부인</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:40%"></span></div><b>21</b></div></td>
+     <td class="r num">10</td></tr><tr class=""><td class="rk">15</td><td class="kr">하후돈</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:34%"></span></div><b>18</b></div></td>
+     <td class="r num">7</td></tr><tr class=""><td class="rk">16</td><td class="kr">순욱</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">2</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:34%"></span></div><b>18</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">17</td><td class="kr">원소</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">3</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:32%"></span></div><b>17</b></div></td>
+     <td class="r num">7</td></tr><tr class="new"><td class="rk">18</td><td class="kr">마등</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">9</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:32%"></span></div><b>17</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">19</td><td class="kr">장비</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">6</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:30%"></span></div><b>16</b></div></td>
+     <td class="r num">5</td></tr><tr class=""><td class="rk">20</td><td class="kr">여포</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">9</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:30%"></span></div><b>16</b></div></td>
+     <td class="r num">8</td></tr><tr class="new"><td class="rk">21</td><td class="kr">원술</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">7</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:30%"></span></div><b>16</b></div></td>
+     <td class="r num">8</td></tr><tr class="new"><td class="rk">22</td><td class="kr">왕이</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:30%"></span></div><b>16</b></div></td>
+     <td class="r num">8</td></tr><tr class=""><td class="rk">23</td><td class="kr">전위</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">6</td></tr><tr class=""><td class="rk">24</td><td class="kr">마초</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">6</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">8</td></tr><tr class="new"><td class="rk">25</td><td class="kr">장료</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">7</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">7</td></tr><tr class="new"><td class="rk">26</td><td class="kr">전풍</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">9</td></tr><tr class="new"><td class="rk">27</td><td class="kr">사마의</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">10</td></tr><tr class="new"><td class="rk">28</td><td class="kr">황보숭(2)</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">8</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>15</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">29</td><td class="kr">노숙</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:26%"></span></div><b>14</b></div></td>
+     <td class="r num">5</td></tr><tr class=""><td class="rk">30</td><td class="kr">초선</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">3</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:26%"></span></div><b>14</b></div></td>
+     <td class="r num">5</td></tr><tr class="new"><td class="rk">31</td><td class="kr">주태</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:26%"></span></div><b>14</b></div></td>
+     <td class="r num">8</td></tr><tr class=""><td class="rk">32</td><td class="kr">등애</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">2</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:23%"></span></div><b>12</b></div></td>
+     <td class="r num">5</td></tr><tr class="new"><td class="rk">33</td><td class="kr">가후</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:23%"></span></div><b>12</b></div></td>
+     <td class="r num">7</td></tr><tr class="new"><td class="rk">34</td><td class="kr">마운록</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">6</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:23%"></span></div><b>12</b></div></td>
+     <td class="r num">9</td></tr><tr class=""><td class="rk">35</td><td class="kr">관우</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:21%"></span></div><b>11</b></div></td>
+     <td class="r num">8</td></tr><tr class=""><td class="rk">36</td><td class="kr">곽가</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">0</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:21%"></span></div><b>11</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">37</td><td class="kr">동탁</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">6</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:21%"></span></div><b>11</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">38</td><td class="kr">황월영</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">1</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:19%"></span></div><b>10</b></div></td>
+     <td class="r num">7</td></tr><tr class=""><td class="rk">39</td><td class="kr">서서</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">3</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:19%"></span></div><b>10</b></div></td>
+     <td class="r num">4</td></tr><tr class="new"><td class="rk">40</td><td class="kr">위연</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:19%"></span></div><b>10</b></div></td>
+     <td class="r num">5</td></tr><tr class=""><td class="rk">41</td><td class="kr">황개</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">3</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:17%"></span></div><b>9</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">42</td><td class="kr">서성</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:17%"></span></div><b>9</b></div></td>
+     <td class="r num">5</td></tr><tr class=""><td class="rk">43</td><td class="kr">장각</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:15%"></span></div><b>8</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">44</td><td class="kr">손상향</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">0</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:15%"></span></div><b>8</b></div></td>
+     <td class="r num">4</td></tr><tr class="new"><td class="rk">45</td><td class="kr">축융부인</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:15%"></span></div><b>8</b></div></td>
+     <td class="r num">4</td></tr><tr class="new"><td class="rk">46</td><td class="kr">맹획</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">5</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:15%"></span></div><b>8</b></div></td>
+     <td class="r num">4</td></tr><tr class="new"><td class="rk">47</td><td class="kr">제갈근</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">1</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:15%"></span></div><b>8</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">48</td><td class="kr">소교</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">1</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:13%"></span></div><b>7</b></div></td>
+     <td class="r num">5</td></tr><tr class="new"><td class="rk">49</td><td class="kr">진궁</td>
+     <td><span class="badge b-new">번역</span></td><td class="r num">4</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:13%"></span></div><b>7</b></div></td>
+     <td class="r num">4</td></tr><tr class=""><td class="rk">50</td><td class="kr">황충</td>
+     <td><span class="badge b-ok">S1</span></td><td class="r num">0</td>
+     <td><div class="barcell"><div class="bar"><span class="" style="width:11%"></span></div><b>6</b></div></td>
+     <td class="r num">3</td></tr></tbody></table></div></section>
+     <section><div class="kick"><span class="no">貳</span><h2 class="serif">전법 로스터</h2></div>
+     <h3 class="sub">A. S1 공식 전법 (KR 보유) TOP 36</h3>
+     <div class="scroll"><table><thead><tr><th class="rk">#</th><th>전법</th><th>유형</th><th>원문</th><th style="width:30%">T1+</th><th class="r">시즌</th></tr></thead><tbody><tr><td class="rk">1</td><td class="kr">허점 공략</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">避其銳氣</td>
+     <td><div class="barcell"><div class="bar"><span style="width:100%"></span></div><b>135</b></div></td><td class="r num">13</td></tr><tr><td class="rk">2</td><td class="kr">전쟁 종식</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">鑄甲銷戈</td>
+     <td><div class="barcell"><div class="bar"><span style="width:87%"></span></div><b>118</b></div></td><td class="r num">7</td></tr><tr><td class="rk">3</td><td class="kr">청낭 치료</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">青囊急救</td>
+     <td><div class="barcell"><div class="bar"><span style="width:73%"></span></div><b>98</b></div></td><td class="r num">11</td></tr><tr><td class="rk">4</td><td class="kr">보급 차단</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">斷敵糧道</td>
+     <td><div class="barcell"><div class="bar"><span style="width:66%"></span></div><b>89</b></div></td><td class="r num">13</td></tr><tr><td class="rk">5</td><td class="kr">예리한 통찰</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">銳不可當</td>
+     <td><div class="barcell"><div class="bar"><span style="width:61%"></span></div><b>82</b></div></td><td class="r num">15</td></tr><tr><td class="rk">6</td><td class="kr">세금 과징수</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">橫征暴斂</td>
+     <td><div class="barcell"><div class="bar"><span style="width:58%"></span></div><b>78</b></div></td><td class="r num">14</td></tr><tr><td class="rk">7</td><td class="kr">청풍 질주</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">清風驅疾</td>
+     <td><div class="barcell"><div class="bar"><span style="width:55%"></span></div><b>74</b></div></td><td class="r num">8</td></tr><tr><td class="rk">8</td><td class="kr">전력 지원</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">忘私相助</td>
+     <td><div class="barcell"><div class="bar"><span style="width:53%"></span></div><b>72</b></div></td><td class="r num">14</td></tr><tr><td class="rk">9</td><td class="kr">백전불태</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">百戰不殆</td>
+     <td><div class="barcell"><div class="bar"><span style="width:51%"></span></div><b>69</b></div></td><td class="r num">15</td></tr><tr><td class="rk">10</td><td class="kr">결사의 다짐</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">披堅執銳</td>
+     <td><div class="barcell"><div class="bar"><span style="width:45%"></span></div><b>61</b></div></td><td class="r num">11</td></tr><tr><td class="rk">11</td><td class="kr">팔방전</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">戰八方</td>
+     <td><div class="barcell"><div class="bar"><span style="width:41%"></span></div><b>56</b></div></td><td class="r num">13</td></tr><tr><td class="rk">12</td><td class="kr">예측의 신</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">料事如神</td>
+     <td><div class="barcell"><div class="bar"><span style="width:41%"></span></div><b>56</b></div></td><td class="r num">9</td></tr><tr><td class="rk">13</td><td class="kr">정의의 희생</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">捨生取義</td>
+     <td><div class="barcell"><div class="bar"><span style="width:41%"></span></div><b>55</b></div></td><td class="r num">13</td></tr><tr><td class="rk">14</td><td class="kr">천하평론</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">指點乾坤</td>
+     <td><div class="barcell"><div class="bar"><span style="width:41%"></span></div><b>55</b></div></td><td class="r num">14</td></tr><tr><td class="rk">15</td><td class="kr">준비 완료</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">蓄勢待發</td>
+     <td><div class="barcell"><div class="bar"><span style="width:38%"></span></div><b>51</b></div></td><td class="r num">10</td></tr><tr><td class="rk">16</td><td class="kr">신의 가호</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">如有神助</td>
+     <td><div class="barcell"><div class="bar"><span style="width:35%"></span></div><b>47</b></div></td><td class="r num">8</td></tr><tr><td class="rk">17</td><td class="kr">견고한 방어</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">堅如磐石</td>
+     <td><div class="barcell"><div class="bar"><span style="width:33%"></span></div><b>44</b></div></td><td class="r num">4</td></tr><tr><td class="rk">18</td><td class="kr">철기병 돌격</td><td><span class="ty ty-추격">추격</span></td><td class="cn">鐵騎橫衝</td>
+     <td><div class="barcell"><div class="bar"><span style="width:31%"></span></div><b>42</b></div></td><td class="r num">13</td></tr><tr><td class="rk">19</td><td class="kr">충신의 기재</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">王佐之才</td>
+     <td><div class="barcell"><div class="bar"><span style="width:30%"></span></div><b>41</b></div></td><td class="r num">10</td></tr><tr><td class="rk">20</td><td class="kr">광풍의 분노</td><td><span class="ty ty-지휘">지휘</span></td><td class="cn">狂風大作</td>
+     <td><div class="barcell"><div class="bar"><span style="width:30%"></span></div><b>41</b></div></td><td class="r num">12</td></tr><tr><td class="rk">21</td><td class="kr">전장의 노래</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">詠歌嘗酒</td>
+     <td><div class="barcell"><div class="bar"><span style="width:28%"></span></div><b>38</b></div></td><td class="r num">2</td></tr><tr><td class="rk">22</td><td class="kr">화공전술</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">烈火焚營</td>
+     <td><div class="barcell"><div class="bar"><span style="width:27%"></span></div><b>36</b></div></td><td class="r num">6</td></tr><tr><td class="rk">23</td><td class="kr">강철의 의지</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">無難之志</td>
+     <td><div class="barcell"><div class="bar"><span style="width:27%"></span></div><b>36</b></div></td><td class="r num">12</td></tr><tr><td class="rk">24</td><td class="kr">신속전개</td><td><span class="ty ty-추격">추격</span></td><td class="cn">兵貴神速</td>
+     <td><div class="barcell"><div class="bar"><span style="width:25%"></span></div><b>34</b></div></td><td class="r num">10</td></tr><tr><td class="rk">25</td><td class="kr">칠군수몰</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">水淹七軍</td>
+     <td><div class="barcell"><div class="bar"><span style="width:24%"></span></div><b>33</b></div></td><td class="r num">8</td></tr><tr><td class="rk">26</td><td class="kr">전략 계획</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">運籌帷幄</td>
+     <td><div class="barcell"><div class="bar"><span style="width:23%"></span></div><b>31</b></div></td><td class="r num">9</td></tr><tr><td class="rk">27</td><td class="kr">찬란한 위명</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">威名顯赫</td>
+     <td><div class="barcell"><div class="bar"><span style="width:23%"></span></div><b>31</b></div></td><td class="r num">8</td></tr><tr><td class="rk">28</td><td class="kr">압도적 승리</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">斬將奪旗</td>
+     <td><div class="barcell"><div class="bar"><span style="width:23%"></span></div><b>31</b></div></td><td class="r num">5</td></tr><tr><td class="rk">29</td><td class="kr">출기불의</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">出其不意</td>
+     <td><div class="barcell"><div class="bar"><span style="width:21%"></span></div><b>28</b></div></td><td class="r num">3</td></tr><tr><td class="rk">30</td><td class="kr">기문둔갑</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">奇門遁甲</td>
+     <td><div class="barcell"><div class="bar"><span style="width:20%"></span></div><b>27</b></div></td><td class="r num">6</td></tr><tr><td class="rk">31</td><td class="kr">예리한 판단</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">洞若觀火</td>
+     <td><div class="barcell"><div class="bar"><span style="width:19%"></span></div><b>25</b></div></td><td class="r num">3</td></tr><tr><td class="rk">32</td><td class="kr">용맹한 삼군</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">勇冠三軍</td>
+     <td><div class="barcell"><div class="bar"><span style="width:18%"></span></div><b>24</b></div></td><td class="r num">9</td></tr><tr><td class="rk">33</td><td class="kr">청야 전술</td><td><span class="ty ty-액티브">액티브</span></td><td class="cn">堅壁清野</td>
+     <td><div class="barcell"><div class="bar"><span style="width:18%"></span></div><b>24</b></div></td><td class="r num">3</td></tr><tr><td class="rk">34</td><td class="kr">일인천군</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">萬夫莫當</td>
+     <td><div class="barcell"><div class="bar"><span style="width:16%"></span></div><b>21</b></div></td><td class="r num">8</td></tr><tr><td class="rk">35</td><td class="kr">고요한 제압</td><td><span class="ty ty-패시브">패시브</span></td><td class="cn">以靜制動</td>
+     <td><div class="barcell"><div class="bar"><span style="width:15%"></span></div><b>20</b></div></td><td class="r num">5</td></tr><tr><td class="rk">36</td><td class="kr">천군 소탕</td><td><span class="ty ty-추격">추격</span></td><td class="cn">橫掃千軍</td>
+     <td><div class="barcell"><div class="bar"><span style="width:15%"></span></div><b>20</b></div></td><td class="r num">4</td></tr></tbody></table></div>
+     <h3 class="sub">B. 후속 신규 전법 <span class="badge b-new">번역·상세는 별도집</span> TOP 30</h3>
+     <div class="scroll"><table><thead><tr><th class="rk">#</th><th>원문</th><th>임시 한글</th><th style="width:30%">T1+</th><th class="r">시즌</th></tr></thead><tbody><tr class="new"><td class="rk">1</td><td class="cn" style="font-weight:700">折衝禦侮</td><td class="kr">절충어모</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:100%"></span></div><b>130</b></div></td><td class="r num">12</td></tr><tr class="new"><td class="rk">2</td><td class="cn" style="font-weight:700">勝敵益強</td><td class="kr">승적익강</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:73%"></span></div><b>95</b></div></td><td class="r num">15</td></tr><tr class="new"><td class="rk">3</td><td class="cn" style="font-weight:700">金城湯池</td><td class="kr">금성탕지</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:39%"></span></div><b>51</b></div></td><td class="r num">11</td></tr><tr class="new"><td class="rk">4</td><td class="cn" style="font-weight:700">挫銳折鋒</td><td class="kr">좌예절봉</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:37%"></span></div><b>48</b></div></td><td class="r num">10</td></tr><tr class="new"><td class="rk">5</td><td class="cn" style="font-weight:700">步步爲營</td><td class="kr">보보위영</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:35%"></span></div><b>46</b></div></td><td class="r num">10</td></tr><tr class="new"><td class="rk">6</td><td class="cn" style="font-weight:700">明其虛實</td><td class="kr">명기허실</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:30%"></span></div><b>39</b></div></td><td class="r num">12</td></tr><tr class="new"><td class="rk">7</td><td class="cn" style="font-weight:700">踐墨隨敵</td><td class="kr">천묵수적</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:30%"></span></div><b>39</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">8</td><td class="cn" style="font-weight:700">奇正相生</td><td class="kr">기정상생</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:29%"></span></div><b>38</b></div></td><td class="r num">8</td></tr><tr class="new"><td class="rk">9</td><td class="cn" style="font-weight:700">摧堅克難</td><td class="kr">최견극난</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>36</b></div></td><td class="r num">11</td></tr><tr class="new"><td class="rk">10</td><td class="cn" style="font-weight:700">洗筋伐髓</td><td class="kr">세근벌수</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:28%"></span></div><b>36</b></div></td><td class="r num">10</td></tr><tr class="new"><td class="rk">11</td><td class="cn" style="font-weight:700">蜀武興略</td><td class="kr">촉무흥략</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:25%"></span></div><b>33</b></div></td><td class="r num">10</td></tr><tr class="new"><td class="rk">12</td><td class="cn" style="font-weight:700">蹈鋒飲血</td><td class="kr">도봉음혈</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:24%"></span></div><b>31</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">13</td><td class="cn" style="font-weight:700">固若金湯</td><td class="kr">고약금탕</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:22%"></span></div><b>29</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">14</td><td class="cn" style="font-weight:700">運智鋪謀</td><td class="kr">운지포모</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:21%"></span></div><b>27</b></div></td><td class="r num">8</td></tr><tr class="new"><td class="rk">15</td><td class="cn" style="font-weight:700">雲行雨施</td><td class="kr">운행우시</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:20%"></span></div><b>26</b></div></td><td class="r num">7</td></tr><tr class="new"><td class="rk">16</td><td class="cn" style="font-weight:700">九伐中原</td><td class="kr">구벌중원</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:20%"></span></div><b>26</b></div></td><td class="r num">10</td></tr><tr class="new"><td class="rk">17</td><td class="cn" style="font-weight:700">星羅棋佈</td><td class="kr">성라기포</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:19%"></span></div><b>25</b></div></td><td class="r num">9</td></tr><tr class="new"><td class="rk">18</td><td class="cn" style="font-weight:700">空城計</td><td class="kr">공성계</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:18%"></span></div><b>23</b></div></td><td class="r num">7</td></tr><tr class="new"><td class="rk">19</td><td class="cn" style="font-weight:700">火計</td><td class="kr">화계</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:16%"></span></div><b>21</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">20</td><td class="cn" style="font-weight:700">同舟共濟</td><td class="kr">동주공제</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:16%"></span></div><b>21</b></div></td><td class="r num">11</td></tr><tr class="new"><td class="rk">21</td><td class="cn" style="font-weight:700">懲前毖後</td><td class="kr">징전비후</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:16%"></span></div><b>21</b></div></td><td class="r num">8</td></tr><tr class="new"><td class="rk">22</td><td class="cn" style="font-weight:700">七進七出</td><td class="kr">칠진칠출</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:15%"></span></div><b>20</b></div></td><td class="r num">9</td></tr><tr class="new"><td class="rk">23</td><td class="cn" style="font-weight:700">謀而後動</td><td class="kr">모이후동</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:15%"></span></div><b>20</b></div></td><td class="r num">7</td></tr><tr class="new"><td class="rk">24</td><td class="cn" style="font-weight:700">每戰先登</td><td class="kr">매전선등</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:14%"></span></div><b>18</b></div></td><td class="r num">5</td></tr><tr class="new"><td class="rk">25</td><td class="cn" style="font-weight:700">鐵騎令</td><td class="kr">철기령</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:12%"></span></div><b>16</b></div></td><td class="r num">8</td></tr><tr class="new"><td class="rk">26</td><td class="cn" style="font-weight:700">烈火張天</td><td class="kr">열화장천</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:11%"></span></div><b>14</b></div></td><td class="r num">8</td></tr><tr class="new"><td class="rk">27</td><td class="cn" style="font-weight:700">歸帝號書</td><td class="kr">귀제호서</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:10%"></span></div><b>13</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">28</td><td class="cn" style="font-weight:700">詭道</td><td class="kr">궤도</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:9%"></span></div><b>12</b></div></td><td class="r num">7</td></tr><tr class="new"><td class="rk">29</td><td class="cn" style="font-weight:700">衝銳巧變</td><td class="kr">충예교변</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:9%"></span></div><b>12</b></div></td><td class="r num">6</td></tr><tr class="new"><td class="rk">30</td><td class="cn" style="font-weight:700">繕甲厲兵</td><td class="kr">선갑려병</td>
+     <td><div class="barcell"><div class="bar"><span class="nw" style="width:9%"></span></div><b>12</b></div></td><td class="r num">6</td></tr></tbody></table></div></section>
+     <section><div class="kick"><span class="no">參</span><h2 class="serif">시즌별 히스토리</h2><span class="src">각 시즌 최다 등장</span></div>
+     <div class="tabs"><button class="on" onclick="sw('t0',this)">T0 (최상위)</button><button onclick="sw('full',this)">전체 (T0+T1)</button></div>
+     <div class="hist" id="hist"></div>
+     <div class="foot"><b>주의</b> 빈도=편성 등장 횟수(승률 아님). 번역 항목은 한자 독음 기반 임시표기. 데이터: multi_data.json / new_tactics_final.json / sj1~16.json.</div></section></div><script>
+    const H={"S1": {"t0": {"slots": 6, "gens": [{"kr": "조조", "cnt": 1, "new": false}, {"kr": "전위", "cnt": 1, "new": false}, {"kr": "견희", "cnt": 1, "new": false}, {"kr": "대교", "cnt": 1, "new": false}, {"kr": "제갈량", "cnt": 1, "new": false}, {"kr": "황개", "cnt": 1, "new": false}], "tacs": [{"kr": "전쟁 종식", "cnt": 2, "new": false}, {"kr": "허점 공략", "cnt": 2, "new": false}, {"kr": "보급 차단", "cnt": 2, "new": false}, {"kr": "전력 지원", "cnt": 2, "new": false}, {"kr": "결사의 다짐", "cnt": 1, "new": false}, {"kr": "정의의 희생", "cnt": 1, "new": false}, {"kr": "전장의 노래", "cnt": 1, "new": false}, {"kr": "일인천군", "cnt": 1, "new": false}]}, "full": {"slots": 78, "gens": [{"kr": "조조", "cnt": 8, "new": false}, {"kr": "견희", "cnt": 7, "new": false}, {"kr": "대교", "cnt": 6, "new": false}, {"kr": "주유", "cnt": 5, "new": false}, {"kr": "전위", "cnt": 4, "new": false}, {"kr": "손권", "cnt": 4, "new": false}, {"kr": "유비", "cnt": 3, "new": false}, {"kr": "곽가", "cnt": 3, "new": false}], "tacs": [{"kr": "전쟁 종식", "cnt": 23, "new": false}, {"kr": "허점 공략", "cnt": 23, "new": false}, {"kr": "청낭 치료", "cnt": 23, "new": false}, {"kr": "청풍 질주", "cnt": 20, "new": false}, {"kr": "보급 차단", "cnt": 18, "new": false}, {"kr": "전장의 노래", "cnt": 13, "new": false}, {"kr": "세금 과징수", "cnt": 12, "new": false}, {"kr": "견고한 방어", "cnt": 11, "new": false}]}}, "S2": {"t0": {"slots": 63, "gens": [{"kr": "조조", "cnt": 7, "new": false}, {"kr": "장료", "cnt": 5, "new": true}, {"kr": "주유", "cnt": 4, "new": false}, {"kr": "육손", "cnt": 4, "new": true}, {"kr": "견희", "cnt": 3, "new": false}, {"kr": "서성", "cnt": 3, "new": false}, {"kr": "진궁", "cnt": 3, "new": true}, {"kr": "여포", "cnt": 3, "new": false}], "tacs": [{"kr": "허점 공략", "cnt": 25, "new": false}, {"kr": "전쟁 종식", "cnt": 17, "new": false}, {"kr": "결사의 다짐", "cnt": 11, "new": false}, {"kr": "청풍 질주", "cnt": 11, "new": false}, {"kr": "전력 지원", "cnt": 10, "new": false}, {"kr": "청낭 치료", "cnt": 10, "new": false}, {"kr": "최견극난", "cnt": 9, "new": true}, {"kr": "백전불태", "cnt": 9, "new": false}]}, "full": {"slots": 198, "gens": [{"kr": "조조", "cnt": 16, "new": false}, {"kr": "육손", "cnt": 10, "new": true}, {"kr": "견희", "cnt": 9, "new": false}, {"kr": "주유", "cnt": 9, "new": false}, {"kr": "대교", "cnt": 9, "new": false}, {"kr": "유비", "cnt": 8, "new": false}, {"kr": "노숙", "cnt": 7, "new": false}, {"kr": "원소", "cnt": 7, "new": false}], "tacs": [{"kr": "허점 공략", "cnt": 67, "new": false}, {"kr": "전쟁 종식", "cnt": 55, "new": false}, {"kr": "청풍 질주", "cnt": 44, "new": false}, {"kr": "보급 차단", "cnt": 40, "new": false}, {"kr": "청낭 치료", "cnt": 39, "new": false}, {"kr": "견고한 방어", "cnt": 28, "new": false}, {"kr": "전력 지원", "cnt": 26, "new": false}, {"kr": "전장의 노래", "cnt": 25, "new": false}]}}, "S3": {"t0": {"slots": 21, "gens": [{"kr": "조조", "cnt": 3, "new": false}, {"kr": "낙진", "cnt": 3, "new": true}, {"kr": "사마의", "cnt": 2, "new": true}, {"kr": "마초", "cnt": 2, "new": false}, {"kr": "육손", "cnt": 2, "new": true}, {"kr": "손권", "cnt": 2, "new": false}, {"kr": "하후돈", "cnt": 1, "new": false}, {"kr": "방통", "cnt": 1, "new": true}], "tacs": [{"kr": "전쟁 종식", "cnt": 6, "new": false}, {"kr": "허점 공략", "cnt": 6, "new": false}, {"kr": "명기허실", "cnt": 5, "new": true}, {"kr": "세금 과징수", "cnt": 3, "new": false}, {"kr": "기정상생", "cnt": 3, "new": true}, {"kr": "금성탕지", "cnt": 3, "new": true}, {"kr": "동주공제", "cnt": 3, "new": true}, {"kr": "결사의 다짐", "cnt": 3, "new": false}]}, "full": {"slots": 60, "gens": [{"kr": "낙진", "cnt": 6, "new": true}, {"kr": "조운", "cnt": 6, "new": false}, {"kr": "감부인", "cnt": 6, "new": true}, {"kr": "사마의", "cnt": 4, "new": true}, {"kr": "육손", "cnt": 4, "new": true}, {"kr": "손권", "cnt": 4, "new": false}, {"kr": "조조", "cnt": 3, "new": false}, {"kr": "견희", "cnt": 3, "new": false}], "tacs": [{"kr": "전쟁 종식", "cnt": 16, "new": false}, {"kr": "준비 완료", "cnt": 10, "new": false}, {"kr": "금성탕지", "cnt": 10, "new": true}, {"kr": "허점 공략", "cnt": 10, "new": false}, {"kr": "기정상생", "cnt": 9, "new": true}, {"kr": "명기허실", "cnt": 8, "new": true}, {"kr": "보급 차단", "cnt": 8, "new": false}, {"kr": "세금 과징수", "cnt": 7, "new": false}]}}, "S4": {"t0": {"slots": 24, "gens": [{"kr": "좌자", "cnt": 5, "new": true}, {"kr": "관우", "cnt": 2, "new": false}, {"kr": "사마의", "cnt": 2, "new": true}, {"kr": "조조", "cnt": 2, "new": false}, {"kr": "서서", "cnt": 2, "new": false}, {"kr": "우길", "cnt": 1, "new": true}, {"kr": "장각", "cnt": 1, "new": false}, {"kr": "관은병", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 8, "new": true}, {"kr": "전쟁 종식", "cnt": 8, "new": false}, {"kr": "청낭 치료", "cnt": 7, "new": false}, {"kr": "금성탕지", "cnt": 6, "new": true}, {"kr": "운행우시", "cnt": 5, "new": true}, {"kr": "신의 가호", "cnt": 4, "new": false}, {"kr": "예측의 신", "cnt": 3, "new": false}, {"kr": "칠군수몰", "cnt": 3, "new": false}]}, "full": {"slots": 63, "gens": [{"kr": "좌자", "cnt": 11, "new": true}, {"kr": "낙진", "cnt": 4, "new": true}, {"kr": "조조", "cnt": 3, "new": false}, {"kr": "육손", "cnt": 3, "new": true}, {"kr": "서서", "cnt": 3, "new": false}, {"kr": "감부인", "cnt": 3, "new": true}, {"kr": "조운", "cnt": 3, "new": false}, {"kr": "초선", "cnt": 3, "new": false}], "tacs": [{"kr": "절충어모", "cnt": 20, "new": true}, {"kr": "전쟁 종식", "cnt": 19, "new": false}, {"kr": "청낭 치료", "cnt": 17, "new": false}, {"kr": "운행우시", "cnt": 11, "new": true}, {"kr": "금성탕지", "cnt": 11, "new": true}, {"kr": "신의 가호", "cnt": 7, "new": false}, {"kr": "세근벌수", "cnt": 7, "new": true}, {"kr": "예측의 신", "cnt": 6, "new": false}]}}, "S5": {"t0": {"slots": 9, "gens": [{"kr": "조운", "cnt": 1, "new": false}, {"kr": "감부인", "cnt": 1, "new": true}, {"kr": "강유", "cnt": 1, "new": true}, {"kr": "보련사", "cnt": 1, "new": true}, {"kr": "육손", "cnt": 1, "new": true}, {"kr": "손권", "cnt": 1, "new": false}, {"kr": "좌자", "cnt": 1, "new": true}, {"kr": "관우", "cnt": 1, "new": false}], "tacs": [{"kr": "찬란한 위명", "cnt": 2, "new": false}, {"kr": "금성탕지", "cnt": 2, "new": true}, {"kr": "청낭 치료", "cnt": 2, "new": false}, {"kr": "전쟁 종식", "cnt": 2, "new": false}, {"kr": "신의 가호", "cnt": 2, "new": false}, {"kr": "【손괘、간괘、곤괘】", "cnt": 1, "new": true}, {"kr": "칠진칠출", "cnt": 1, "new": true}, {"kr": "예리한 통찰", "cnt": 1, "new": false}]}, "full": {"slots": 36, "gens": [{"kr": "강유", "cnt": 6, "new": true}, {"kr": "좌자", "cnt": 5, "new": true}, {"kr": "제갈량", "cnt": 4, "new": false}, {"kr": "곽가", "cnt": 3, "new": false}, {"kr": "보련사", "cnt": 2, "new": true}, {"kr": "육손", "cnt": 2, "new": true}, {"kr": "순유", "cnt": 2, "new": true}, {"kr": "조운", "cnt": 1, "new": false}], "tacs": [{"kr": "금성탕지", "cnt": 9, "new": true}, {"kr": "세근벌수", "cnt": 7, "new": true}, {"kr": "절충어모", "cnt": 7, "new": true}, {"kr": "청낭 치료", "cnt": 6, "new": false}, {"kr": "구벌중원", "cnt": 6, "new": true}, {"kr": "승적익강", "cnt": 6, "new": true}, {"kr": "좌예절봉", "cnt": 6, "new": true}, {"kr": "【손괘、간괘、곤괘】", "cnt": 5, "new": true}]}}, "S6": {"t0": {"slots": 30, "gens": [{"kr": "강유", "cnt": 3, "new": true}, {"kr": "낙진", "cnt": 3, "new": true}, {"kr": "마등", "cnt": 3, "new": true}, {"kr": "조조", "cnt": 2, "new": false}, {"kr": "동탁", "cnt": 2, "new": false}, {"kr": "감부인", "cnt": 1, "new": true}, {"kr": "조운", "cnt": 1, "new": false}, {"kr": "황월영", "cnt": 1, "new": false}], "tacs": [{"kr": "승적익강", "cnt": 6, "new": true}, {"kr": "전력 지원", "cnt": 4, "new": false}, {"kr": "정의의 희생", "cnt": 4, "new": false}, {"kr": "금성탕지", "cnt": 3, "new": true}, {"kr": "예리한 통찰", "cnt": 3, "new": false}, {"kr": "구벌중원", "cnt": 3, "new": true}, {"kr": "세근벌수", "cnt": 3, "new": true}, {"kr": "촉무흥략", "cnt": 3, "new": true}]}, "full": {"slots": 84, "gens": [{"kr": "강유", "cnt": 7, "new": true}, {"kr": "조조", "cnt": 6, "new": false}, {"kr": "낙진", "cnt": 6, "new": true}, {"kr": "하후돈", "cnt": 6, "new": false}, {"kr": "마등", "cnt": 5, "new": true}, {"kr": "주유", "cnt": 4, "new": false}, {"kr": "동탁", "cnt": 4, "new": false}, {"kr": "전위", "cnt": 3, "new": false}], "tacs": [{"kr": "승적익강", "cnt": 13, "new": true}, {"kr": "전력 지원", "cnt": 10, "new": false}, {"kr": "정의의 희생", "cnt": 10, "new": false}, {"kr": "공성계", "cnt": 8, "new": true}, {"kr": "절충어모", "cnt": 8, "new": true}, {"kr": "보보위영", "cnt": 8, "new": true}, {"kr": "구벌중원", "cnt": 7, "new": true}, {"kr": "결사의 다짐", "cnt": 7, "new": false}]}}, "S7": {"t0": {"slots": 39, "gens": [{"kr": "강유", "cnt": 4, "new": true}, {"kr": "좌자", "cnt": 3, "new": true}, {"kr": "왕이", "cnt": 2, "new": true}, {"kr": "주준", "cnt": 2, "new": true}, {"kr": "황보숭(2)", "cnt": 2, "new": true}, {"kr": "원술", "cnt": 2, "new": true}, {"kr": "장량", "cnt": 2, "new": false}, {"kr": "감부인", "cnt": 2, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 8, "new": true}, {"kr": "금성탕지", "cnt": 5, "new": true}, {"kr": "공성계", "cnt": 4, "new": true}, {"kr": "선갑려병", "cnt": 4, "new": true}, {"kr": "승적익강", "cnt": 4, "new": true}, {"kr": "촉무흥략", "cnt": 4, "new": true}, {"kr": "결사의 다짐", "cnt": 4, "new": false}, {"kr": "좌예절봉", "cnt": 3, "new": true}]}, "full": {"slots": 78, "gens": [{"kr": "강유", "cnt": 8, "new": true}, {"kr": "제갈량", "cnt": 5, "new": false}, {"kr": "왕이", "cnt": 4, "new": true}, {"kr": "좌자", "cnt": 4, "new": true}, {"kr": "장량", "cnt": 4, "new": false}, {"kr": "전풍", "cnt": 3, "new": true}, {"kr": "황보숭(2)", "cnt": 3, "new": true}, {"kr": "원술", "cnt": 3, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 16, "new": true}, {"kr": "운지포모", "cnt": 9, "new": true}, {"kr": "모이후동", "cnt": 9, "new": true}, {"kr": "승적익강", "cnt": 8, "new": true}, {"kr": "촉무흥략", "cnt": 8, "new": true}, {"kr": "허점 공략", "cnt": 7, "new": false}, {"kr": "좌예절봉", "cnt": 7, "new": true}, {"kr": "공성계", "cnt": 7, "new": true}]}}, "S8": {"t0": {"slots": 24, "gens": [{"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "강유", "cnt": 3, "new": true}, {"kr": "주준", "cnt": 2, "new": true}, {"kr": "황보숭(2)", "cnt": 2, "new": true}, {"kr": "원술", "cnt": 2, "new": true}, {"kr": "유비", "cnt": 2, "new": false}, {"kr": "마등", "cnt": 1, "new": true}, {"kr": "마운록", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 5, "new": true}, {"kr": "보보위영", "cnt": 4, "new": true}, {"kr": "승적익강", "cnt": 4, "new": true}, {"kr": "좌예절봉", "cnt": 4, "new": true}, {"kr": "결사의 다짐", "cnt": 4, "new": false}, {"kr": "전력 지원", "cnt": 3, "new": false}, {"kr": "촉무흥략", "cnt": 3, "new": true}, {"kr": "성라기포", "cnt": 3, "new": true}]}, "full": {"slots": 30, "gens": [{"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "황보숭(2)", "cnt": 3, "new": true}, {"kr": "원술", "cnt": 3, "new": true}, {"kr": "강유", "cnt": 3, "new": true}, {"kr": "주준", "cnt": 2, "new": true}, {"kr": "유비", "cnt": 2, "new": false}, {"kr": "순욱", "cnt": 2, "new": false}, {"kr": "마등", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 6, "new": true}, {"kr": "보보위영", "cnt": 5, "new": true}, {"kr": "전력 지원", "cnt": 4, "new": false}, {"kr": "승적익강", "cnt": 4, "new": true}, {"kr": "좌예절봉", "cnt": 4, "new": true}, {"kr": "결사의 다짐", "cnt": 4, "new": false}, {"kr": "세근벌수", "cnt": 3, "new": true}, {"kr": "백전불태", "cnt": 3, "new": false}]}}, "S9": {"t0": {"slots": 24, "gens": [{"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "마등", "cnt": 3, "new": true}, {"kr": "강유", "cnt": 2, "new": true}, {"kr": "유비", "cnt": 2, "new": false}, {"kr": "공손찬", "cnt": 2, "new": true}, {"kr": "마운록", "cnt": 2, "new": true}, {"kr": "마초", "cnt": 1, "new": false}, {"kr": "낙진", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 7, "new": true}, {"kr": "결사의 다짐", "cnt": 5, "new": false}, {"kr": "좌예절봉", "cnt": 4, "new": true}, {"kr": "예리한 통찰", "cnt": 4, "new": false}, {"kr": "승적익강", "cnt": 3, "new": true}, {"kr": "철기병 돌격", "cnt": 3, "new": false}, {"kr": "정의의 희생", "cnt": 3, "new": false}, {"kr": "구벌중원", "cnt": 2, "new": true}]}, "full": {"slots": 57, "gens": [{"kr": "제갈량(2)", "cnt": 7, "new": false}, {"kr": "강유", "cnt": 4, "new": true}, {"kr": "마등", "cnt": 3, "new": true}, {"kr": "조조", "cnt": 3, "new": false}, {"kr": "조인", "cnt": 3, "new": false}, {"kr": "원소", "cnt": 3, "new": false}, {"kr": "유비", "cnt": 2, "new": false}, {"kr": "공손찬", "cnt": 2, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 16, "new": true}, {"kr": "좌예절봉", "cnt": 8, "new": true}, {"kr": "결사의 다짐", "cnt": 7, "new": false}, {"kr": "예리한 통찰", "cnt": 7, "new": false}, {"kr": "승적익강", "cnt": 6, "new": true}, {"kr": "보보위영", "cnt": 5, "new": true}, {"kr": "성라기포", "cnt": 5, "new": true}, {"kr": "백전불태", "cnt": 5, "new": false}]}}, "S10": {"t0": {"slots": 24, "gens": [{"kr": "위연", "cnt": 3, "new": true}, {"kr": "장비", "cnt": 3, "new": false}, {"kr": "조조", "cnt": 2, "new": false}, {"kr": "주태", "cnt": 2, "new": true}, {"kr": "제갈량(2)", "cnt": 1, "new": false}, {"kr": "왕이", "cnt": 1, "new": true}, {"kr": "사마의", "cnt": 1, "new": true}, {"kr": "조비", "cnt": 1, "new": true}], "tacs": [{"kr": "촉의관홍", "cnt": 4, "new": true}, {"kr": "절충어모", "cnt": 3, "new": true}, {"kr": "도봉음혈", "cnt": 3, "new": true}, {"kr": "세금 과징수", "cnt": 3, "new": false}, {"kr": "팔방전", "cnt": 3, "new": false}, {"kr": "위무휘편", "cnt": 2, "new": true}, {"kr": "천묵수적", "cnt": 2, "new": true}, {"kr": "운지포모", "cnt": 2, "new": true}]}, "full": {"slots": 51, "gens": [{"kr": "조조", "cnt": 4, "new": false}, {"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "장비", "cnt": 4, "new": false}, {"kr": "위연", "cnt": 3, "new": true}, {"kr": "황보숭(2)", "cnt": 3, "new": true}, {"kr": "원술", "cnt": 3, "new": true}, {"kr": "순욱", "cnt": 3, "new": false}, {"kr": "왕이", "cnt": 2, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 8, "new": true}, {"kr": "보보위영", "cnt": 7, "new": true}, {"kr": "천묵수적", "cnt": 6, "new": true}, {"kr": "징전비후", "cnt": 5, "new": true}, {"kr": "승적익강", "cnt": 5, "new": true}, {"kr": "촉의관홍", "cnt": 5, "new": true}, {"kr": "좌예절봉", "cnt": 4, "new": true}, {"kr": "백전불태", "cnt": 4, "new": false}]}}, "S11": {"t0": {"slots": 18, "gens": [{"kr": "동탁", "cnt": 3, "new": false}, {"kr": "축융부인", "cnt": 2, "new": true}, {"kr": "맹획", "cnt": 2, "new": true}, {"kr": "초선", "cnt": 2, "new": false}, {"kr": "감부인", "cnt": 1, "new": true}, {"kr": "조운", "cnt": 1, "new": false}, {"kr": "마등", "cnt": 1, "new": true}, {"kr": "마운록", "cnt": 1, "new": true}], "tacs": [{"kr": "예리한 통찰", "cnt": 3, "new": false}, {"kr": "보보위영", "cnt": 3, "new": true}, {"kr": "좌예절봉", "cnt": 3, "new": true}, {"kr": "세금 과징수", "cnt": 3, "new": false}, {"kr": "도봉음혈", "cnt": 3, "new": true}, {"kr": "천묵수적", "cnt": 3, "new": true}, {"kr": "왕신", "cnt": 3, "new": true}, {"kr": "절충어모", "cnt": 3, "new": true}]}, "full": {"slots": 51, "gens": [{"kr": "제갈량(2)", "cnt": 7, "new": false}, {"kr": "초선", "cnt": 5, "new": false}, {"kr": "강유", "cnt": 4, "new": true}, {"kr": "축융부인", "cnt": 3, "new": true}, {"kr": "맹획", "cnt": 3, "new": true}, {"kr": "동탁", "cnt": 3, "new": false}, {"kr": "유비", "cnt": 3, "new": false}, {"kr": "주태", "cnt": 3, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 14, "new": true}, {"kr": "보보위영", "cnt": 9, "new": true}, {"kr": "도봉음혈", "cnt": 9, "new": true}, {"kr": "좌예절봉", "cnt": 8, "new": true}, {"kr": "천묵수적", "cnt": 8, "new": true}, {"kr": "승적익강", "cnt": 7, "new": true}, {"kr": "세금 과징수", "cnt": 7, "new": false}, {"kr": "예리한 통찰", "cnt": 5, "new": false}]}}, "S12": {"t0": {"slots": 15, "gens": [{"kr": "축융부인", "cnt": 2, "new": true}, {"kr": "맹획", "cnt": 2, "new": true}, {"kr": "제갈량(2)", "cnt": 2, "new": false}, {"kr": "제갈량", "cnt": 1, "new": false}, {"kr": "육항", "cnt": 1, "new": true}, {"kr": "손권", "cnt": 1, "new": false}, {"kr": "육손", "cnt": 1, "new": true}, {"kr": "강유", "cnt": 1, "new": true}], "tacs": [{"kr": "승적익강", "cnt": 4, "new": true}, {"kr": "절충어모", "cnt": 4, "new": true}, {"kr": "예리한 통찰", "cnt": 3, "new": false}, {"kr": "도봉음혈", "cnt": 3, "new": true}, {"kr": "성라기포", "cnt": 3, "new": true}, {"kr": "천묵수적", "cnt": 3, "new": true}, {"kr": "남강렬인", "cnt": 2, "new": true}, {"kr": "화예절인", "cnt": 2, "new": true}]}, "full": {"slots": 42, "gens": [{"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "순욱", "cnt": 3, "new": false}, {"kr": "주유", "cnt": 3, "new": false}, {"kr": "제갈근", "cnt": 3, "new": true}, {"kr": "축융부인", "cnt": 2, "new": true}, {"kr": "맹획", "cnt": 2, "new": true}, {"kr": "유비", "cnt": 2, "new": false}, {"kr": "위연", "cnt": 2, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 10, "new": true}, {"kr": "승적익강", "cnt": 7, "new": true}, {"kr": "천묵수적", "cnt": 7, "new": true}, {"kr": "도봉음혈", "cnt": 6, "new": true}, {"kr": "성라기포", "cnt": 5, "new": true}, {"kr": "예리한 통찰", "cnt": 4, "new": false}, {"kr": "세금 과징수", "cnt": 4, "new": false}, {"kr": "천하평론", "cnt": 3, "new": false}]}}, "S13": {"t0": {"slots": 21, "gens": [{"kr": "유비", "cnt": 3, "new": false}, {"kr": "제갈량(2)", "cnt": 2, "new": false}, {"kr": "여포", "cnt": 2, "new": false}, {"kr": "강유", "cnt": 1, "new": true}, {"kr": "육항", "cnt": 1, "new": true}, {"kr": "손권", "cnt": 1, "new": false}, {"kr": "육손", "cnt": 1, "new": true}, {"kr": "축융부인", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 4, "new": true}, {"kr": "승적익강", "cnt": 3, "new": true}, {"kr": "도봉음혈", "cnt": 3, "new": true}, {"kr": "성라기포", "cnt": 2, "new": true}, {"kr": "세금 과징수", "cnt": 2, "new": false}, {"kr": "어적림전", "cnt": 2, "new": true}, {"kr": "천묵수적", "cnt": 2, "new": true}, {"kr": "정의의 희생", "cnt": 2, "new": false}]}, "full": {"slots": 54, "gens": [{"kr": "제갈량(2)", "cnt": 4, "new": false}, {"kr": "장비", "cnt": 4, "new": false}, {"kr": "유비", "cnt": 3, "new": false}, {"kr": "주태", "cnt": 3, "new": true}, {"kr": "좌자", "cnt": 3, "new": true}, {"kr": "전풍", "cnt": 3, "new": true}, {"kr": "위연", "cnt": 3, "new": true}, {"kr": "순욱", "cnt": 3, "new": false}], "tacs": [{"kr": "절충어모", "cnt": 11, "new": true}, {"kr": "천묵수적", "cnt": 8, "new": true}, {"kr": "팔방전", "cnt": 8, "new": false}, {"kr": "승적익강", "cnt": 7, "new": true}, {"kr": "도봉음혈", "cnt": 7, "new": true}, {"kr": "세금 과징수", "cnt": 5, "new": false}, {"kr": "성라기포", "cnt": 4, "new": true}, {"kr": "예리한 통찰", "cnt": 4, "new": false}]}}, "S14": {"t0": {"slots": 9, "gens": [{"kr": "학소", "cnt": 2, "new": true}, {"kr": "사마의", "cnt": 1, "new": true}, {"kr": "황보숭(2)", "cnt": 1, "new": true}, {"kr": "좌자", "cnt": 1, "new": true}, {"kr": "전풍", "cnt": 1, "new": true}, {"kr": "손견(2)", "cnt": 1, "new": false}, {"kr": "강유", "cnt": 1, "new": true}, {"kr": "제갈량(2)", "cnt": 1, "new": false}], "tacs": [{"kr": "천기중성", "cnt": 2, "new": true}, {"kr": "금성탕지", "cnt": 2, "new": true}, {"kr": "묵적천공", "cnt": 2, "new": true}, {"kr": "규연불동", "cnt": 2, "new": true}, {"kr": "절충어모", "cnt": 2, "new": true}, {"kr": "천묵수적", "cnt": 2, "new": true}, {"kr": "응시랑고", "cnt": 1, "new": true}, {"kr": "미우주무", "cnt": 1, "new": true}]}, "full": {"slots": 24, "gens": [{"kr": "학소", "cnt": 2, "new": true}, {"kr": "좌자", "cnt": 2, "new": true}, {"kr": "손견(2)", "cnt": 2, "new": false}, {"kr": "제갈량(2)", "cnt": 2, "new": false}, {"kr": "맹획", "cnt": 2, "new": true}, {"kr": "축융부인", "cnt": 2, "new": true}, {"kr": "사마의", "cnt": 1, "new": true}, {"kr": "황보숭(2)", "cnt": 1, "new": true}], "tacs": [{"kr": "천묵수적", "cnt": 7, "new": true}, {"kr": "절충어모", "cnt": 5, "new": true}, {"kr": "예리한 통찰", "cnt": 4, "new": false}, {"kr": "금성탕지", "cnt": 3, "new": true}, {"kr": "천하평론", "cnt": 3, "new": false}, {"kr": "승적익강", "cnt": 3, "new": true}, {"kr": "도봉음혈", "cnt": 3, "new": true}, {"kr": "천기중성", "cnt": 2, "new": true}]}}, "S15": {"t0": {"slots": 15, "gens": [{"kr": "사마의", "cnt": 1, "new": true}, {"kr": "학소", "cnt": 1, "new": true}, {"kr": "황보숭(2)", "cnt": 1, "new": true}, {"kr": "좌자", "cnt": 1, "new": true}, {"kr": "전풍", "cnt": 1, "new": true}, {"kr": "손견(2)", "cnt": 1, "new": false}, {"kr": "육손", "cnt": 1, "new": true}, {"kr": "육항", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 4, "new": true}, {"kr": "보보위영", "cnt": 2, "new": true}, {"kr": "천묵수적", "cnt": 2, "new": true}, {"kr": "명기허실", "cnt": 2, "new": true}, {"kr": "금고", "cnt": 2, "new": true}, {"kr": "응시랑고", "cnt": 1, "new": true}, {"kr": "미우주무", "cnt": 1, "new": true}, {"kr": "잠룡재연", "cnt": 1, "new": true}]}, "full": {"slots": 33, "gens": [{"kr": "육손", "cnt": 3, "new": true}, {"kr": "손권", "cnt": 3, "new": false}, {"kr": "주유(2)", "cnt": 2, "new": false}, {"kr": "제갈근", "cnt": 2, "new": true}, {"kr": "감부인", "cnt": 2, "new": true}, {"kr": "제갈량(2)", "cnt": 2, "new": false}, {"kr": "조조", "cnt": 2, "new": false}, {"kr": "사마의", "cnt": 1, "new": true}], "tacs": [{"kr": "절충어모", "cnt": 9, "new": true}, {"kr": "명기허실", "cnt": 5, "new": true}, {"kr": "풍조화세", "cnt": 4, "new": true}, {"kr": "천묵수적", "cnt": 3, "new": true}, {"kr": "강동료원", "cnt": 3, "new": true}, {"kr": "재해 이용", "cnt": 3, "new": false}, {"kr": "동관한기", "cnt": 3, "new": true}, {"kr": "승적익강", "cnt": 3, "new": true}]}}};
+    const SEA=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    function render(view){
+     document.getElementById('hist').innerHTML=SEA.map(function(sj){var h=H['S'+sj][view];
+      function tags(arr){return arr.map(function(x){return '<span class="tg '+(x.new?'new':'ok')+'" style="margin:2px 3px 0 0">'+x.kr+'<span class="c">'+x.cnt+'</span></span>';}).join('');}
+      return '<div class="hrow"><div class="s">S'+sj+'</div><div><div class="lb">장수</div>'+tags(h.gens)+'</div><div><div class="lb">전법</div>'+tags(h.tacs)+'</div></div>';}).join('');
+    }
+    function sw(v,btn){document.querySelectorAll('.tabs button').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');render(v);}
+    render('t0');
+    </script></body></html>

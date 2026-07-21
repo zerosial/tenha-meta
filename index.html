@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>삼국지 천하결전 — 메타 분석 자료실</title>
+<style>
+:root{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;--seal:#b23a2e;--seal2:#8e2c22;}
+@media(prefers-color-scheme:dark){:root{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;--seal:#dc6353;--seal2:#c0553b;}}
+:root[data-theme="light"]{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;--seal:#b23a2e;--seal2:#8e2c22;}
+:root[data-theme="dark"]{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;--seal:#dc6353;--seal2:#c0553b;}
+*{box-sizing:border-box;}html,body{margin:0;}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.6;min-height:100vh;}
+.serif{font-family:"Nanum Myeongjo","Apple SD Gothic Neo",Batang,Georgia,serif;}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 70px;}
+header{text-align:center;padding:48px 0 8px;position:relative;}
+.seal{width:96px;height:96px;margin:0 auto 20px;border:3px solid var(--seal);border-radius:16px;color:var(--seal);display:grid;place-content:center;text-align:center;transform:rotate(-3deg);font-family:"Nanum Myeongjo",serif;font-weight:800;line-height:1.05;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 4px var(--seal);}
+.seal b{font-size:24px;display:block;}.seal span{font-size:9px;letter-spacing:.1em;}
+.eye{letter-spacing:.34em;text-transform:uppercase;color:var(--seal);font-weight:700;font-size:11px;margin:0 0 10px;}
+h1{font-family:"Nanum Myeongjo",serif;font-size:clamp(28px,6vw,42px);font-weight:800;margin:6px 0;letter-spacing:-.01em;}
+h1 em{font-style:normal;color:var(--seal);}
+.tag{color:var(--soft);font-size:15px;max-width:56ch;margin:8px auto 0;}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:36px;}
+@media(max-width:680px){.grid{grid-template-columns:1fr;}}
+a.card{display:block;text-decoration:none;color:inherit;background:var(--paper);border:1px solid var(--line2);border-left:5px solid var(--seal);border-radius:10px;padding:20px 22px;transition:transform .12s ease,box-shadow .12s ease;}
+a.card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(40,30,18,.14);}
+a.card .no{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:13px;}
+a.card h2{font-size:19px;font-weight:800;margin:6px 0 6px;}
+a.card p{margin:0;font-size:13px;color:var(--soft);}
+a.card .go{margin-top:12px;font-size:12px;font-weight:800;color:var(--seal);}
+.foot{margin-top:40px;border-top:1px solid var(--line2);padding-top:16px;font-size:12px;color:var(--faint);text-align:center;}
+.themebtn{position:fixed;top:12px;right:12px;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;}
+</style></head>
+<body>
+<button class="themebtn" onclick="(function(){var r=document.documentElement;var c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');})()">◐ 테마</button>
+<div class="wrap">
+ <header>
+  <div class="seal"><span>천하결전</span><b>資料</b><span>META</span></div>
+  <p class="eye">삼국지: 천하결전 · 메타 분석 자료실</p>
+  <h1 class="serif"><em>천하결전</em> 전법·장수<br>메타 분석 자료실</h1>
+  <p class="tag serif">say-bot 덱시뮬 · 힛파/biligames 공식 · sgmdtx(中) S1~S15 데이터 기반. 각 문서는 라이트/다크·인쇄(PDF) 지원.</p>
+ </header>
+ <div class="grid">
+  <a class="card" href="overview.html"><div class="no">S1 · 壹</div><h2>S1 종합자료</h2><p>티어별 메타덱 25종 + 덱별 전법 상세효과 · 전법 DB 77종(원문 대조) · 장수 스탯 54명 · 계승 추천.</p><div class="go">열기 →</div></a>
+  <a class="card" href="s2s3-guide.html"><div class="no">S2·S3 · 貳</div><h2>S2 · S3 활용 가이드</h2><p>다음 시즌 상위 티어 장수·전법. ✅ S1에서 지금 뽑을 것 / 🆕 신규 출시 대기 구분.</p><div class="go">열기 →</div></a>
+  <a class="card" href="new-tactics.html"><div class="no">S2~ · 參</div><h2>신규 전법 상세효과집</h2><p>S1 미수록 후속 전법 52종. 출시시즌별 · 유형/특성/병종/발동률 · 만렙 효과(한글+원문).</p><div class="go">열기 →</div></a>
+  <a class="card" href="roster.html"><div class="no">S1~15 · 肆</div><h2>장수·전법 로스터</h2><p>T1+ 통산 장수 TOP50 · 전법(공식+신규) · 시즌별 히스토리 T0/전체 2탭.</p><div class="go">열기 →</div></a>
+ </div>
+ <div class="foot">데이터 출처 · say-bot.github.io/tenha-deck-sim · sgmdtx.com · newslg-kr.biligames.com · 힛파 원본시트 · 개인 학습/분석용 · 최종 갱신 2026-07-21</div>
+</div>
+</body></html>

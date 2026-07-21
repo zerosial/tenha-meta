@@ -1,0 +1,98 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>S2·S3 활용 가이드 (S1 확보 기준)</title><style>
+:root{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;
+--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;
+--cmd:#2f6091;--act:#b23a2e;--pas:#3f7a5e;--chase:#8f6e22;--leg:#8a6a24;--hero:#6f4f95;}
+@media(prefers-color-scheme:dark){:root{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;
+--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;
+--cmd:#5a93c9;--act:#dc6353;--pas:#5fa37e;--chase:#c7a250;--leg:#c7a250;--hero:#a98bd1;}}
+:root[data-theme="light"]{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;--cmd:#2f6091;--act:#b23a2e;--pas:#3f7a5e;--chase:#8f6e22;--leg:#8a6a24;--hero:#6f4f95;}
+:root[data-theme="dark"]{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;--cmd:#5a93c9;--act:#dc6353;--pas:#5fa37e;--chase:#c7a250;--leg:#c7a250;--hero:#a98bd1;}
+*{box-sizing:border-box;}html,body{margin:0;}
+body{background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.serif{font-family:"Nanum Myeongjo","Apple SD Gothic Neo",Batang,Georgia,serif;}
+.cn{font-family:"Nanum Myeongjo",Batang,serif;color:var(--soft);}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px;}.num{font-variant-numeric:tabular-nums;}
+.cover{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:18px 0;padding:30px 30px;position:relative;overflow:hidden;}
+.cover .seal{position:absolute;top:24px;right:26px;width:92px;height:92px;border:3px solid var(--seal);border-radius:14px;color:var(--seal);display:grid;place-content:center;text-align:center;transform:rotate(4deg);font-family:"Nanum Myeongjo",serif;font-weight:800;line-height:1.05;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 4px var(--seal);}
+.cover .seal b{font-size:20px;display:block;}.cover .seal span{font-size:8.5px;letter-spacing:.06em;}
+.cover .eye{letter-spacing:.32em;text-transform:uppercase;color:var(--seal);font-weight:700;font-size:11px;margin:0 0 10px;}
+.cover h1{font-family:"Nanum Myeongjo",serif;font-size:32px;line-height:1.16;font-weight:800;margin:6px 0;}
+.cover h1 em{font-style:normal;color:var(--seal);}
+.cover .tag{color:var(--soft);font-size:14px;margin:8px 0 0;max-width:62ch;}
+.cover dl{margin:22px 0 0;border-top:1px solid var(--line2);}
+.cover dl>div{display:flex;gap:14px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.cover dt{width:110px;color:var(--faint);font-weight:600;flex:none;}.cover dd{margin:0;font-weight:600;}
+@media(max-width:560px){.cover .seal{display:none;}.cover h1{font-size:25px;}}
+section{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:13px 0;padding:24px 26px;}
+.kick{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin:0 0 15px;}
+.kick .no{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:15px;}
+.kick h2{font-family:"Nanum Myeongjo",serif;font-size:21px;font-weight:800;margin:0;}
+.kick .src{margin-left:auto;font-size:11px;color:var(--faint);}
+.lede{color:var(--soft);font-size:12.5px;margin:0 0 14px;max-width:82ch;}
+h3.sub{font-size:14px;font-weight:800;margin:18px 0 9px;display:flex;align-items:center;gap:8px;}
+h3.sub::before{content:"";width:8px;height:8px;background:var(--seal);border-radius:2px;transform:rotate(45deg);}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:100px;line-height:1.5;white-space:nowrap;}
+.b-new{background:var(--newbg);color:var(--new);border:1px solid var(--new);}
+.b-ok{background:var(--okbg);color:var(--ok);border:1px solid var(--ok);}
+.ty{display:inline-block;font-size:9.5px;font-weight:800;padding:1px 6px;border-radius:4px;color:#fff;white-space:nowrap;}
+.ty-지휘{background:var(--cmd);}.ty-액티브{background:var(--act);}.ty-패시브{background:var(--pas);}.ty-추격{background:var(--chase);}.ty-x{background:var(--faint);}
+.gr{display:inline-block;font-size:9.5px;font-weight:800;white-space:nowrap;}.gr-전설{color:var(--leg);}.gr-영웅{color:var(--hero);}.gr-희귀{color:var(--faint);}
+.scroll{overflow-x:auto;border:1px solid var(--line2);border-radius:8px;}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--paper);min-width:560px;}
+thead th{background:var(--panel2);text-align:left;padding:7px 9px;font-weight:700;font-size:11px;letter-spacing:.03em;color:var(--soft);text-transform:uppercase;border-bottom:2px solid var(--line2);white-space:nowrap;}
+tbody td{padding:5px 9px;border-bottom:1px solid var(--line);vertical-align:middle;}
+tbody tr.new{background:var(--newbg);}
+td.r{text-align:right;font-variant-numeric:tabular-nums;}.rk{color:var(--faint);font-variant-numeric:tabular-nums;width:2rem;}.kr{font-weight:800;}
+.barcell{display:flex;align-items:center;gap:7px;}.bar{position:relative;background:var(--panel2);border-radius:2px;height:12px;flex:1;min-width:40px;}
+.bar>span{position:absolute;inset:0 auto 0 0;background:var(--seal);border-radius:2px;}.bar>span.nw{background:var(--new);}
+.barcell b{width:26px;text-align:right;font-variant-numeric:tabular-nums;font-size:11.5px;}
+.note{background:var(--panel);border:1px solid var(--line2);border-left:4px solid var(--bronze);border-radius:5px;padding:11px 13px;font-size:12px;color:var(--soft);margin:12px 0;}.note b{color:var(--ink);}
+.foot{color:var(--faint);font-size:11px;line-height:1.6;margin-top:12px;}
+.themebtn{position:fixed;top:12px;right:12px;z-index:9;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+/* tactic cards */
+.tgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;}
+.tcard{border:1px solid var(--line2);border-radius:7px;padding:10px 12px;background:var(--panel);}
+.tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin:0 0 5px;}
+.tcard .knm{font-weight:800;font-size:13.5px;}.tcard .won{font-size:10.5px;}
+.tcard .sj{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--seal2);padding:1px 7px;border-radius:100px;}
+.tcard .eff{font-size:11px;color:var(--ink);line-height:1.5;}
+.tcard .effcn{font-size:10px;color:var(--faint);line-height:1.45;margin-top:4px;}
+.sjhead{display:flex;align-items:center;gap:9px;margin:16px 0 9px;}
+.sjb{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;background:var(--seal);padding:2px 12px;border-radius:5px;}
+.sjhead .ln{flex:1;height:1px;background:var(--line2);}
+/* prep tags */
+.prep{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pbox{border:1px solid var(--line2);border-radius:8px;overflow:hidden;}.pbox .ph{padding:8px 12px;background:var(--panel2);font-weight:800;font-size:13px;}
+.pbox .pbody{padding:9px 12px;}.taglist{display:flex;flex-wrap:wrap;gap:5px;}
+.tg{display:inline-flex;gap:5px;align-items:baseline;border-radius:100px;padding:2px 9px;font-size:11.5px;font-weight:700;border:1px solid var(--line2);background:var(--paper);}
+.tg.ok{background:var(--okbg);border-color:var(--ok);}.tg.new{background:var(--newbg);border-color:var(--new);}.tg .c{font-size:9.5px;color:var(--faint);}
+.tabs{display:flex;gap:6px;margin:0 0 12px;}
+.tabs button{font-family:inherit;font-size:12.5px;font-weight:800;padding:5px 14px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--soft);cursor:pointer;}
+.tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.hist{display:grid;gap:7px;}
+.hrow{display:grid;grid-template-columns:40px 1fr 1fr;gap:10px;align-items:start;border-bottom:1px solid var(--line);padding:6px 0;}
+.hrow .s{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:14px;}
+.hrow .lb{font-size:9.5px;color:var(--faint);text-transform:uppercase;margin-bottom:2px;}
+@media(max-width:720px){.tgrid,.prep{grid-template-columns:1fr;}}
+@media print{body{background:#fff;}.wrap{max-width:none;padding:0;}.themebtn{display:none;}
+section,.cover{border:none;border-radius:0;margin:0;padding:10mm 8mm;}.cover{page-break-after:always;}
+.tcard,.hrow,.pbox,tr{break-inside:avoid;}.hidden-print-show{display:block!important;}}
+@page{size:A4;margin:10mm;}
+</style></head><body><button class="themebtn" onclick="(function(){var r=document.documentElement;var c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');})()">◐ 테마</button><div class="wrap"><div class="cover"><div class="seal"><span>S2·S3</span><b>PREP</b><span>GUIDE</span></div>
+     <p class="eye">NEXT SEASON PREP · WHAT TO PULL IN S1</p>
+     <h1 class="serif"><em>S2 · S3</em> 활용 가이드<br><span style="font-size:19px;color:var(--soft)">S1 티어 기준 · 지금 뽑아둘 것</span></h1>
+     <p class="tag serif">한국 서버 S2·S3 동시 출시 대비. 중국 기준 S2·S3 상위 티어 장수·전법 중 <b>S1에서 미리 확보 가능한 것(✅)</b>과 <b>신규 대기(🆕)</b>를 구분.</p>
+     <dl><div><dt>기준</dt><dd>sgmdtx S2·S3 T0+T1 등장빈도</dd></div><div><dt>범례</dt><dd><span class="badge b-ok">S1확보</span> 지금 가능 · <span class="badge b-new">신규</span> 출시대기</dd></div><div><dt>기준일</dt><dd class="num">2026-07-21</dd></div></dl></div>
+     <section><div class="kick"><span class="no">壹</span><h2 class="serif">지금(S1) 확보 최우선 — 전 시즌 범용 코어</h2></div>
+     <p class="lede">S1~S15 통산 최상위이자 S2·S3에서도 그대로 쓰이는 전법. <b>S1에서 최우선 확보</b> 대상입니다.</p>
+     <div class="taglist"><span class="tg ok">허점 공략 <span class="c">135</span></span><span class="tg ok">전쟁 종식 <span class="c">118</span></span><span class="tg ok">청낭 치료 <span class="c">98</span></span><span class="tg ok">보급 차단 <span class="c">89</span></span><span class="tg ok">예리한 통찰 <span class="c">82</span></span><span class="tg ok">세금 과징수 <span class="c">78</span></span><span class="tg ok">청풍 질주 <span class="c">74</span></span><span class="tg ok">전력 지원 <span class="c">72</span></span><span class="tg ok">백전불태 <span class="c">69</span></span><span class="tg ok">결사의 다짐 <span class="c">61</span></span><span class="tg ok">팔방전 <span class="c">56</span></span><span class="tg ok">예측의 신 <span class="c">56</span></span><span class="tg ok">정의의 희생 <span class="c">55</span></span><span class="tg ok">천하평론 <span class="c">55</span></span><span class="tg ok">준비 완료 <span class="c">51</span></span><span class="tg ok">신의 가호 <span class="c">47</span></span></div>
+     <div class="note"><b>핵심</b> — 허점 공략·전쟁 종식·청낭 치료·보급 차단 등 방어/치유/디버프 지휘는 진영·병종·시즌 불문 항상 1티어. S1에서 최대한 확보 후 계승.</div></section>
+     <section><div class="kick"><span class="no">貳</span><h2 class="serif">S2 대비</h2><span class="src">sgmdtx S2</span></div><h3 class="sub">S2 상위 티어 (T0+T1)</h3>
+         <div class="prep"><div class="pbox"><div class="ph">S2 · 장수</div><div class="pbody"><div class="taglist"><span class="tg ok">조조 <span class="c">16</span></span><span class="tg new">육손 <span class="c">10</span></span><span class="tg ok">견희 <span class="c">9</span></span><span class="tg ok">주유 <span class="c">9</span></span><span class="tg ok">대교 <span class="c">9</span></span><span class="tg ok">유비 <span class="c">8</span></span><span class="tg ok">노숙 <span class="c">7</span></span><span class="tg ok">원소 <span class="c">7</span></span><span class="tg ok">제갈량 <span class="c">6</span></span><span class="tg ok">마초 <span class="c">6</span></span><span class="tg new">장료 <span class="c">6</span></span><span class="tg ok">손권 <span class="c">6</span></span><span class="tg ok">여포 <span class="c">6</span></span><span class="tg ok">조운 <span class="c">5</span></span><span class="tg ok">장비 <span class="c">5</span></span><span class="tg ok">등애 <span class="c">5</span></span></div></div></div>
+         <div class="pbox"><div class="ph">S2 · 전법</div><div class="pbody"><div class="taglist"><span class="tg ok">허점 공략 <span class="c">67</span></span><span class="tg ok">전쟁 종식 <span class="c">55</span></span><span class="tg ok">청풍 질주 <span class="c">44</span></span><span class="tg ok">보급 차단 <span class="c">40</span></span><span class="tg ok">청낭 치료 <span class="c">39</span></span><span class="tg ok">견고한 방어 <span class="c">28</span></span><span class="tg ok">전력 지원 <span class="c">26</span></span><span class="tg ok">전장의 노래 <span class="c">25</span></span><span class="tg ok">예측의 신 <span class="c">24</span></span><span class="tg ok">예리한 통찰 <span class="c">23</span></span><span class="tg ok">결사의 다짐 <span class="c">22</span></span><span class="tg ok">화공전술 <span class="c">22</span></span><span class="tg ok">세금 과징수 <span class="c">21</span></span><span class="tg ok">광풍의 분노 <span class="c">20</span></span><span class="tg ok">천하평론 <span class="c">20</span></span><span class="tg ok">압도적 승리 <span class="c">20</span></span><span class="tg ok">백전불태 <span class="c">19</span></span><span class="tg ok">신의 가호 <span class="c">19</span></span><span class="tg new">최견극난 <span class="c">18</span></span><span class="tg ok">준비 완료 <span class="c">18</span></span></div></div></div></div>
+         <div class="note"><b>S2에서 새로 확보해야 할 것</b> — 장수: 육손, 장료 · 전법: 최견극난</div></section>
+     <section><div class="kick"><span class="no">參</span><h2 class="serif">S3 대비</h2><span class="src">sgmdtx S3</span></div><h3 class="sub">S3 상위 티어 (T0+T1)</h3>
+         <div class="prep"><div class="pbox"><div class="ph">S3 · 장수</div><div class="pbody"><div class="taglist"><span class="tg new">낙진 <span class="c">6</span></span><span class="tg ok">조운 <span class="c">6</span></span><span class="tg new">감부인 <span class="c">6</span></span><span class="tg new">사마의 <span class="c">4</span></span><span class="tg new">육손 <span class="c">4</span></span><span class="tg ok">손권 <span class="c">4</span></span><span class="tg ok">조조 <span class="c">3</span></span><span class="tg ok">견희 <span class="c">3</span></span><span class="tg ok">하후돈 <span class="c">2</span></span><span class="tg ok">마초 <span class="c">2</span></span><span class="tg ok">대교 <span class="c">2</span></span><span class="tg new">마운록 <span class="c">2</span></span><span class="tg new">방통 <span class="c">1</span></span><span class="tg ok">여포 <span class="c">1</span></span><span class="tg new">진궁 <span class="c">1</span></span><span class="tg ok">노숙 <span class="c">1</span></span></div></div></div>
+         <div class="pbox"><div class="ph">S3 · 전법</div><div class="pbody"><div class="taglist"><span class="tg ok">전쟁 종식 <span class="c">16</span></span><span class="tg ok">준비 완료 <span class="c">10</span></span><span class="tg new">금성탕지 <span class="c">10</span></span><span class="tg ok">허점 공략 <span class="c">10</span></span><span class="tg new">기정상생 <span class="c">9</span></span><span class="tg new">명기허실 <span class="c">8</span></span><span class="tg ok">보급 차단 <span class="c">8</span></span><span class="tg ok">세금 과징수 <span class="c">7</span></span><span class="tg new">동주공제 <span class="c">7</span></span><span class="tg ok">예리한 통찰 <span class="c">7</span></span><span class="tg ok">팔방전 <span class="c">7</span></span><span class="tg ok">천하평론 <span class="c">7</span></span><span class="tg ok">찬란한 위명 <span class="c">7</span></span><span class="tg new">매전선등 <span class="c">6</span></span><span class="tg new">칠진칠출 <span class="c">6</span></span><span class="tg ok">전력 지원 <span class="c">5</span></span><span class="tg ok">충신의 기재 <span class="c">5</span></span><span class="tg new">승적익강 <span class="c">5</span></span><span class="tg ok">철기병 돌격 <span class="c">5</span></span><span class="tg ok">예측의 신 <span class="c">5</span></span></div></div></div></div>
+         <div class="note"><b>S3에서 새로 확보해야 할 것</b> — 장수: 낙진, 감부인, 사마의, 육손, 마운록, 방통, 진궁 · 전법: 금성탕지, 기정상생, 명기허실, 동주공제, 매전선등, 칠진칠출, 승적익강</div>
+     <div class="foot">숫자=편성 등장 횟수. 🆕 신규 전법 상세효과는 별도 "신규전법 상세효과집" 참고.</div></section></div></body></html>
