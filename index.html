@@ -114,7 +114,10 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
 .slot{border:1.5px dashed var(--line2);border-radius:10px;min-height:120px;padding:10px;background:var(--panel);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
 .slot.filled{border-style:solid;background:var(--paper);cursor:default;}
-.slot .rm{font-size:10px;color:var(--seal);cursor:pointer;border:1px solid var(--line2);border-radius:100px;padding:1px 8px;}
+.slot .rm{font-size:12px;color:var(--seal);cursor:pointer;border:1px solid var(--line2);border-radius:100px;padding:0 7px;}
+.tslot{flex:1;border:1px dashed var(--line2);border-radius:7px;padding:6px 8px;font-size:11.5px;font-weight:700;cursor:pointer;background:var(--panel);text-align:center;min-height:30px;display:flex;align-items:center;justify-content:center;gap:4px;}
+.sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
+.sjb.new{background:var(--new);}
 .synbox{border:1px solid var(--line2);border-radius:10px;background:var(--panel);padding:12px 14px;margin-bottom:14px;}
 .synbox .syn{padding:6px 0;border-bottom:1px solid var(--line);}
 .synbox .syn:last-child{border-bottom:none;}
@@ -184,6 +187,7 @@ const AVBASE='https://cdn.sgmdtx.com/img/avatar/';
 function avHtml(cn,cls){const g=GEN[cn]||{};const kr=g.kr||cn;const av=g.av;const ini=esc((kr||cn)[0]);
  return `<span class="av ${cls||''}">${av?`<img loading="lazy" src="${AVBASE}${esc(av)}" onerror="this.remove()">`:''}<b>${ini}</b></span>`;}
 function facChip(cn){const f=(GEN[cn]||{}).faction;return f?`<span class="chip f-${f}">${FAC[f]}</span>`:'';}
+function sjBadge(cn){const g=GEN[cn]||{};return g.sj?`<span class="sjb ${g.official===false?'new':''}">${esc(g.sj)}</span>`:'';}
 function tyB(t){return t?`<span class="ty ty-${t}">${t}</span>`:'';}
 function tName(cn){return (TAC[cn]||{}).kr||cn;}
 function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
@@ -204,12 +208,10 @@ function toggleTheme(){const r=document.documentElement;const c=r.getAttribute('
 function openModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('ov').classList.add('on');}
 function closeModal(){document.getElementById('ov').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):(t.effcn?esc(t.effcn):'상세 효과 정보 없음 (본명/계승 전법).');
+function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효과 정보 없음 (계승/속성 전법).';
  openModal(`<div class="mh"><b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.official===false?' <span class="bnew">번역</span>':''}<button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div style="margin-bottom:8px">${tyB(t.ty)} ${t.tx?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.tx)}</span>`:''} ${t.grade?`<span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.sj?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.sj)}</span>`:''} ${t.gl?`<span class="mut">발동 ${esc(t.gl)}</span>`:''}</div>
- <div style="font-size:13px;line-height:1.6">${eff}</div>
- ${(t.eff&&t.effcn)?`<div class="cn" style="margin-top:8px;font-size:11px">原文: ${esc(t.effcn)}</div>`:''}
- ${t.eff_only_cn?'<div class="note" style="margin-top:10px">한글 미번역 — 원문(중국어) 효과입니다.</div>':''}</div>`);}
+ <div style="font-size:13px;line-height:1.6">${eff}</div></div>`);}
 function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  const mx=280;
  const bar=(lb,v)=>`<div class="stbar"><span>${lb}</span><div class="bar"><span style="width:${Math.min(100,(v||0)/mx*100)}%"></span></div><b class="num">${v||'-'}</b></div>`;
@@ -220,7 +222,7 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  <div class="mb">
  <h4 style="margin:0 0 4px">스탯 <span class="mut">(50렙 환산)</span></h4>${bar('무',g.wl)}${bar('지',g.zl)}${bar('통',g.ts)}${bar('선',g.xg)}
  <h4 style="margin:14px 0 4px">고유 전법 · ${esc(g.skill||'-')} ${g.skill?`<span class="cn">${esc(g.skill)}</span>`:''}</h4>
- <div style="font-size:12px;color:var(--soft)">${sk.eff?esc(sk.eff):(sk.effcn?esc(sk.effcn):'효과 정보 없음')}</div>
+ <div style="font-size:12px;color:var(--soft)">${sk.eff?esc(sk.eff):'효과 정보 없음'}</div>
  <h4 style="margin:14px 0 4px">연계(인연)</h4>${syns}
  <h4 style="margin:14px 0 4px">등장 편성 <span class="mut">${apps.length}건</span></h4><div class="mut" style="font-size:11px">${apps.slice(0,40).map(esc).join(' · ')||'-'}</div>
  </div>`);}
@@ -233,7 +235,16 @@ function renderMeta(){
  const genRows=genB.slice(0,30).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> ${x.new?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${x.new?'nw':''}" style="width:${x.cnt/gmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
  const offRows=off.slice(0,24).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> ${tyB(x['유형'])}</div><div class="bar"><span style="width:${x.cnt/omax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
  const nwRows=nw.slice(0,20).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> <span class="cn">${esc(x.won||'')}</span></div><div class="bar"><span class="nw" style="width:${x.cnt/nmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
- const prep=k=>{const s=META.partA[k];const g=s.gens.map(x=>`<span class="tag ${x.s1?'ok':'new'}">${esc(x.kr)} <span class="c">${x.cnt}</span></span>`).join('');const t=s.tacs.map(x=>`<span class="tag ${x.s1?'ok':'new'}">${esc(x.kr)} <span class="c">${x.cnt}</span></span>`).join('');return `<h3 class="sub2">${k} 필수 <span class="mut" style="font-weight:400">✅S1확보 / 🆕신규</span></h3><div style="margin-bottom:4px"><b class="mut">장수</b><br>${g}</div><div style="margin-top:6px"><b class="mut">전법</b><br>${t}</div>`;};
+ const P=META.prep||{gens:[],tacs:[]};
+ const whichB=w=>w==='공통'?'<span class="chip" style="background:var(--panel2);color:var(--soft)">S2·S3</span>':`<span class="chip" style="background:var(--panel2);color:var(--soft)">${w}</span>`;
+ const prepTags=arr=>arr.map(x=>`<span class="tag ${x.s1?'ok':'new'}">${esc(x.kr)} ${whichB(x.which)} <span class="c">${x.cnt}</span></span>`).join('');
+ const prepC=`<h3 class="sub2">다음 시즌(S2·S3 통합) 필수 <span class="mut" style="font-weight:400">✅S1 확보 가능 / 🆕신규 · S2·S3 등장 표기</span></h3>
+  <div style="margin-bottom:4px"><b class="mut">장수</b><br>${prepTags(P.gens)}</div>
+  <div style="margin-top:6px"><b class="mut">전법</b><br>${prepTags(P.tacs)}</div>`;
+ const seasonSel=`<h3 class="sub2">시즌별 상위 <span class="mut" style="font-weight:400">(T0/전체 전환)</span></h3>
+  <div class="filters"><div class="seg" id="mhSeason">${SEASONS.map(s=>`<button data-s="${s}" class="${s===1?'on':''}">S${s}</button>`).join('')}</div>
+  <div class="seg" id="mhView"><button data-v="t0" class="on">T0</button><button data-v="full">전체</button></div></div>
+  <div id="mhBox"></div>`;
  el.innerHTML=`<h2 class="head serif">메타 요약</h2><p class="sub">중국 서버 S1~S15 전 편성(T0·T1) 통산 분석. 편성 등장 횟수 기준(승률 아님).</p>
  <div class="kpis">
   <div class="kpi"><h4>🏆 부동의 1위 전법</h4><div class="big">허점 공략</div><p>15시즌 중 13시즌 T1+ · 통산 135회. 전쟁 종식·청낭 치료·보급 차단이 뒤를 잇는 S1 코어가 전 역사 지배.</p></div>
@@ -245,8 +256,15 @@ function renderMeta(){
   <div><h3 class="sub2">S1~S15 장수 T1+ TOP 30</h3>${genRows}</div>
   <div><h3 class="sub2">S1~S15 전법 T1+ (공식) TOP 24</h3>${offRows}<h3 class="sub2">신규 전법 <span class="bnew">번역</span> TOP 20</h3>${nwRows}</div>
  </div>
- <div>${prep('S2')}${prep('S3')}</div>`;
+ <div>${prepC}</div>${seasonSel}`;
  if(innerWidth<=760){document.getElementById('metagrid').style.gridTemplateColumns='1fr';}
+ let mhS=1,mhV='t0';
+ function drawMH(){const h=(META.seasonHist['S'+mhS]||{})[mhV]||{gens:[],tacs:[]};
+   const tag=(arr)=>arr.map(x=>`<span class="tag ${x.new?'new':'ok'}">${esc(x.kr)} <span class="c">${x.cnt}</span></span>`).join('');
+   document.getElementById('mhBox').innerHTML=`<div style="margin-bottom:4px"><b class="mut">장수</b><br>${tag(h.gens)}</div><div style="margin-top:6px"><b class="mut">전법</b><br>${tag(h.tacs)}</div>`;}
+ document.getElementById('mhSeason').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');mhS=+b.dataset.s;drawMH();};
+ document.getElementById('mhView').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');mhV=b.dataset.v;drawMH();};
+ drawMH();
 }
 
 /* ---------------- SEASON FORMATIONS ---------------- */
@@ -267,24 +285,62 @@ function renderSeason(){
  let list=(SEA[seaState.sj]||[]).filter(f=>seaState.tier==='all'||f.tier===seaState.tier);
  if(seaState.fac!=='all')list=list.filter(f=>f.gens.some(g=>(GEN[g.cn]||{}).faction===seaState.fac));
  document.getElementById('fcount').textContent=list.length+'개 편성';
+ window._curForms=list;
  document.getElementById('forms').innerHTML=list.map(fcardHtml).join('')||'<p class="mut">해당 조건 편성 없음</p>';
 }
-function fcardHtml(f){
+function fcardHtml(f,i){
  const gens=f.gens.map(g=>{
    const sig=g.tacs[0];
    const eq=g.tacs.slice(1,7);
-   return `<div class="frow" onclick="genModal('${g.cn}')">
+   return `<div class="frow" onclick="event.stopPropagation();genModal('${g.cn}')">
      ${avHtml(g.cn,'sm')}
-     <div class="gi"><span class="gn">${facChip(g.cn)} ${esc(g.kr)}</span> <span class="role">${esc((g.role||'').replace(/\s*\|\s*/,' · '))}</span>
+     <div class="gi"><span class="gn">${facChip(g.cn)} ${esc(g.kr)}</span> ${sjBadge(g.cn)} <span class="role">${esc((g.role||'').replace(/\s*\|\s*/,' · '))}</span>
      <div class="sig">◈ ${esc(tName(sig))}</div>
      <div class="tacmini">${eq.map(t=>`<span class="tm ${isNewTac(t)?'':'eq'}" onclick="event.stopPropagation();tacModal('${t}')">${esc(tName(t))}</span>`).join('')}</div></div>
    </div>`;
  }).join('');
- return `<div class="fcard"><div class="fh"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span></div>${gens}</div>`;
+ return `<div class="fcard"><div class="fh" style="cursor:pointer" onclick="fcModal(${i})"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span><span class="mut" style="font-weight:700">${esc(f.nick||'')}</span><span style="margin-left:auto;font-size:10px;color:var(--seal);font-weight:800">덱 상세 →</span></div>${gens}</div>`;
 }
+function fcModal(i){
+ const f=(window._curForms||[])[i]; if(!f)return;
+ const gens=f.gens.map(g=>{
+   const G=GEN[g.cn]||{}, sk=TAC[G.skill]||TAC[g.tacs[0]]||{};
+   const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
+   return `<div style="border:1px solid var(--line2);border-radius:9px;padding:10px 12px;margin-bottom:9px">
+     <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${avHtml(g.cn,'lg')}
+       <div><div style="font-weight:800;font-size:14px">${facChip(g.cn)} ${esc(g.kr)} ${sjBadge(g.cn)} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
+       <div class="mut" style="font-size:10px">${esc((g.role||'').replace(/\s*\|\s*/,' · '))} · 무${G.wl||'-'}·지${G.zl||'-'}·통${G.ts||'-'}·선${G.xg||'-'}</div>
+       <div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer" onclick="tacModal('${g.tacs[0]}')">◈ 고유 · ${esc(tName(g.tacs[0]))}</div></div>
+     </div>
+     <div style="font-size:11px;color:var(--soft);margin-bottom:5px">${esc(sk.eff||'')}</div>
+     <div class="mut" style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">추천 전법</div>${tacs}
+   </div>`;
+ }).join('');
+ // shared synergies among the 3
+ const cns=f.gens.map(g=>g.cn);
+ const act=SYN.map(s=>({s,n:s.member.filter(m=>cns.includes(m)).length})).filter(x=>x.n>=2);
+ const synHtml=act.length?`<div style="margin-top:4px"><div class="mut" style="font-size:10px;text-transform:uppercase;margin-bottom:3px">활성 연계</div>${act.map(({s,n})=>`<div style="font-size:11.5px;padding:3px 0"><b style="color:var(--jade)">${esc(s.name)}</b> <span class="mut">(${n}/${s.member.length})</span> — ${esc(s.desc||'')}</div>`).join('')}</div>`:'';
+ openModal(`<div class="mh"><span class="tier ${f.tier}">${f.tier}</span> <b class="serif" style="font-size:16px">${esc(f.shape)}</b> <span class="mut">${esc(f.nick||'')}</span><button class="x" onclick="closeModal()">×</button></div>
+  <div class="mb">${gens}${synHtml}
+  <div style="margin-top:8px"><button class="tbtn" onclick="loadToBuilder(${i})">이 편성을 덱빌더로 →</button></div></div>`);
+}
+function loadToBuilder(i){const f=(window._curForms||[])[i];if(!f)return;deck=[null,null,null];f.gens.slice(0,3).forEach((g,k)=>deck[k]=g.cn);closeModal();built.builder=0;show('builder');}
 
 /* ---------------- DECK BUILDER ---------------- */
 let deck=[null,null,null];
+let deckTacs=[[],[],[]];
+function genRecTacs(cn){
+ const cnt={};
+ SEASONS.forEach(s=>(SEA[s]||[]).forEach(f=>f.gens.forEach(g=>{if(g.cn===cn)g.tacs.slice(1).forEach(t=>{if(!(TAC[t]||{}).minimal)cnt[t]=(cnt[t]||0)+1;});})));
+ return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]);
+}
+function openTacPicker(i,j){
+ const cn=deck[i]; if(!cn)return; const rec=genRecTacs(cn);
+ openModal(`<div class="mh"><b>${esc((GEN[cn]||{}).kr)} · 전법 선택</b><button class="x" onclick="closeModal()">×</button></div>
+  <div class="mb"><div class="mut" style="margin-bottom:8px">추천 전법(등장 순). 클릭해 슬롯 ${j+1}에 지정.</div>
+  <div style="display:flex;flex-direction:column;gap:6px">${rec.map(t=>{const x=TAC[t]||{};return `<div class="tcard" style="cursor:pointer" onclick="setTac(${i},${j},'${t}')"><div class="th"><span class="kn" style="font-size:13px">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}</div><div class="eff" style="font-size:11px">${esc((x.eff||'').slice(0,90))}</div></div>`;}).join('')||'<span class="mut">추천 전법 데이터 없음</span>'}</div></div>`);
+}
+function setTac(i,j,t){deckTacs[i][j]=t;closeModal();drawSlots();}
 function renderBuilder(){
  const el=document.getElementById('tab-builder');
  el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">장수 3명을 골라 활성 연계(인연)와 각 장수의 고유·추천 전법을 확인하세요.</p>
@@ -297,18 +353,25 @@ function renderBuilder(){
  document.getElementById('bfac').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderPool();};
  drawSlots();renderPool();
 }
+function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
+ return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b>${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
 function drawSlots(){
  document.getElementById('slots').innerHTML=deck.map((cn,i)=>{
-  if(!cn)return `<div class="slot" onclick="show('builder')"><span class="mut">+ 슬롯 ${i+1}</span><span class="mut" style="font-size:10px">아래에서 장수 선택</span></div>`;
+  if(!cn)return `<div class="slot"><span class="mut">+ 슬롯 ${i+1}</span><span class="mut" style="font-size:10px">아래에서 장수 선택</span></div>`;
   const g=GEN[cn]||{};
-  return `<div class="slot filled">${avHtml(cn,'lg')}<div><b>${esc(g.kr)}</b> ${facChip(cn)}</div><div class="mut" style="font-size:10px">◈ ${esc(tName(g.skill))}</div><span class="rm" onclick="deck[${i}]=null;renderBuilder()">제거</span></div>`;
+  return `<div class="slot filled">
+    <div style="display:flex;gap:8px;align-items:center;width:100%">${avHtml(cn,'lg')}<div style="text-align:left"><b>${esc(g.kr)}</b> ${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}</span>`:''}<div class="mut" style="font-size:10px">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}·선${g.xg||'-'}</div></div><span class="rm" style="margin-left:auto" onclick="deck[${i}]=null;deckTacs[${i}]=[];renderBuilder()">×</span></div>
+    <div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer;align-self:flex-start" onclick="tacModal('${(genRecTacs(cn),g.skill)?g.skill:''}');event.stopPropagation()">◈ ${esc(tName(g.skill))}</div>
+    <div style="display:flex;gap:6px;width:100%">${tslot(i,0)}${tslot(i,1)}</div>
+  </div>`;
  }).join('');
- // synergies
  const sel=deck.filter(Boolean);
- const active=SYN.map(s=>{const inTeam=s.member.filter(m=>sel.includes(m));return {s,n:inTeam.length};}).filter(x=>x.n>=2);
- // also list partial (1 member present among selected generals' own jb) — show active first
- document.getElementById('synbox').innerHTML=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(선택 장수 2인 이상 포함 시)</span></h3>`+
-  (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="cn">${esc(s.cn)}</span> <span class="mut">(${n}/${s.member.length})</span><div class="mut" style="font-size:11px">${s.member.map(m=>{const on=sel.includes(m);return `<span style="${on?'color:var(--jade);font-weight:700':''}">${esc((GEN[m]||{}).kr||m)}</span>`;}).join(' · ')}</div><div style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</div></div>`).join(''):'<span class="mut">장수를 2명 이상 선택하면 공유 연계가 표시됩니다.</span>');
+ const active=SYN.map(s=>{const inTeam=s.member.filter(m=>sel.includes(m));return {s,n:inTeam.length};}).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n);
+ const chosen=[]; deck.forEach((cn,i)=>{if(cn){if(cn&&GEN[cn]&&GEN[cn].skill)chosen.push([GEN[cn].skill,'◈'+GEN[cn].kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,GEN[cn].kr]);});}});
+ const synHtml=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(선택 장수 2인 이상 공유 시)</span></h3>`+
+  (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="mut">(${n}/${s.member.length})</span><div class="mut" style="font-size:11px">${s.member.map(m=>{const on=sel.includes(m);return `<span style="${on?'color:var(--jade);font-weight:700':''}">${esc((GEN[m]||{}).kr||m)}</span>`;}).join(' · ')}</div><div style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</div></div>`).join(''):'<span class="mut">장수를 2명 이상 선택하면 공유 연계가 표시됩니다.</span>');
+ const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
+ document.getElementById('synbox').innerHTML=synHtml+effHtml;
 }
 function renderPool(){
  const q=(document.getElementById('bsearch').value||'').trim();
@@ -345,7 +408,7 @@ function fillTac(){
  const ord={'지휘':0,'액티브':1,'패시브':2,'추격':3};
  list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
- document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||t.effcn||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
+ document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
    <div class="th"><span class="kn">${esc(t.kr)}</span><span class="cn wo">${esc(t.cn)}</span>${t.official===false?'<span class="bnew">번역</span>':''}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
