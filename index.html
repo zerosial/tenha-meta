@@ -190,7 +190,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js"></script>
+<script src="data.js?v=2"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -278,7 +278,7 @@ function renderSrank(){
  const el=document.getElementById('tab-srank');
  el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">각 시즌 편성에서 장수·전법 등장 빈도를 막대그래프로. 티어(전체/T0)로 좁혀 볼 수 있습니다.</p>
  <div class="filters"><div class="spill" id="srSj">${SEASONS.map(s=>`<button data-s="${s}" class="${s===srState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
- <div class="filters"><div class="seg" id="srTier">${[['all','전체(T0~T2)'],['T0','T0'],['T1','T1'],['T2','T2']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
+ <div class="filters"><div class="seg" id="srTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="srGrid"></div>`;
  document.getElementById('srSj').onclick=e=>{const b=e.target.closest('button');if(!b)return;srState.sj=+b.dataset.s;renderSrank();};
  document.getElementById('srTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;srState.tier=b.dataset.t;renderSrank();};
@@ -298,10 +298,10 @@ function renderSrank(){
 let seaState={sj:1,tier:'all',fac:'all'};
 function renderSeason(){
  const el=document.getElementById('tab-season');
- el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0~T2 편성 전체. 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
+ el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0·T1 편성(T2 제외). 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
  <div class="filters"><div class="spill" id="sjpill">${SEASONS.map(s=>`<button data-sj="${s}" class="${s===seaState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
  <div class="filters">
-  <div class="seg" id="tierseg">${['all','T0','T1','T2'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'전티어':t}</button>`).join('')}</div>
+  <div class="seg" id="tierseg">${['all','T0','T1'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'T0·T1':t}</button>`).join('')}</div>
   <div class="seg" id="facseg">${[['all','전진영'],['wei','위'],['shu','촉'],['wu','오'],['qun','군']].map(([k,l])=>`<button data-f="${k}" class="${k===seaState.fac?'on':''}">${l}</button>`).join('')}</div>
   <span class="mut" id="fcount"></span>
  </div>
