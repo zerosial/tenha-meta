@@ -252,11 +252,11 @@ function renderMeta(){
  const offRows=off.slice(0,24).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> ${tyB(x['유형'])}</div><div class="bar"><span style="width:${x.cnt/omax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
  const nwRows=nw.slice(0,20).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> <span class="cn">${esc(x.won||'')}</span></div><div class="bar"><span class="nw" style="width:${x.cnt/nmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
  const P=META.prep||{gens:[],tacs:[]};
- const whichB=w=>w==='공통'?'<span class="chip" style="background:var(--panel2);color:var(--soft)">S2·S3</span>':`<span class="chip" style="background:var(--panel2);color:var(--soft)">${w}</span>`;
- const prepTags=arr=>arr.map(x=>`<span class="tag ${x.s1?'ok':'new'}">${esc(x.kr)} ${whichB(x.which)} <span class="c">${x.cnt}</span></span>`).join('');
- const prepC=`<h3 class="sub2">다음 시즌(S2·S3 통합) 필수 <span class="mut" style="font-weight:400">✅S1 확보 가능 / 🆕신규 · S2·S3 등장 표기</span></h3>
-  <div style="margin-bottom:4px"><b class="mut">장수</b><br>${prepTags(P.gens)}</div>
-  <div style="margin-top:6px"><b class="mut">전법</b><br>${prepTags(P.tacs)}</div>`;
+ const prepTags=(arr,isTac)=>arr.map(x=>{const sj=isTac?(TAC[x.cn]||{}).sj:(GEN[x.cn]||{}).sj;return `<span class="tag ${x.s1?'ok':'new'}">${esc(x.kr)} ${sj?`<span class="sjb ${x.s1?'':'new'}">${esc(sj)}</span>`:''}</span>`;}).join('');
+ const prepC=`<h3 class="sub2">다음 시즌(S2·S3) 필수 — S1에서 미리 뽑을 것 <span class="mut" style="font-weight:400">✅ S1 확보 가능 / 🆕 신규 · 배지 = 출시 시즌</span></h3>
+  <div class="note" style="margin:0 0 8px">S2·S3 상위 티어에 쓰이는 장수·전법입니다. <b>배지가 S1이면 지금 S1에서 확보</b>, S2·S3 이상이면 해당 시즌 출시 대기입니다.</div>
+  <div style="margin-bottom:4px"><b class="mut">장수</b><br>${prepTags(P.gens,false)}</div>
+  <div style="margin-top:6px"><b class="mut">전법</b><br>${prepTags(P.tacs,true)}</div>`;
 
  el.innerHTML=`<h2 class="head serif">메타 요약</h2><p class="sub">중국 서버 S1~S15 전 편성(T0·T1) 통산 분석. 편성 등장 횟수 기준(승률 아님).</p>
  <div class="kpis">
