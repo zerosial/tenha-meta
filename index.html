@@ -124,6 +124,10 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .slot.filled{border-style:solid;background:var(--paper);cursor:default;}
 .slot .rm{font-size:12px;color:var(--seal);cursor:pointer;border:1px solid var(--line2);border-radius:100px;padding:0 7px;}
 .tslot{flex:1;border:1px dashed var(--line2);border-radius:7px;padding:6px 8px;font-size:11.5px;font-weight:700;cursor:pointer;background:var(--panel);text-align:center;min-height:30px;display:flex;align-items:center;justify-content:center;gap:4px;}
+.posrow{display:flex;gap:10px;align-items:stretch;}
+.poslabel{flex:0 0 44px;display:flex;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;border-radius:8px;background:var(--t2);}
+.posrow:nth-child(1) .poslabel{background:var(--t0);}
+.posrow:nth-child(2) .poslabel{background:var(--t1);}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
 .sjb.new{background:var(--new);}
 .synbox{border:1px solid var(--line2);border-radius:10px;background:var(--panel);padding:12px 14px;margin-bottom:14px;}
@@ -175,6 +179,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <main>
  <section id="tab-meta"></section>
  <section id="tab-season"></section>
+ <section id="tab-srank"></section>
  <section id="tab-builder"></section>
  <section id="tab-tac"></section>
  <section id="tab-gen"></section>
@@ -202,12 +207,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['season','시즌별 편성'],['builder','덱빌더'],['tac','전법 도감'],['gen','장수 도감'],['ref','참고']];
+const TABS=[['meta','메타'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['gen','장수 도감'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,season:renderSeason,builder:renderBuilder,tac:renderTac,gen:renderGen,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,gen:renderGen,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" onclick="show('${k}')">${l}</button>`).join('');
@@ -250,10 +255,7 @@ function renderMeta(){
  const prepC=`<h3 class="sub2">다음 시즌(S2·S3 통합) 필수 <span class="mut" style="font-weight:400">✅S1 확보 가능 / 🆕신규 · S2·S3 등장 표기</span></h3>
   <div style="margin-bottom:4px"><b class="mut">장수</b><br>${prepTags(P.gens)}</div>
   <div style="margin-top:6px"><b class="mut">전법</b><br>${prepTags(P.tacs)}</div>`;
- const seasonSel=`<h3 class="sub2">시즌별 상위 <span class="mut" style="font-weight:400">(T0/전체 전환)</span></h3>
-  <div class="filters"><div class="seg" id="mhSeason">${SEASONS.map(s=>`<button data-s="${s}" class="${s===1?'on':''}">S${s}</button>`).join('')}</div>
-  <div class="seg" id="mhView"><button data-v="t0" class="on">T0</button><button data-v="full">전체</button></div></div>
-  <div id="mhBox"></div>`;
+
  el.innerHTML=`<h2 class="head serif">메타 요약</h2><p class="sub">중국 서버 S1~S15 전 편성(T0·T1) 통산 분석. 편성 등장 횟수 기준(승률 아님).</p>
  <div class="kpis">
   <div class="kpi"><h4>🏆 부동의 1위 전법</h4><div class="big">허점 공략</div><p>15시즌 중 13시즌 T1+ · 통산 135회. 전쟁 종식·청낭 치료·보급 차단이 뒤를 잇는 S1 코어가 전 역사 지배.</p></div>
@@ -265,17 +267,33 @@ function renderMeta(){
   <div><h3 class="sub2">S1~S15 장수 T1+ TOP 30</h3>${genRows}</div>
   <div><h3 class="sub2">S1~S15 전법 T1+ (공식) TOP 24</h3>${offRows}<h3 class="sub2">신규 전법 <span class="bnew">번역</span> TOP 20</h3>${nwRows}</div>
  </div>
- <div>${prepC}</div>${seasonSel}`;
+ <div>${prepC}</div>`;
  if(innerWidth<=760){document.getElementById('metagrid').style.gridTemplateColumns='1fr';}
- let mhS=1,mhV='t0';
- function drawMH(){const h=(META.seasonHist['S'+mhS]||{})[mhV]||{gens:[],tacs:[]};
-   const tag=(arr)=>arr.map(x=>`<span class="tag ${x.new?'new':'ok'}">${esc(x.kr)} <span class="c">${x.cnt}</span></span>`).join('');
-   document.getElementById('mhBox').innerHTML=`<div style="margin-bottom:4px"><b class="mut">장수</b><br>${tag(h.gens)}</div><div style="margin-top:6px"><b class="mut">전법</b><br>${tag(h.tacs)}</div>`;}
- document.getElementById('mhSeason').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');mhS=+b.dataset.s;drawMH();};
- document.getElementById('mhView').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');mhV=b.dataset.v;drawMH();};
- drawMH();
+
 }
 
+/* ---------------- SEASON RANKING (graph) ---------------- */
+let srState={sj:1,tier:'all'};
+function renderSrank(){
+ const el=document.getElementById('tab-srank');
+ el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">각 시즌 편성에서 장수·전법 등장 빈도를 막대그래프로. 티어(전체/T0)로 좁혀 볼 수 있습니다.</p>
+ <div class="filters"><div class="spill" id="srSj">${SEASONS.map(s=>`<button data-s="${s}" class="${s===srState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
+ <div class="filters"><div class="seg" id="srTier">${[['all','전체(T0~T2)'],['T0','T0'],['T1','T1'],['T2','T2']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="srGrid"></div>`;
+ document.getElementById('srSj').onclick=e=>{const b=e.target.closest('button');if(!b)return;srState.sj=+b.dataset.s;renderSrank();};
+ document.getElementById('srTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;srState.tier=b.dataset.t;renderSrank();};
+ let forms=(SEA[srState.sj]||[]).filter(f=>srState.tier==='all'||f.tier===srState.tier);
+ document.getElementById('srCount').textContent=forms.length+'개 편성 집계';
+ const gc={},tc={};
+ forms.forEach(f=>f.gens.forEach(g=>{gc[g.cn]=(gc[g.cn]||0)+1;g.tacs.forEach((t,idx)=>{if(idx===0)return;if((TAC[t]||{}).minimal)return;tc[t]=(tc[t]||0)+1;});}));
+ const gArr=Object.entries(gc).sort((a,b)=>b[1]-a[1]).slice(0,20);
+ const tArr=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,20);
+ const gmax=Math.max(1,...gArr.map(x=>x[1])), tmax=Math.max(1,...tArr.map(x=>x[1]));
+ const gRows=gArr.map(([cn,n])=>`<div class="rowbar"><div class="lb">${facChip(cn)} <b>${esc((GEN[cn]||{}).kr||cn)}</b> ${sjBadge(cn)}</div><div class="bar"><span style="width:${n/gmax*100}%"></span></div><b class="num">${n}</b></div>`).join('')||'<span class="mut">데이터 없음</span>';
+ const tRows=tArr.map(([cn,n])=>{const x=TAC[cn]||{};const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';return `<div class="rowbar"><div class="lb"><b style="${col}">${esc(x.kr||cn)}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(cn)?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${isNewTac(cn)?'nw':''}" style="width:${n/tmax*100}%"></span></div><b class="num">${n}</b></div>`;}).join('')||'<span class="mut">데이터 없음</span>';
+ document.getElementById('srGrid').innerHTML=`<div><h3 class="sub2">장수 등장 TOP 20</h3>${gRows}</div><div><h3 class="sub2">전법 등장 TOP 20</h3>${tRows}</div>`;
+ if(innerWidth<=760)document.getElementById('srGrid').style.gridTemplateColumns='1fr';
+}
 /* ---------------- SEASON FORMATIONS ---------------- */
 let seaState={sj:1,tier:'all',fac:'all'};
 function renderSeason(){
@@ -334,8 +352,10 @@ function fcModal(i){
 function loadToBuilder(i){const f=(window._curForms||[])[i];if(!f)return;deck=[null,null,null];f.gens.slice(0,3).forEach((g,k)=>deck[k]=g.cn);closeModal();built.builder=0;show('builder');}
 
 /* ---------------- DECK BUILDER ---------------- */
-let deck=[null,null,null];
+let deck=[null,null,null];   // 0=전열,1=중열,2=후열
 let deckTacs=[[],[],[]];
+let deckShape=(D.FORMS[0]||{}).name||'일자진';
+const POS=['전열','중열','후열'];
 function genRecTacs(cn){
  const cnt={};
  SEASONS.forEach(s=>(SEA[s]||[]).forEach(f=>f.gens.forEach(g=>{if(g.cn===cn)g.tacs.slice(1).forEach(t=>{if(!(TAC[t]||{}).minimal)cnt[t]=(cnt[t]||0)+1;});})));
@@ -344,50 +364,65 @@ function genRecTacs(cn){
 function openTacPicker(i,j){
  const cn=deck[i]; if(!cn)return; const rec=genRecTacs(cn);
  openModal(`<div class="mh"><b>${esc((GEN[cn]||{}).kr)} · 전법 선택</b><button class="x" onclick="closeModal()">×</button></div>
-  <div class="mb"><div class="mut" style="margin-bottom:8px">추천 전법(등장 순). 클릭해 슬롯 ${j+1}에 지정.</div>
-  <div style="display:flex;flex-direction:column;gap:6px">${rec.map(t=>{const x=TAC[t]||{};return `<div class="tcard" style="cursor:pointer" onclick="setTac(${i},${j},'${t}')"><div class="th"><span class="kn" style="font-size:13px">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}</div><div class="eff" style="font-size:11px">${esc((x.eff||'').slice(0,90))}</div></div>`;}).join('')||'<span class="mut">추천 전법 데이터 없음</span>'}</div></div>`);
+  <div class="mb"><div class="mut" style="margin-bottom:8px">추천 전법(편성 등장 순). 클릭해 ${POS[i]} ${j+1}번 슬롯에 지정. ${deckTacs[i][j]?`<a onclick="setTac(${i},${j},'')" style="cursor:pointer">[비우기]</a>`:''}</div>
+  <div style="display:flex;flex-direction:column;gap:6px">${rec.map(t=>{const x=TAC[t]||{};return `<div class="tcard" style="cursor:pointer" onclick="setTac(${i},${j},'${t}')"><div class="th"><span class="kn" style="font-size:13px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}</div><div class="eff" style="font-size:11px">${esc((x.eff||'').slice(0,90))}</div></div>`;}).join('')||'<span class="mut">추천 전법 데이터 없음</span>'}</div></div>`);
 }
-function setTac(i,j,t){deckTacs[i][j]=t;closeModal();drawSlots();}
+function setTac(i,j,t){deckTacs[i][j]=t||null;closeModal();drawDeck();}
+function setShape(v){deckShape=v;drawDeck();}
 function renderBuilder(){
  const el=document.getElementById('tab-builder');
- el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">장수 3명을 골라 활성 연계(인연)와 각 장수의 고유·추천 전법을 확인하세요.</p>
- <div class="slots" id="slots"></div>
+ el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">진형·부대 위치(전열/중열/후열)·장수·전법을 직접 편성하고 진형 효과·연계·전법 효과를 확인하세요.</p>
+ <div class="filters"><label class="mut" style="font-weight:700">진형</label><select id="shapeSel" class="search" style="flex:0 0 auto;min-width:130px">${D.FORMS.map(f=>`<option ${f.name===deckShape?'selected':''}>${esc(f.name)}</option>`).join('')}</select><span class="mut" id="shapeInfo"></span></div>
+ <div id="posSlots" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
  <div class="synbox" id="synbox"></div>
- <h3 class="sub2">장수 선택</h3>
+ <h3 class="sub2">장수 선택 <span class="mut" style="font-weight:400">— 클릭 시 빈 위치에 배치</span></h3>
  <div class="filters"><input class="search" id="bsearch" placeholder="장수 검색…"><div class="seg" id="bfac">${[['all','전체'],['wei','위'],['shu','촉'],['wu','오'],['qun','군']].map(([k,l])=>`<button data-f="${k}" class="${k==='all'?'on':''}">${l}</button>`).join('')}</div></div>
  <div class="grid g-gen" id="bpool"></div>`;
+ document.getElementById('shapeSel').onchange=e=>setShape(e.target.value);
  document.getElementById('bsearch').oninput=renderPool;
  document.getElementById('bfac').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderPool();};
- drawSlots();renderPool();
+ drawDeck();renderPool();
 }
 function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
- return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b>${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
-function drawSlots(){
- document.getElementById('slots').innerHTML=deck.map((cn,i)=>{
-  if(!cn)return `<div class="slot"><span class="mut">+ 슬롯 ${i+1}</span><span class="mut" style="font-size:10px">아래에서 장수 선택</span></div>`;
+ return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
+function drawDeck(){
+ // shape info
+ const F=D.FORMS.find(f=>f.name===deckShape)||{};
+ document.getElementById('shapeSel').value=deckShape;
+ document.getElementById('shapeInfo').innerHTML=F.hit?`피격률 전${F.hit[0]||'-'}·중${F.hit[1]||'-'}·후${F.hit[2]||'-'} · ${(F.feats||[]).join(' / ')}`:'';
+ // position rows
+ document.getElementById('posSlots').innerHTML=deck.map((cn,i)=>{
+  const label=`<div class="poslabel">${POS[i]}</div>`;
+  if(!cn) return `<div class="posrow">${label}<div class="slot" style="min-height:64px;flex:1;cursor:default"><span class="mut">${POS[i]} 비어 있음 — 아래에서 장수 선택</span></div></div>`;
   const g=GEN[cn]||{};
-  return `<div class="slot filled">
-    <div style="display:flex;gap:8px;align-items:center;width:100%">${avHtml(cn,'lg')}<div style="text-align:left"><b>${esc(g.kr)}</b> ${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}</span>`:''}<div class="mut" style="font-size:10px">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}·선${g.xg||'-'}</div></div><span class="rm" style="margin-left:auto" onclick="deck[${i}]=null;deckTacs[${i}]=[];renderBuilder()">×</span></div>
-    <div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer;align-self:flex-start" onclick="tacModal('${(genRecTacs(cn),g.skill)?g.skill:''}');event.stopPropagation()">◈ ${esc(tName(g.skill))}</div>
+  return `<div class="posrow">${label}<div class="slot filled" style="flex:1">
+    <div style="display:flex;gap:9px;align-items:center;width:100%">${avHtml(cn,'lg')}
+     <div style="text-align:left;flex:1"><b>${esc(g.kr)}</b> ${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}${g.bingEst?'·추정':''}</span>`:''} ${sjBadge(cn)}
+       <div class="mut" style="font-size:10px">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}·선${g.xg||'-'} · <span onclick="tacModal('${g.skill}');event.stopPropagation()" style="color:var(--seal);font-weight:700;cursor:pointer">◈ ${esc(tName(g.skill))}</span></div>
+     </div>
+     <span class="rm" onclick="deck[${i}]=null;deckTacs[${i}]=[];drawDeck();renderPool()">×</span></div>
     <div style="display:flex;gap:6px;width:100%">${tslot(i,0)}${tslot(i,1)}</div>
-  </div>`;
+  </div></div>`;
  }).join('');
+ // panel: team stats + synergy + tactic effects
  const sel=deck.filter(Boolean);
- const active=SYN.map(s=>{const inTeam=s.member.filter(m=>sel.includes(m));return {s,n:inTeam.length};}).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n);
- const chosen=[]; deck.forEach((cn,i)=>{if(cn){if(cn&&GEN[cn]&&GEN[cn].skill)chosen.push([GEN[cn].skill,'◈'+GEN[cn].kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,GEN[cn].kr]);});}});
- const synHtml=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(선택 장수 2인 이상 공유 시)</span></h3>`+
-  (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="mut">(${n}/${s.member.length})</span><div class="mut" style="font-size:11px">${s.member.map(m=>{const on=sel.includes(m);return `<span style="${on?'color:var(--jade);font-weight:700':''}">${esc((GEN[m]||{}).kr||m)}</span>`;}).join(' · ')}</div><div style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</div></div>`).join(''):'<span class="mut">장수를 2명 이상 선택하면 공유 연계가 표시됩니다.</span>');
- const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
- document.getElementById('synbox').innerHTML=synHtml+effHtml;
+ const sum={wl:0,zl:0,ts:0,xg:0}; sel.forEach(cn=>{const g=GEN[cn]||{};['wl','zl','ts','xg'].forEach(k=>sum[k]+=(g[k]||0));});
+ const statLine=sel.length?`<div class="mut" style="font-size:11.5px;margin-bottom:6px">팀 합계 — 무 ${sum.wl} · 지 ${sum.zl} · 통 ${sum.ts} · 선 ${sum.xg}</div>`:'';
+ const active=SYN.map(s=>{const n=s.member.filter(m=>sel.includes(m)).length;return {s,n};}).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n);
+ const synHtml=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(2인 이상 공유)</span></h3>`+
+  (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="mut">(${n}/${s.member.length})</span> <span style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</span></div>`).join(''):'<span class="mut">장수 2명 이상 선택 시 공유 연계 표시</span>');
+ const chosen=[]; deck.forEach((cn,i)=>{if(cn){const g=GEN[cn]||{};if(g.skill)chosen.push([g.skill,'◈ '+g.kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,g.kr]);});}});
+ const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm" style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
+ document.getElementById('synbox').innerHTML=statLine+synHtml+effHtml;
 }
+function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('세 위치가 가득 찼습니다. × 로 비운 뒤 선택하세요.');return;}deck[i]=cn;deckTacs[i]=[];drawDeck();renderPool();}
 function renderPool(){
  const q=(document.getElementById('bsearch').value||'').trim();
  const fac=document.querySelector('#bfac button.on').dataset.f;
  let list=Object.keys(GEN).filter(cn=>{const g=GEN[cn];return (fac==='all'||g.faction===fac)&&(!q||(g.kr||'').includes(q)||cn.includes(q));});
- list.sort((a,b)=>((GEN[b].official?1:0)-(GEN[a].official?1:0))||(GEN[b].wl+GEN[b].zl||0)-(GEN[a].wl+GEN[a].zl||0));
- document.getElementById('bpool').innerHTML=list.map(cn=>{const g=GEN[cn];return `<div class="gcard" onclick="pick('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)}</div><div class="st">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}·선${g.xg||'-'}</div></div>`;}).join('');
+ list.sort((a,b)=>((GEN[b].official?1:0)-(GEN[a].official?1:0))||((GEN[b].wl+GEN[b].zl||0)-(GEN[a].wl+GEN[a].zl||0)));
+ document.getElementById('bpool').innerHTML=list.map(cn=>{const g=GEN[cn];const inDeck=deck.includes(cn);return `<div class="gcard" style="${inDeck?'opacity:.45':''}" onclick="pick('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}무${g.wl||'-'}·지${g.zl||'-'}</div></div>`;}).join('');
 }
-function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('슬롯이 가득 찼습니다. 제거 후 선택하세요.');return;}deck[i]=cn;drawSlots();}
 
 /* ---------------- TACTIC DICTIONARY ---------------- */
 let tacState={ty:'all',off:'all',q:''};
