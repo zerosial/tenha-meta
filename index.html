@@ -125,9 +125,9 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .slot .rm{font-size:12px;color:var(--seal);cursor:pointer;border:1px solid var(--line2);border-radius:100px;padding:0 7px;}
 .tslot{flex:1;border:1px dashed var(--line2);border-radius:7px;padding:6px 8px;font-size:11.5px;font-weight:700;cursor:pointer;background:var(--panel);text-align:center;min-height:30px;display:flex;align-items:center;justify-content:center;gap:4px;}
 .posrow{display:flex;gap:10px;align-items:stretch;}
-.poslabel{flex:0 0 44px;display:flex;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;border-radius:8px;background:var(--t2);}
-.posrow:nth-child(1) .poslabel{background:var(--t0);}
-.posrow:nth-child(2) .poslabel{background:var(--t1);}
+.poslabel{flex:0 0 52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;border-radius:8px;background:var(--t2);text-align:center;}
+.poslabel[data-pos="전열"]{background:var(--seal);}
+.poslabel[data-pos="후열"]{background:var(--t2);}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
 .sjb.new{background:var(--new);}
 .tsj{font-size:8.5px;font-weight:800;color:var(--faint);margin-left:3px;opacity:.85;}
@@ -354,10 +354,21 @@ function fcModal(i){
 function loadToBuilder(i){const f=(window._curForms||[])[i];if(!f)return;deck=[null,null,null];f.gens.slice(0,3).forEach((g,k)=>deck[k]=g.cn);closeModal();built.builder=0;show('builder');}
 
 /* ---------------- DECK BUILDER ---------------- */
-let deck=[null,null,null];   // 0=전열,1=중열,2=후열
+// ===== 진형 데이터 (say-bot 기준) =====
+const SHAPES=[
+ {name:'일자진',front:3,hit:[33,34,33],feat:'전열이 받는 피해 8% 감소'},
+ {name:'기형진',front:1,hit:[60,20,20],feat:'전열 받는 피해 6%↓ · 후열 주는 피해 12%↑'},
+ {name:'안형진',front:2,hit:[40,40,20],feat:'전열 통솔 20↑ · 후열 주는 피해 15%↑'},
+ {name:'방원진',front:2,hit:[40,40,20],feat:'전열 받는 피해 5%↓ · 후열 연타 확률 40%↑'},
+ {name:'추형진',front:1,hit:[60,20,20],feat:'전열 주는 피해 16%↑ · 후열 받는 피해 5%↓'},
+ {name:'어린진',front:1,hit:[60,20,20],feat:'전열 피신 12%↑ · 후열 회심·묘책 8%↑'},
+];
+let deck=[null,null,null];
 let deckTacs=[[],[],[]];
-let deckShape=(D.FORMS[0]||{}).name||'일자진';
-const POS=['전열','중열','후열'];
+let deckShapeIdx=4; // 추형진
+function shape(){return SHAPES[deckShapeIdx];}
+function slotPos(i){return i<shape().front?'전열':'후열';}
+function slotHit(i){return shape().hit[i];}
 function genRecTacs(cn){
  const cnt={};
  SEASONS.forEach(s=>(SEA[s]||[]).forEach(f=>f.gens.forEach(g=>{if(g.cn===cn)g.tacs.slice(1).forEach(t=>{if(!(TAC[t]||{}).minimal)cnt[t]=(cnt[t]||0)+1;});})));
@@ -366,64 +377,114 @@ function genRecTacs(cn){
 function openTacPicker(i,j){
  const cn=deck[i]; if(!cn)return; const rec=genRecTacs(cn);
  openModal(`<div class="mh"><b>${esc((GEN[cn]||{}).kr)} · 전법 선택</b><button class="x" onclick="closeModal()">×</button></div>
-  <div class="mb"><div class="mut" style="margin-bottom:8px">추천 전법(편성 등장 순). 클릭해 ${POS[i]} ${j+1}번 슬롯에 지정. ${deckTacs[i][j]?`<a onclick="setTac(${i},${j},'')" style="cursor:pointer">[비우기]</a>`:''}</div>
-  <div style="display:flex;flex-direction:column;gap:6px">${rec.map(t=>{const x=TAC[t]||{};return `<div class="tcard" style="cursor:pointer" onclick="setTac(${i},${j},'${t}')"><div class="th"><span class="kn" style="font-size:13px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}</div><div class="eff" style="font-size:11px">${esc((x.eff||'').slice(0,90))}</div></div>`;}).join('')||'<span class="mut">추천 전법 데이터 없음</span>'}</div></div>`);
+  <div class="mb"><div class="mut" style="margin-bottom:8px">추천 전법(편성 등장 순). 클릭해 지정. ${deckTacs[i][j]?`<a onclick="setTac(${i},${j},'')" style="cursor:pointer">[비우기]</a>`:''}</div>
+  <div style="display:flex;flex-direction:column;gap:6px">${rec.map(t=>{const x=TAC[t]||{};return `<div class="tcard" style="cursor:pointer" onclick="setTac(${i},${j},'${t}')"><div class="th"><span class="kn" style="font-size:13px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''}${tsjB(t)} ${isNewTac(t)?'<span class="bnew">번역</span>':''}</div><div class="eff" style="font-size:11px">${esc((x.eff||'').slice(0,90))}</div></div>`;}).join('')||'<span class="mut">추천 전법 데이터 없음</span>'}</div></div>`);
 }
-function setTac(i,j,t){deckTacs[i][j]=t||null;closeModal();drawDeck();}
-function setShape(v){deckShape=v;drawDeck();}
+function setTac(i,j,t){deckTacs[i][j]=t||null;closeModal();drawDeck();syncURL();}
+function setShapeIdx(v){deckShapeIdx=+v;drawDeck();syncURL();}
+function resetDeck(){deck=[null,null,null];deckTacs=[[],[],[]];deckShapeIdx=4;renderBuilder();syncURL();}
+function loadFormationToDeck(sj,idx){
+ const f=(SEA[sj]||[])[idx]; if(!f)return;
+ // 진형 매칭
+ const si=SHAPES.findIndex(s=>f.shape.includes(s.name)); if(si>=0)deckShapeIdx=si;
+ // 역할 기반 위치: 武/统 → 전열, 智 → 후열
+ const ordered=[...f.gens].sort((a,b)=>{const av=/智/.test(a.role)?1:0,bv=/智/.test(b.role)?1:0;return av-bv;});
+ deck=[null,null,null];deckTacs=[[],[],[]];
+ ordered.slice(0,3).forEach((g,k)=>{deck[k]=g.cn;deckTacs[k]=g.tacs.slice(1).filter(t=>!(TAC[t]||{}).minimal).slice(0,2);});
+ renderBuilder();syncURL();
+}
+function shareDeck(){
+ const parts=deck.map((cn,i)=>cn?[cn,...(deckTacs[i]||[]).filter(Boolean)].join(','):'').join('|');
+ const d=encodeURIComponent(deckShapeIdx+'~'+parts);
+ const url=location.origin+location.pathname+'?d='+d+'#builder';
+ navigator.clipboard&&navigator.clipboard.writeText(url);
+ openModal(`<div class="mh"><b>편성 공유 링크</b><button class="x" onclick="closeModal()">×</button></div><div class="mb"><p class="mut">링크가 복사되었습니다. 붙여넣기로 이 편성을 그대로 열 수 있습니다.</p><input class="search" style="width:100%" value="${esc(url)}" onclick="this.select()"></div>`);
+}
+function syncURL(){
+ const parts=deck.map((cn,i)=>cn?[cn,...(deckTacs[i]||[]).filter(Boolean)].join(','):'').join('|');
+ history.replaceState(null,'','?d='+encodeURIComponent(deckShapeIdx+'~'+parts)+'#builder');
+}
+function loadDeckFromURL(){
+ const m=location.search.match(/[?&]d=([^&]+)/); if(!m)return false;
+ try{ const raw=decodeURIComponent(m[1]); const [si,rest]=raw.split('~'); deckShapeIdx=+si||4;
+  (rest||'').split('|').forEach((seg,i)=>{ if(i>2||!seg)return; const a=seg.split(','); if(GEN[a[0]]){deck[i]=a[0];deckTacs[i]=a.slice(1).filter(Boolean);} });
+  return true;
+ }catch(e){return false;}
+}
 function renderBuilder(){
  const el=document.getElementById('tab-builder');
- el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">진형·부대 위치(전열/중열/후열)·장수·전법을 직접 편성하고 진형 효과·연계·전법 효과를 확인하세요.</p>
- <div class="filters"><label class="mut" style="font-weight:700">진형</label><select id="shapeSel" class="search" style="flex:0 0 auto;min-width:130px">${D.FORMS.map(f=>`<option ${f.name===deckShape?'selected':''}>${esc(f.name)}</option>`).join('')}</select><span class="mut" id="shapeInfo"></span></div>
+ el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">진형·부대 위치·장수·전법을 편성하면 진형 효과·조합 보너스·연계·속성 합계가 자동 계산됩니다. 편성은 공유 링크로 저장됩니다.</p>
+ <div class="filters">
+  <label class="mut" style="font-weight:700">진형</label>
+  <select id="shapeSel" class="search" style="flex:0 0 auto;min-width:120px">${SHAPES.map((s,i)=>`<option value="${i}" ${i===deckShapeIdx?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+  <span class="mut" id="shapeInfo"></span>
+  <span style="flex:1"></span>
+  <select id="loadSj" class="search" style="flex:0 0 auto;min-width:70px"><option value="">시즌</option>${SEASONS.map(s=>`<option value="${s}">S${s}</option>`).join('')}</select>
+  <select id="loadForm" class="search" style="flex:0 0 auto;min-width:120px"><option value="">티어덱 불러오기</option></select>
+  <button class="tbtn" onclick="shareDeck()">🔗 공유</button>
+  <button class="tbtn" onclick="resetDeck()">↺ 초기화</button>
+ </div>
  <div id="posSlots" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
  <div class="synbox" id="synbox"></div>
- <h3 class="sub2">장수 선택 <span class="mut" style="font-weight:400">— 클릭 시 빈 위치에 배치</span></h3>
+ <h3 class="sub2">장수 선택 <span class="mut" style="font-weight:400">— 클릭 시 빈 위치에 배치 · 병종 상성 방패병→궁병→창병→기병→방패병</span></h3>
  <div class="filters"><input class="search" id="bsearch" placeholder="장수 검색…"><div class="seg" id="bfac">${[['all','전체'],['wei','위'],['shu','촉'],['wu','오'],['qun','군']].map(([k,l])=>`<button data-f="${k}" class="${k==='all'?'on':''}">${l}</button>`).join('')}</div></div>
  <div class="grid g-gen" id="bpool"></div>`;
- document.getElementById('shapeSel').onchange=e=>setShape(e.target.value);
+ document.getElementById('shapeSel').onchange=e=>setShapeIdx(e.target.value);
  document.getElementById('bsearch').oninput=renderPool;
  document.getElementById('bfac').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderPool();};
+ const lsj=document.getElementById('loadSj'), lf=document.getElementById('loadForm');
+ lsj.onchange=()=>{const s=lsj.value;lf.innerHTML='<option value="">티어덱 불러오기</option>'+(s?(SEA[s]||[]).map((f,i)=>`<option value="${i}">[${f.tier}] ${esc(f.shape)} ${esc(f.nick||'')} — ${f.gens.map(g=>g.kr).join('·')}</option>`).join(''):'');};
+ lf.onchange=()=>{if(lsj.value&&lf.value!=='')loadFormationToDeck(lsj.value,+lf.value);};
  drawDeck();renderPool();
 }
 function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
  return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}${tsjB(t)}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
 function drawDeck(){
- // shape info
- const F=D.FORMS.find(f=>f.name===deckShape)||{};
- document.getElementById('shapeSel').value=deckShape;
- document.getElementById('shapeInfo').innerHTML=F.hit?`피격률 전${F.hit[0]||'-'}·중${F.hit[1]||'-'}·후${F.hit[2]||'-'} · ${(F.feats||[]).join(' / ')}`:'';
- // position rows
+ const S=shape();
+ document.getElementById('shapeSel').value=deckShapeIdx;
+ document.getElementById('shapeInfo').innerHTML=`전열 ${S.front}·후열 ${3-S.front} · 피격 ${S.hit.join('/')}% · ${esc(S.feat)}`;
  document.getElementById('posSlots').innerHTML=deck.map((cn,i)=>{
-  const label=`<div class="poslabel">${POS[i]}</div>`;
-  if(!cn) return `<div class="posrow">${label}<div class="slot" style="min-height:64px;flex:1;cursor:default"><span class="mut">${POS[i]} 비어 있음 — 아래에서 장수 선택</span></div></div>`;
+  const pos=slotPos(i), hit=slotHit(i);
+  const label=`<div class="poslabel" data-pos="${pos}">${pos}<small style="display:block;font-size:9px;opacity:.85">피격 ${hit}%</small></div>`;
+  if(!cn) return `<div class="posrow">${label}<div class="slot" style="min-height:64px;flex:1;cursor:default"><span class="mut">${pos} 비어 있음 — 아래에서 장수 선택</span></div></div>`;
   const g=GEN[cn]||{};
   return `<div class="posrow">${label}<div class="slot filled" style="flex:1">
     <div style="display:flex;gap:9px;align-items:center;width:100%">${avHtml(cn,'lg')}
      <div style="text-align:left;flex:1"><b>${esc(g.kr)}</b> ${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}${g.bingEst?'·추정':''}</span>`:''} ${sjBadge(cn)}
        <div class="mut" style="font-size:10px">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}·선${g.xg||'-'} · <span onclick="tacModal('${g.skill}');event.stopPropagation()" style="color:var(--seal);font-weight:700;cursor:pointer">◈ ${esc(tName(g.skill))}</span></div>
      </div>
-     <span class="rm" onclick="deck[${i}]=null;deckTacs[${i}]=[];drawDeck();renderPool()">×</span></div>
+     <span class="rm" onclick="deck[${i}]=null;deckTacs[${i}]=[];drawDeck();renderPool();syncURL()">×</span></div>
     <div style="display:flex;gap:6px;width:100%">${tslot(i,0)}${tslot(i,1)}</div>
   </div></div>`;
  }).join('');
- // panel: team stats + synergy + tactic effects
  const sel=deck.filter(Boolean);
- const sum={wl:0,zl:0,ts:0,xg:0}; sel.forEach(cn=>{const g=GEN[cn]||{};['wl','zl','ts','xg'].forEach(k=>sum[k]+=(g[k]||0));});
- const statLine=sel.length?`<div class="mut" style="font-size:11.5px;margin-bottom:6px">팀 합계 — 무 ${sum.wl} · 지 ${sum.zl} · 통 ${sum.ts} · 선 ${sum.xg}</div>`:'';
+ // 조합 보너스
+ const facC={},binC={};
+ sel.forEach(cn=>{const g=GEN[cn]||{};if(g.faction)facC[g.faction]=(facC[g.faction]||0)+1;if(g.bing)binC[g.bing]=(binC[g.bing]||0)+1;});
+ const bonus=[];
+ Object.entries(facC).forEach(([f,n])=>{if(n>=2)bonus.push(`동일 진영 <b>${FAC[f]}</b> ${n}명 · 모든 속성 +${n>=3?10:5}%`);});
+ Object.entries(binC).forEach(([b,n])=>{if(n>=2)bonus.push(`동일 병종 <b>${b}</b> ${n}명 · 병종 보너스`);});
+ const bonusHtml=`<div style="margin-bottom:8px"><span class="mut" style="font-weight:800">조합 보너스</span> ${bonus.length?bonus.map(x=>`<span class="tag ok">${x}</span>`).join(' '):'<span class="mut">동일 진영/병종 2명 이상 시 발동</span>'}</div>`;
+ // 속성 요약 표
+ const sum={wl:0,zl:0,ts:0,xg:0};
+ const statRows=deck.map((cn,i)=>{if(!cn)return '';const g=GEN[cn]||{};['wl','zl','ts','xg'].forEach(k=>sum[k]+=(g[k]||0));return `<tr><td>${slotPos(i)}</td><td class="gnm">${facChip(cn)} ${esc(g.kr)}</td><td>${g.bing?esc(g.bing):'-'}</td><td class="r num">${g.wl||'-'}</td><td class="r num">${g.zl||'-'}</td><td class="r num">${g.ts||'-'}</td><td class="r num">${g.xg||'-'}</td></tr>`;}).join('');
+ const statTable=sel.length?`<h3 class="sub2">속성 요약 <span class="mut" style="font-weight:400">(50렙 기준)</span></h3><div class="scroll"><table><thead><tr><th>위치</th><th>장수</th><th>병종</th><th class="r">무</th><th class="r">지</th><th class="r">통</th><th class="r">선</th></tr></thead><tbody>${statRows}<tr style="font-weight:800;background:var(--panel2)"><td colspan="3">합계</td><td class="r num">${sum.wl}</td><td class="r num">${sum.zl}</td><td class="r num">${sum.ts}</td><td class="r num">${sum.xg}</td></tr></tbody></table></div>`:'';
+ // 인연
  const active=SYN.map(s=>{const n=s.member.filter(m=>sel.includes(m)).length;return {s,n};}).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n);
- const synHtml=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(2인 이상 공유)</span></h3>`+
+ const synHtml=`<h3 class="sub2">활성 연계 <span class="mut" style="font-weight:400">(2인 이상 공유)</span></h3>`+
   (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="mut">(${n}/${s.member.length})</span> <span style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</span></div>`).join(''):'<span class="mut">장수 2명 이상 선택 시 공유 연계 표시</span>');
+ // 전법 효과
  const chosen=[]; deck.forEach((cn,i)=>{if(cn){const g=GEN[cn]||{};if(g.skill)chosen.push([g.skill,'◈ '+g.kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,g.kr]);});}});
  const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm" style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''}${tsjB(t)} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
- document.getElementById('synbox').innerHTML=statLine+synHtml+effHtml;
+ document.getElementById('synbox').innerHTML=bonusHtml+statTable+synHtml+effHtml;
 }
-function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('세 위치가 가득 찼습니다. × 로 비운 뒤 선택하세요.');return;}deck[i]=cn;deckTacs[i]=[];drawDeck();renderPool();}
+function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('세 위치가 가득 찼습니다. × 로 비운 뒤 선택하세요.');return;}deck[i]=cn;deckTacs[i]=[];drawDeck();renderPool();syncURL();}
 function renderPool(){
  const q=(document.getElementById('bsearch').value||'').trim();
  const fac=document.querySelector('#bfac button.on').dataset.f;
  let list=Object.keys(GEN).filter(cn=>{const g=GEN[cn];return (fac==='all'||g.faction===fac)&&(!q||(g.kr||'').includes(q)||cn.includes(q));});
  list.sort((a,b)=>((GEN[b].official?1:0)-(GEN[a].official?1:0))||((GEN[b].wl+GEN[b].zl||0)-(GEN[a].wl+GEN[a].zl||0)));
- document.getElementById('bpool').innerHTML=list.map(cn=>{const g=GEN[cn];const inDeck=deck.includes(cn);return `<div class="gcard" style="${inDeck?'opacity:.45':''}" onclick="pick('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}무${g.wl||'-'}·지${g.zl||'-'}</div></div>`;}).join('');
+ document.getElementById('bpool').innerHTML=list.map(cn=>{const g=GEN[cn];const inDeck=deck.includes(cn);return `<div class="gcard" style="${inDeck?'opacity:.4':''}" onclick="pick('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}무${g.wl||'-'}·지${g.zl||'-'}</div></div>`;}).join('');
 }
 
 /* ---------------- TACTIC DICTIONARY ---------------- */
@@ -493,7 +554,8 @@ function renderRef(){
 
 /* ---------------- INIT ---------------- */
 document.getElementById('stat').textContent=`${SEASONS.length}시즌 · 편성 ${Object.values(SEA).reduce((a,b)=>a+b.length,0)} · 전법 ${Object.keys(TAC).length} · 장수 ${Object.keys(GEN).length}`;
-const start=(location.hash||'#meta').slice(1);
+let start=(location.hash||'#meta').slice(1);
+if(loadDeckFromURL())start='builder';
 show(TABS.some(([k])=>k===start)?start:'meta');
 </script>
 </body>
