@@ -91,8 +91,10 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .frow .role{font-size:10px;color:var(--faint);}
 .frow .sig{font-size:11px;color:var(--seal);font-weight:700;margin-top:1px;}
 .frow .tacmini{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
-.tacmini .tm{font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;cursor:pointer;}
-.tacmini .tm.eq{border-color:var(--seal);color:var(--seal);}
+.tacmini .tm{font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;cursor:pointer;color:var(--ink);}
+.tacmini .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
+.tacmini .tm.hero{border-color:var(--hero);color:var(--hero);background:color-mix(in srgb,var(--hero) 12%,transparent);}
+.tacmini .tm.sig{font-weight:800;}
 /* tactic card */
 .tcard{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:11px 13px;}
 .tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px;}
@@ -191,6 +193,7 @@ function sjBadge(cn){const g=GEN[cn]||{};return g.sj?`<span class="sjb ${g.offic
 function tyB(t){return t?`<span class="ty ty-${t}">${t}</span>`:'';}
 function tName(cn){return (TAC[cn]||{}).kr||cn;}
 function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
+function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
 const TABS=[['meta','메타'],['season','시즌별 편성'],['builder','덱빌더'],['tac','전법 도감'],['gen','장수 도감'],['ref','참고']];
@@ -271,7 +274,7 @@ function renderMeta(){
 let seaState={sj:1,tier:'all',fac:'all'};
 function renderSeason(){
  const el=document.getElementById('tab-season');
- el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0~T2 편성 전체. 장수 클릭=상세, 전법 클릭=효과. 첫 전법(붉은색)=고유전법.</p>
+ el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0~T2 편성 전체. 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
  <div class="filters"><div class="spill" id="sjpill">${SEASONS.map(s=>`<button data-sj="${s}" class="${s===seaState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
  <div class="filters">
   <div class="seg" id="tierseg">${['all','T0','T1','T2'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'전티어':t}</button>`).join('')}</div>
@@ -290,13 +293,11 @@ function renderSeason(){
 }
 function fcardHtml(f,i){
  const gens=f.gens.map(g=>{
-   const sig=g.tacs[0];
-   const eq=g.tacs.slice(1,7);
+   const all=g.tacs.slice(0,7);
    return `<div class="frow" onclick="event.stopPropagation();genModal('${g.cn}')">
      ${avHtml(g.cn,'sm')}
      <div class="gi"><span class="gn">${facChip(g.cn)} ${esc(g.kr)}</span> ${sjBadge(g.cn)} <span class="role">${esc((g.role||'').replace(/\s*\|\s*/,' · '))}</span>
-     <div class="sig">◈ ${esc(tName(sig))}</div>
-     <div class="tacmini">${eq.map(t=>`<span class="tm ${isNewTac(t)?'':'eq'}" onclick="event.stopPropagation();tacModal('${t}')">${esc(tName(t))}</span>`).join('')}</div></div>
+     <div class="tacmini">${all.map((t,idx)=>`<span class="tm ${gradeCls(t)} ${idx===0?'sig':''}" onclick="event.stopPropagation();tacModal('${t}')">${idx===0?'◈ ':''}${esc(tName(t))}</span>`).join('')}</div></div>
    </div>`;
  }).join('');
  return `<div class="fcard"><div class="fh" style="cursor:pointer" onclick="fcModal(${i})"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span><span class="mut" style="font-weight:700">${esc(f.nick||'')}</span><span style="margin-left:auto;font-size:10px;color:var(--seal);font-weight:800">덱 상세 →</span></div>${gens}</div>`;
@@ -305,7 +306,7 @@ function fcModal(i){
  const f=(window._curForms||[])[i]; if(!f)return;
  const gens=f.gens.map(g=>{
    const G=GEN[g.cn]||{}, sk=TAC[G.skill]||TAC[g.tacs[0]]||{};
-   const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
+   const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
    return `<div style="border:1px solid var(--line2);border-radius:9px;padding:10px 12px;margin-bottom:9px">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${avHtml(g.cn,'lg')}
        <div><div style="font-weight:800;font-size:14px">${facChip(g.cn)} ${esc(g.kr)} ${sjBadge(g.cn)} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
@@ -409,7 +410,7 @@ function fillTac(){
  list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
  document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
-   <div class="th"><span class="kn">${esc(t.kr)}</span><span class="cn wo">${esc(t.cn)}</span>${t.official===false?'<span class="bnew">번역</span>':''}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
+   <div class="th"><span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.official===false?'<span class="bnew">번역</span>':''}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
