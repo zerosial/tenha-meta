@@ -95,6 +95,12 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .tacmini .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
 .tacmini .tm.hero{border-color:var(--hero);color:var(--hero);background:color-mix(in srgb,var(--hero) 12%,transparent);}
 .tacmini .tm.sig{font-weight:800;}
+.tacmini .tm.min{opacity:.62;font-size:10px;border-style:dashed;}
+.modal.wide{max-width:960px;}
+.fcgens{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:640px){.fcgens{grid-template-columns:1fr;}}
+.fcg{border:1px solid var(--line2);border-radius:9px;padding:10px 11px;background:var(--panel);}
+.kindtag{font-size:9px;font-weight:800;color:var(--faint);border:1px solid var(--line2);border-radius:100px;padding:0 5px;}
 /* tactic card */
 .tcard{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:11px 13px;}
 .tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px;}
@@ -208,7 +214,7 @@ document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button data-k="${k
 function toggleTheme(){const r=document.documentElement;const c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');}
 
 /* ---------------- MODAL ---------------- */
-function openModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('ov').classList.add('on');}
+function openModal(html,wide){const m=document.getElementById('modal');m.innerHTML=html;m.classList.toggle('wide',!!wide);document.getElementById('ov').classList.add('on');}
 function closeModal(){document.getElementById('ov').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효과 정보 없음 (계승/속성 전법).';
@@ -297,7 +303,7 @@ function fcardHtml(f,i){
    return `<div class="frow" onclick="event.stopPropagation();genModal('${g.cn}')">
      ${avHtml(g.cn,'sm')}
      <div class="gi"><span class="gn">${facChip(g.cn)} ${esc(g.kr)}</span> ${sjBadge(g.cn)} <span class="role">${esc((g.role||'').replace(/\s*\|\s*/,' · '))}</span>
-     <div class="tacmini">${all.map((t,idx)=>`<span class="tm ${gradeCls(t)} ${idx===0?'sig':''}" onclick="event.stopPropagation();tacModal('${t}')">${idx===0?'◈ ':''}${esc(tName(t))}</span>`).join('')}</div></div>
+     <div class="tacmini">${all.map((t,idx)=>`<span class="tm ${gradeCls(t)} ${idx===0?'sig':''} ${(TAC[t]||{}).minimal?'min':''}" onclick="event.stopPropagation();tacModal('${t}')">${idx===0?'◈ ':''}${esc(tName(t))}</span>`).join('')}</div></div>
    </div>`;
  }).join('');
  return `<div class="fcard"><div class="fh" style="cursor:pointer" onclick="fcModal(${i})"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span><span class="mut" style="font-weight:700">${esc(f.nick||'')}</span><span style="margin-left:auto;font-size:10px;color:var(--seal);font-weight:800">덱 상세 →</span></div>${gens}</div>`;
@@ -307,7 +313,7 @@ function fcModal(i){
  const gens=f.gens.map(g=>{
    const G=GEN[g.cn]||{}, sk=TAC[G.skill]||TAC[g.tacs[0]]||{};
    const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
-   return `<div style="border:1px solid var(--line2);border-radius:9px;padding:10px 12px;margin-bottom:9px">
+   return `<div class="fcg">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${avHtml(g.cn,'lg')}
        <div><div style="font-weight:800;font-size:14px">${facChip(g.cn)} ${esc(g.kr)} ${sjBadge(g.cn)} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
        <div class="mut" style="font-size:10px">${esc((g.role||'').replace(/\s*\|\s*/,' · '))} · 무${G.wl||'-'}·지${G.zl||'-'}·통${G.ts||'-'}·선${G.xg||'-'}</div>
@@ -322,8 +328,8 @@ function fcModal(i){
  const act=SYN.map(s=>({s,n:s.member.filter(m=>cns.includes(m)).length})).filter(x=>x.n>=2);
  const synHtml=act.length?`<div style="margin-top:4px"><div class="mut" style="font-size:10px;text-transform:uppercase;margin-bottom:3px">활성 연계</div>${act.map(({s,n})=>`<div style="font-size:11.5px;padding:3px 0"><b style="color:var(--jade)">${esc(s.name)}</b> <span class="mut">(${n}/${s.member.length})</span> — ${esc(s.desc||'')}</div>`).join('')}</div>`:'';
  openModal(`<div class="mh"><span class="tier ${f.tier}">${f.tier}</span> <b class="serif" style="font-size:16px">${esc(f.shape)}</b> <span class="mut">${esc(f.nick||'')}</span><button class="x" onclick="closeModal()">×</button></div>
-  <div class="mb">${gens}${synHtml}
-  <div style="margin-top:8px"><button class="tbtn" onclick="loadToBuilder(${i})">이 편성을 덱빌더로 →</button></div></div>`);
+  <div class="mb"><div class="fcgens">${gens}</div>${synHtml}
+  <div style="margin-top:10px"><button class="tbtn" onclick="loadToBuilder(${i})">이 편성을 덱빌더로 →</button></div></div>`,true);
 }
 function loadToBuilder(i){const f=(window._curForms||[])[i];if(!f)return;deck=[null,null,null];f.gens.slice(0,3).forEach((g,k)=>deck[k]=g.cn);closeModal();built.builder=0;show('builder');}
 
