@@ -130,6 +130,7 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .posrow:nth-child(2) .poslabel{background:var(--t1);}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
 .sjb.new{background:var(--new);}
+.tsj{font-size:8.5px;font-weight:800;color:var(--faint);margin-left:3px;opacity:.85;}
 .synbox{border:1px solid var(--line2);border-radius:10px;background:var(--panel);padding:12px 14px;margin-bottom:14px;}
 .synbox .syn{padding:6px 0;border-bottom:1px solid var(--line);}
 .synbox .syn:last-child{border-bottom:none;}
@@ -201,6 +202,7 @@ function avHtml(cn,cls){const g=GEN[cn]||{};const kr=g.kr||cn;const av=g.av;cons
  return `<span class="av ${cls||''}">${av?`<img loading="lazy" src="${AVBASE}${esc(av)}" onerror="this.remove()">`:''}<b>${ini}</b></span>`;}
 function facChip(cn){const f=(GEN[cn]||{}).faction;return f?`<span class="chip f-${f}">${FAC[f]}</span>`:'';}
 function sjBadge(cn){const g=GEN[cn]||{};return g.sj?`<span class="sjb ${g.official===false?'new':''}">${esc(g.sj)}</span>`:'';}
+function tsjB(cn){const s=(TAC[cn]||{}).sj;return s?`<span class="tsj">${esc(s)}</span>`:'';}
 function tyB(t){return t?`<span class="ty ty-${t}">${t}</span>`:'';}
 function tName(cn){return (TAC[cn]||{}).kr||cn;}
 function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
@@ -290,7 +292,7 @@ function renderSrank(){
  const tArr=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,20);
  const gmax=Math.max(1,...gArr.map(x=>x[1])), tmax=Math.max(1,...tArr.map(x=>x[1]));
  const gRows=gArr.map(([cn,n])=>`<div class="rowbar"><div class="lb">${facChip(cn)} <b>${esc((GEN[cn]||{}).kr||cn)}</b> ${sjBadge(cn)}</div><div class="bar"><span style="width:${n/gmax*100}%"></span></div><b class="num">${n}</b></div>`).join('')||'<span class="mut">데이터 없음</span>';
- const tRows=tArr.map(([cn,n])=>{const x=TAC[cn]||{};const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';return `<div class="rowbar"><div class="lb"><b style="${col}">${esc(x.kr||cn)}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(cn)?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${isNewTac(cn)?'nw':''}" style="width:${n/tmax*100}%"></span></div><b class="num">${n}</b></div>`;}).join('')||'<span class="mut">데이터 없음</span>';
+ const tRows=tArr.map(([cn,n])=>{const x=TAC[cn]||{};const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';return `<div class="rowbar"><div class="lb"><b style="${col}">${esc(x.kr||cn)}</b> ${x.ty?tyB(x.ty):''}${tsjB(cn)} ${isNewTac(cn)?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${isNewTac(cn)?'nw':''}" style="width:${n/tmax*100}%"></span></div><b class="num">${n}</b></div>`;}).join('')||'<span class="mut">데이터 없음</span>';
  document.getElementById('srGrid').innerHTML=`<div><h3 class="sub2">장수 등장 TOP 20</h3>${gRows}</div><div><h3 class="sub2">전법 등장 TOP 20</h3>${tRows}</div>`;
  if(innerWidth<=760)document.getElementById('srGrid').style.gridTemplateColumns='1fr';
 }
@@ -321,7 +323,7 @@ function fcardHtml(f,i){
    return `<div class="frow" onclick="event.stopPropagation();genModal('${g.cn}')">
      ${avHtml(g.cn,'sm')}
      <div class="gi"><span class="gn">${facChip(g.cn)} ${esc(g.kr)}</span> ${sjBadge(g.cn)} <span class="role">${esc((g.role||'').replace(/\s*\|\s*/,' · '))}</span>
-     <div class="tacmini">${all.map((t,idx)=>`<span class="tm ${gradeCls(t)} ${idx===0?'sig':''} ${(TAC[t]||{}).minimal?'min':''}" onclick="event.stopPropagation();tacModal('${t}')">${idx===0?'◈ ':''}${esc(tName(t))}</span>`).join('')}</div></div>
+     <div class="tacmini">${all.map((t,idx)=>`<span class="tm ${gradeCls(t)} ${idx===0?'sig':''} ${(TAC[t]||{}).minimal?'min':''}" onclick="event.stopPropagation();tacModal('${t}')">${idx===0?'◈ ':''}${esc(tName(t))}${tsjB(t)}</span>`).join('')}</div></div>
    </div>`;
  }).join('');
  return `<div class="fcard"><div class="fh" style="cursor:pointer" onclick="fcModal(${i})"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span><span class="mut" style="font-weight:700">${esc(f.nick||'')}</span><span style="margin-left:auto;font-size:10px;color:var(--seal);font-weight:800">덱 상세 →</span></div>${gens}</div>`;
@@ -330,7 +332,7 @@ function fcModal(i){
  const f=(window._curForms||[])[i]; if(!f)return;
  const gens=f.gens.map(g=>{
    const G=GEN[g.cn]||{}, sk=TAC[G.skill]||TAC[g.tacs[0]]||{};
-   const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
+   const tacs=g.tacs.slice(1,7).map(t=>{const x=TAC[t]||{};return `<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px;${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}${tsjB(t)} ${isNewTac(t)?'<span class="bnew">번역</span>':''}<div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join('');
    return `<div class="fcg">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${avHtml(g.cn,'lg')}
        <div><div style="font-weight:800;font-size:14px">${facChip(g.cn)} ${esc(g.kr)} ${sjBadge(g.cn)} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
@@ -384,7 +386,7 @@ function renderBuilder(){
  drawDeck();renderPool();
 }
 function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
- return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
+ return `<div class="tslot" onclick="openTacPicker(${i},${j})">${t?`<b style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</b> ${x.ty?tyB(x.ty):''}${tsjB(t)}`:`<span class="mut">+ 전법 ${j+1}</span>`}</div>`;}
 function drawDeck(){
  // shape info
  const F=D.FORMS.find(f=>f.name===deckShape)||{};
@@ -412,7 +414,7 @@ function drawDeck(){
  const synHtml=`<h3 class="sub2" style="margin-top:0">활성 연계 <span class="mut" style="font-weight:400">(2인 이상 공유)</span></h3>`+
   (active.length?active.map(({s,n})=>`<div class="syn active"><span class="nm">${esc(s.name)}</span> <span class="mut">(${n}/${s.member.length})</span> <span style="font-size:11.5px;color:var(--soft)">${esc(s.desc||'')}</span></div>`).join(''):'<span class="mut">장수 2명 이상 선택 시 공유 연계 표시</span>');
  const chosen=[]; deck.forEach((cn,i)=>{if(cn){const g=GEN[cn]||{};if(g.skill)chosen.push([g.skill,'◈ '+g.kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,g.kr]);});}});
- const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm" style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
+ const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm" style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''}${tsjB(t)} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
  document.getElementById('synbox').innerHTML=statLine+synHtml+effHtml;
 }
 function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('세 위치가 가득 찼습니다. × 로 비운 뒤 선택하세요.');return;}deck[i]=cn;deckTacs[i]=[];drawDeck();renderPool();}
