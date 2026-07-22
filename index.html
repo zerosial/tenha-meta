@@ -253,9 +253,9 @@ function renderMeta(){
  const nwRows=nw.slice(0,20).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> <span class="cn">${esc(x.won||'')}</span></div><div class="bar"><span class="nw" style="width:${x.cnt/nmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
  const P=META.prep||{gens:[],tacs:[]};
  const sjCol=sj=>({S1:'var(--jade)',S2:'var(--wei)',S3:'var(--hero)'}[sj]||'var(--bronze)');
- const prepTags=(arr,isTac)=>arr.slice().sort((a,b)=>(b.cnt||0)-(a.cnt||0)).map(x=>{const sj=(isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{})).sj||'';const c=sjCol(sj);return `<span class="tag" style="border:1.5px solid ${c}">${esc(x.kr)} ${sj?`<span class="sjb" style="background:${c}">${esc(sj)}</span>`:''} <b class="c" style="color:${c}">${x.cnt||0}</b></span>`;}).join('');
+ const prepTags=(arr,isTac)=>arr.slice().filter(x=>((isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{})).grade)==='전설').sort((a,b)=>(b.cnt||0)-(a.cnt||0)).map(x=>{const sj=(isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{})).sj||'';const c=sjCol(sj);return `<span class="tag" style="border:1.5px solid ${c}">${esc(x.kr)} ${sj?`<span class="sjb" style="background:${c}">${esc(sj)}</span>`:''} <b class="c" style="color:${c}">${x.cnt||0}</b></span>`;}).join('');
  const prepC=`<h3 class="sub2">다음 시즌(S2·S3) 필수 — S1에서 미리 뽑을 것</h3>
-  <div class="note" style="margin:0 0 8px">S2·S3 상위 티어에 쓰이는 장수·전법(등장 많은 순). <b>테두리·배지 = 출시 시즌</b> — <span style="color:var(--jade);font-weight:800">S1 지금 확보</span> · <span style="color:var(--wei);font-weight:800">S2</span> · <span style="color:var(--hero);font-weight:800">S3</span> · <span style="color:var(--bronze);font-weight:800">이후</span> 출시 대기. 우측 숫자 = S2·S3 등장 횟수.</div>
+  <div class="note" style="margin:0 0 8px"><b>가차 전설급(노랑)만 집계</b> — 영웅급(보라)은 무조건 획득이라 제외. 등장 많은 순. <b>테두리·배지 = 출시 시즌</b>: <span style="color:var(--jade);font-weight:800">S1 지금 확보</span> · <span style="color:var(--wei);font-weight:800">S2</span> · <span style="color:var(--hero);font-weight:800">S3</span> · <span style="color:var(--bronze);font-weight:800">이후</span>. 우측 숫자 = S2·S3 등장 횟수.</div>
   <div style="margin-bottom:6px"><b class="mut">장수</b><br>${prepTags(P.gens,false)}</div>
   <div style="margin-top:8px"><b class="mut">전법</b><br>${prepTags(P.tacs,true)}</div>`;
 
@@ -426,6 +426,7 @@ function renderBuilder(){
   <button class="tbtn" onclick="resetDeck()">↺ 초기화</button>
  </div>
  <div id="posSlots" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+ <div id="recBox"></div>
  <div class="synbox" id="synbox"></div>
  <h3 class="sub2">장수 선택 <span class="mut" style="font-weight:400">— 클릭 시 빈 위치에 배치 · 병종 상성 방패병→궁병→창병→기병→방패병</span></h3>
  <div class="filters"><input class="search" id="bsearch" placeholder="장수 검색…"><div class="seg" id="bfac">${[['all','전체'],['wei','위'],['shu','촉'],['wu','오'],['qun','군']].map(([k,l])=>`<button data-f="${k}" class="${k==='all'?'on':''}">${l}</button>`).join('')}</div></div>
@@ -478,6 +479,26 @@ function drawDeck(){
  const chosen=[]; deck.forEach((cn,i)=>{if(cn){const g=GEN[cn]||{};if(g.skill)chosen.push([g.skill,'◈ '+g.kr]);deckTacs[i].forEach(t=>{if(t)chosen.push([t,g.kr]);});}});
  const effHtml=chosen.length?`<h3 class="sub2">편성 스킬·전법 효과</h3>`+chosen.map(([t,who])=>{const x=TAC[t]||{};return `<div class="syn"><span class="nm" style="${x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':''}">${esc(tName(t))}</span> ${x.ty?tyB(x.ty):''}${tsjB(t)} <span class="mut">${esc(who)}</span><div style="font-size:11.5px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}).join(''):'';
  document.getElementById('synbox').innerHTML=bonusHtml+statTable+synHtml+effHtml;
+ // 추천 메타 편성 (선택 장수 포함 티어덱)
+ const rb=document.getElementById('recBox');
+ if(rb){
+  if(!sel.length){rb.innerHTML='';}
+  else{
+   const seen=new Set(),recs=[],trank={T0:0,T1:1,T2:2};
+   SEASONS.forEach(sj=>(SEA[sj]||[]).forEach((f,idx)=>{
+    const cns=f.gens.map(g=>g.cn); const ov=sel.filter(c=>cns.includes(c)).length; if(ov<1)return;
+    const key=f.tier+'|'+cns.slice().sort().join(','); if(seen.has(key))return; seen.add(key);
+    recs.push({f,sj,idx,ov});
+   }));
+   recs.sort((a,b)=>b.ov-a.ov||(trank[a.f.tier]-trank[b.f.tier])||(+a.sj)-(+b.sj));
+   const top=recs.slice(0,9);
+   rb.innerHTML=`<h3 class="sub2">추천 메타 편성 <span class="mut" style="font-weight:400">— 선택 장수(${sel.length}명) 포함 티어덱 · ✓있음/필요 · 클릭 시 불러오기</span></h3>`+
+    (top.length?`<div class="grid g-forms">`+top.map(({f,sj,idx,ov})=>{
+      const gg=f.gens.map(g=>{const on=sel.includes(g.cn);return `<span class="tag ${on?'ok':''}" style="${on?'':'opacity:.7;border-style:dashed'}">${on?'✓ ':'<span style="color:var(--seal)">필요</span> '}${facChip(g.cn)} ${esc(g.kr)}</span>`;}).join(' ');
+      return `<div class="fcard" style="cursor:pointer" onclick="loadFormationToDeck('${sj}',${idx})"><div class="fh"><span class="tier ${f.tier}">${f.tier}</span><span class="shape serif">${esc(f.shape)}</span><span class="mut">${esc(f.nick||'')} · S${sj}</span><span style="margin-left:auto;font-size:10px;color:var(--seal);font-weight:800">일치 ${ov}/3 · 불러오기→</span></div><div style="padding:8px 11px;display:flex;flex-wrap:wrap;gap:5px">${gg}</div></div>`;
+    }).join('')+`</div>`:'<span class="mut">선택 장수가 포함된 티어 편성이 없습니다.</span>');
+  }
+ }
 }
 function pick(cn){if(deck.includes(cn))return;const i=deck.indexOf(null);if(i<0){alert('세 위치가 가득 찼습니다. × 로 비운 뒤 선택하세요.');return;}deck[i]=cn;deckTacs[i]=[];drawDeck();renderPool();syncURL();}
 function renderPool(){
