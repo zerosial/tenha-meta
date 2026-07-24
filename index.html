@@ -101,6 +101,16 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 @media(max-width:640px){.fcgens{grid-template-columns:1fr;}}
 .fcg{border:1px solid var(--line2);border-radius:9px;padding:10px 11px;background:var(--panel);}
 .kindtag{font-size:9px;font-weight:800;color:var(--faint);border:1px solid var(--line2);border-radius:100px;padding:0 5px;}
+.gcardx{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:12px 14px;break-inside:avoid;}
+.gcardx h4{margin:0 0 8px;font-size:14px;font-weight:800;color:var(--seal);}
+.gcardx ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
+.gcardx li{font-size:12px;line-height:1.5;color:var(--ink);padding-left:11px;position:relative;}
+.gcardx li::before{content:"·";position:absolute;left:0;color:var(--faint);font-weight:800;}
+.gtag{font-size:9px;font-weight:800;padding:0 5px;border-radius:100px;white-space:nowrap;}
+.g-off{background:color-mix(in srgb,var(--jade) 16%,transparent);color:var(--jade);}
+.g-obs{background:color-mix(in srgb,var(--bronze) 20%,transparent);color:var(--bronze);}
+.g-trap{background:color-mix(in srgb,var(--seal) 16%,transparent);color:var(--seal);}
+.g-tip{background:var(--panel2);color:var(--soft);}
 /* tactic card */
 .tcard{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:11px 13px;}
 .tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px;}
@@ -184,6 +194,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  <section id="tab-builder"></section>
  <section id="tab-tac"></section>
  <section id="tab-gen"></section>
+ <section id="tab-guide"></section>
  <section id="tab-ref"></section>
 </main>
 <div class="footer">
@@ -192,6 +203,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=3"></script>
+<script src="guides.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -209,12 +221,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['gen','장수 도감'],['ref','참고']];
+const TABS=[['meta','메타'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,gen:renderGen,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" onclick="show('${k}')">${l}</button>`).join('');
@@ -563,6 +575,21 @@ function fillGen(){
  document.getElementById('ggrid').innerHTML=list.map(cn=>{const g=GEN[cn];return `<div class="gcard" onclick="genModal('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)} ${g.official===false?'<span class="bnew">번</span>':''}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}${g.sj||''}</div><div class="st">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}</div></div>`;}).join('');
 }
 
+/* ---------------- GUIDE (공략·팁) ---------------- */
+let guideCat='gacha';
+function renderGuide(){
+ const G=window.GUIDES; const el=document.getElementById('tab-guide');
+ if(!G){el.innerHTML='<p class="mut">가이드 데이터를 불러오지 못했습니다.</p>';return;}
+ const tagCls={'공식':'g-off','관측':'g-obs','함정':'g-trap','팁':'g-tip'};
+ el.innerHTML=`<h2 class="head serif">공략 · 팁</h2><p class="sub">${esc(G.note)} · 갱신 ${esc(G.updated)}</p>
+  <div class="filters"><div class="seg" id="gcat">${G.cats.map(c=>`<button data-k="${c.key}" class="${c.key===guideCat?'on':''}">${c.title}</button>`).join('')}</div>
+   <span class="mut" style="font-size:11px"><span class="gtag g-off">공식</span> <span class="gtag g-obs">관측</span> <span class="gtag g-trap">함정</span> <span class="gtag g-tip">팁</span></span></div>
+  <div id="gbody"></div>
+  <div class="foot" style="margin-top:16px"><b>출처(해외 서버 공략)</b> · ${G.sources.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</div>`;
+ document.getElementById('gcat').onclick=e=>{const b=e.target.closest('button');if(!b)return;guideCat=b.dataset.k;renderGuide();};
+ const cat=G.cats.find(c=>c.key===guideCat)||G.cats[0];
+ document.getElementById('gbody').innerHTML=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">`+cat.groups.map(gr=>`<div class="gcardx"><h4>${esc(gr.h)}</h4><ul>${gr.items.map(it=>{const t=Array.isArray(it)?it[0]:it,tag=Array.isArray(it)?it[1]:'';return `<li>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</li>`;}).join('')}</ul></div>`).join('')+`</div>`;
+}
 /* ---------------- REFERENCE ---------------- */
 function renderRef(){
  const el=document.getElementById('tab-ref');
