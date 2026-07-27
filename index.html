@@ -219,7 +219,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=6"></script>
+<script src="data.js?v=7"></script>
 <script src="guides.js?v=10"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
@@ -322,7 +322,7 @@ function renderSrank(){
  const tArr=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,20);
  const gmax=Math.max(1,...gArr.map(x=>x[1])), tmax=Math.max(1,...tArr.map(x=>x[1]));
  const gRows=gArr.map(([cn,n])=>`<div class="rowbar"><div class="lb">${facChip(cn)} <b>${esc((GEN[cn]||{}).kr||cn)}</b> ${sjBadge(cn)}</div><div class="bar"><span style="width:${n/gmax*100}%"></span></div><b class="num">${n}</b></div>`).join('')||'<span class="mut">데이터 없음</span>';
- const tRows=tArr.map(([cn,n])=>{const x=TAC[cn]||{};const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';return `<div class="rowbar"><div class="lb"><b style="${col}">${esc(x.kr||cn)}</b> ${x.ty?tyB(x.ty):''}${tsjB(cn)} ${isNewTac(cn)?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${isNewTac(cn)?'nw':''}" style="width:${n/tmax*100}%"></span></div><b class="num">${n}</b></div>`;}).join('')||'<span class="mut">데이터 없음</span>';
+ const tRows=tArr.map(([cn,n])=>{const x=TAC[cn]||{};const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';return `<div class="rowbar"><div class="lb"><b style="${col}">${esc(x.kr||cn)}</b> ${x.ty?tyB(x.ty):''}${tsjB(cn)}</div><div class="bar"><span class="${isNewTac(cn)?'nw':''}" style="width:${n/tmax*100}%"></span></div><b class="num">${n}</b></div>`;}).join('')||'<span class="mut">데이터 없음</span>';
  document.getElementById('srGrid').innerHTML=`<div><h3 class="sub2">장수 등장 TOP 20</h3>${gRows}</div><div><h3 class="sub2">전법 등장 TOP 20</h3>${tRows}</div>`;
  if(innerWidth<=760)document.getElementById('srGrid').style.gridTemplateColumns='1fr';
 }
@@ -545,7 +545,7 @@ function renderTac(){
  const seasons=[...new Set(Object.values(TAC).filter(t=>!t.minimal&&t.sj).map(t=>t.sj))].sort((a,b)=>(+a.slice(1))-(+b.slice(1)));
  el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub">S1 공식 77종 + 후속 시즌 신규 전법. 등급·시즌·유형 필터, 시즌순 정렬, 검색. 클릭 시 상세 효과.</p>
  <div class="filters">
-  <div class="seg" id="gradeseg">${[['all','전등급'],['전설','전설'],['영웅','영웅']].map(([k,l])=>`<button data-g="${k}" class="${k===tacState.grade?'on':''}">${l}</button>`).join('')}</div>
+  <div class="seg" id="gradeseg">${[['all','전등급'],['전설','전설'],['영웅','영웅'],['희귀','희귀']].map(([k,l])=>`<button data-g="${k}" class="${k===tacState.grade?'on':''}">${l}</button>`).join('')}</div>
   <select class="fsel" id="sjsel"><option value="all">전체 시즌</option>${seasons.map(s=>`<option value="${s}" ${s===tacState.sj?'selected':''}>${s}</option>`).join('')}</select>
   <div class="seg" id="sortseg">${[['def','기본순'],['sj','시즌순']].map(([k,l])=>`<button data-s="${k}" class="${k===tacState.sort?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="tyseg">${[['all','전유형'],['지휘','지휘'],['액티브','액티브'],['패시브','패시브'],['추격','추격']].map(([k,l])=>`<button data-t="${k}" class="${k===tacState.ty?'on':''}">${l}</button>`).join('')}</div>
