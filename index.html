@@ -227,7 +227,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=8"></script>
-<script src="guides.js?v=20"></script>
+<script src="guides.js?v=21"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -618,7 +618,7 @@ function renderGuide(){
  const G=window.GUIDES; const el=document.getElementById('tab-guide');
  if(!G){el.innerHTML='<p class="mut">가이드 데이터를 불러오지 못했습니다.</p>';return;}
  const tagCls={'공식':'g-off','관측':'g-obs','함정':'g-trap','팁':'g-tip'};
- const SEC=[['뽑기·과금',['gacha','banner','next']],['초반·육성',['early','daily','interior','mid']],['전투·조합',['comp','pvp','builds','equip']],['전법·병법',['tier','combo','status','bingfa']],['운영·시즌',['f2p','mistakes','inherit','season']]];
+ const SEC=[['뽑기·과금',['gacha','banner','next']],['초반·육성',['early','jobs','daily','interior','mid']],['전투·조합',['comp','pvp','builds','equip']],['전법·병법',['tier','combo','status','bingfa']],['운영·시즌',['f2p','mistakes','inherit','season']]];
  const placed=new Set(SEC.flatMap(s=>s[1]));
  const secs=SEC.map(([lb,keys])=>[lb,keys.map(k=>G.cats.find(c=>c.key===k)).filter(Boolean)]);
  const rest=G.cats.filter(c=>!placed.has(c.key)); if(rest.length) secs.push(['기타',rest]);
