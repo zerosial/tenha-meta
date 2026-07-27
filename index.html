@@ -59,6 +59,7 @@ h3.sub2::before{content:"";width:8px;height:8px;background:var(--seal);border-ra
 .ty-지휘{background:var(--cmd);}.ty-액티브{background:var(--act);}.ty-패시브{background:var(--pas);}.ty-추격{background:var(--chase);}.ty-x{background:var(--faint);}
 .gr{font-size:10px;font-weight:800;}.gr-전설{color:var(--leg);}.gr-영웅{color:var(--hero);}.gr-희귀{color:var(--rare);}.gr-평범{color:var(--rare);}
 .bnew{background:var(--newbg);color:var(--new);border:1px solid var(--new);font-size:9.5px;font-weight:800;padding:0 5px;border-radius:100px;}
+.bself{background:color-mix(in srgb,var(--jade) 15%,transparent);color:var(--jade);border:1px solid color-mix(in srgb,var(--jade) 45%,transparent);font-size:9.5px;font-weight:800;padding:0 5px;border-radius:100px;white-space:nowrap;}
 .bok{background:color-mix(in srgb,var(--jade) 14%,transparent);color:var(--jade);border:1px solid var(--jade);font-size:9.5px;font-weight:800;padding:0 5px;border-radius:100px;}
 /* avatar */
 .av{position:relative;width:38px;height:38px;border-radius:8px;overflow:hidden;background:var(--panel2);flex:none;display:inline-block;border:1px solid var(--line2);}
@@ -219,7 +220,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=7"></script>
+<script src="data.js?v=8"></script>
 <script src="guides.js?v=10"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
@@ -254,7 +255,7 @@ function openModal(html,wide){const m=document.getElementById('modal');m.innerHT
 function closeModal(){document.getElementById('ov').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효과 정보 없음 (계승/속성 전법).';
- openModal(`<div class="mh"><b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.official===false?' <span class="bnew">번역</span>':''}<button class="x" onclick="closeModal()">×</button></div>
+ openModal(`<div class="mh"><b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.self?` <span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?' <span class="bnew">번역</span>':'')}<button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div style="margin-bottom:8px">${tyB(t.ty)} ${t.tx?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.tx)}</span>`:''} ${t.grade?`<span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.sj?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.sj)}</span>`:''} ${t.gl?`<span class="mut">발동 ${esc(t.gl)}</span>`:''}</div>
  <div style="font-size:13px;line-height:1.6">${eff}</div></div>`);}
 function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
@@ -543,13 +544,13 @@ let tacState={ty:'all',off:'all',grade:'all',sj:'all',sort:'def',q:''};
 function renderTac(){
  const el=document.getElementById('tab-tac');
  const seasons=[...new Set(Object.values(TAC).filter(t=>!t.minimal&&t.sj).map(t=>t.sj))].sort((a,b)=>(+a.slice(1))-(+b.slice(1)));
- el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub">S1 공식 77종 + 후속 시즌 신규 전법. 등급·시즌·유형 필터, 시즌순 정렬, 검색. 클릭 시 상세 효과.</p>
+ el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub">습득(학습) 전법 + 자대(본명·장수 고유) 전법 구분. 등급·시즌·유형 필터, 시즌순 정렬, 검색. 클릭 시 상세 효과.</p>
  <div class="filters">
+  <div class="seg" id="kindseg">${[['all','전체'],['learn','습득 전법'],['self','자대(본명)']].map(([k,l])=>`<button data-o="${k}" class="${k===tacState.off?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="gradeseg">${[['all','전등급'],['전설','전설'],['영웅','영웅'],['희귀','희귀']].map(([k,l])=>`<button data-g="${k}" class="${k===tacState.grade?'on':''}">${l}</button>`).join('')}</div>
   <select class="fsel" id="sjsel"><option value="all">전체 시즌</option>${seasons.map(s=>`<option value="${s}" ${s===tacState.sj?'selected':''}>${s}</option>`).join('')}</select>
   <div class="seg" id="sortseg">${[['def','기본순'],['sj','시즌순']].map(([k,l])=>`<button data-s="${k}" class="${k===tacState.sort?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="tyseg">${[['all','전유형'],['지휘','지휘'],['액티브','액티브'],['패시브','패시브'],['추격','추격']].map(([k,l])=>`<button data-t="${k}" class="${k===tacState.ty?'on':''}">${l}</button>`).join('')}</div>
-  <div class="seg" id="offseg">${[['all','전체'],['off','공식(KR)'],['new','신규(번역)']].map(([k,l])=>`<button data-o="${k}" class="${k===tacState.off?'on':''}">${l}</button>`).join('')}</div>
   <input class="search" id="tsearch" placeholder="전법명·원문·효과 검색…" value="${esc(tacState.q)}">
  </div><div class="mut" id="tcount" style="margin-bottom:8px"></div>
  <div class="grid g-tac" id="tgrid"></div>`;
@@ -557,7 +558,7 @@ function renderTac(){
  document.getElementById('sortseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;tacState.sort=b.dataset.s;renderTac();};
  document.getElementById('sjsel').onchange=e=>{tacState.sj=e.target.value;renderTac();};
  document.getElementById('tyseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;tacState.ty=b.dataset.t;renderTac();};
- document.getElementById('offseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;tacState.off=b.dataset.o;renderTac();};
+ document.getElementById('kindseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;tacState.off=b.dataset.o;renderTac();};
  document.getElementById('tsearch').oninput=e=>{tacState.q=e.target.value;fillTac();};
  fillTac();
 }
@@ -567,8 +568,8 @@ function fillTac(){
  if(tacState.grade!=='all')list=list.filter(t=>t.grade===tacState.grade);
  if(tacState.sj!=='all')list=list.filter(t=>t.sj===tacState.sj);
  if(tacState.ty!=='all')list=list.filter(t=>t.ty===tacState.ty);
- if(tacState.off==='off')list=list.filter(t=>t.official);
- if(tacState.off==='new')list=list.filter(t=>t.official===false);
+ if(tacState.off==='learn')list=list.filter(t=>!t.self);
+ if(tacState.off==='self')list=list.filter(t=>t.self);
  if(q)list=list.filter(t=>(t.kr||'').includes(q)||(t.cn||'').includes(q)||(t.eff||'').includes(q)||(t.effcn||'').includes(q));
  const ord={'지휘':0,'액티브':1,'패시브':2,'추격':3};
  const sjn=t=>+((t.sj||'S99').slice(1))||99;
@@ -576,7 +577,7 @@ function fillTac(){
  else list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
  document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
-   <div class="th"><span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.official===false?'<span class="bnew">번역</span>':''}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
+   <div class="th"><span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
