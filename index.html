@@ -121,6 +121,12 @@ input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6
 .evtb th,.evtb td{border:1px solid var(--line2);padding:4px 8px;text-align:left;white-space:nowrap;}
 .evtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);}
 .evtb td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.gcardx.wide{grid-column:1/-1;}
+.gtb{border-collapse:collapse;width:100%;font-size:12px;}
+.gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
+.gtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);white-space:nowrap;}
+.gtb tbody tr:nth-child(even){background:color-mix(in srgb,var(--panel2) 45%,transparent);}
+.gtb td:first-child{font-weight:700;white-space:nowrap;}
 /* tactic card */
 .tcard{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:11px 13px;}
 .tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px;}
@@ -213,7 +219,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=4"></script>
-<script src="guides.js?v=8"></script>
+<script src="guides.js?v=9"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -603,7 +609,16 @@ function renderGuide(){
   <div class="foot" style="margin-top:16px"><b>출처(해외 서버 공략)</b> · ${G.sources.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</div>`;
  document.getElementById('gcat').onclick=e=>{const b=e.target.closest('button');if(!b)return;guideCat=b.dataset.k;renderGuide();};
  const cat=G.cats.find(c=>c.key===guideCat)||G.cats[0];
- document.getElementById('gbody').innerHTML=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">`+cat.groups.map(gr=>`<div class="gcardx"><h4>${esc(gr.h)}</h4><ul>${gr.items.map(it=>{const t=Array.isArray(it)?it[0]:it,tag=Array.isArray(it)?it[1]:'';return `<li>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</li>`;}).join('')}</ul></div>`).join('')+`</div>`;
+ const gcard=gr=>{
+   let inner;
+   if(gr.tb){ // 표: {head:[...], rows:[[cell,...],...]}  (셀에 [text,tag] 가능)
+     inner=`<div style="overflow-x:auto"><table class="gtb"><thead><tr>${gr.tb.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${gr.tb.rows.map(r=>`<tr>${r.map(c=>{const t=Array.isArray(c)?c[0]:c,tag=Array.isArray(c)?c[1]:'';return `<td>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>${gr.note?`<p class="mut" style="font-size:11px;margin:6px 0 0">${esc(gr.note)}</p>`:''}`;
+   } else {
+     inner=`<ul>${gr.items.map(it=>{const t=Array.isArray(it)?it[0]:it,tag=Array.isArray(it)?it[1]:'';return `<li>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</li>`;}).join('')}</ul>`;
+   }
+   return `<div class="gcardx${gr.tb?' wide':''}"><h4>${esc(gr.h)}</h4>${inner}</div>`;
+ };
+ document.getElementById('gbody').innerHTML=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">`+cat.groups.map(gcard).join('')+`</div>`;
  if(guideCat==='banner') renderEV();
 }
 // 뽑기 수별 기대값 계산기 + 마일스톤 표 (KR 공식: 전설 무장 4%+전법 4%=8%, 무장:전법 1:1, 상시 소프트천장·명장팩 300 자선)
