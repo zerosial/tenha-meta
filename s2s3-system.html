@@ -1,0 +1,541 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>S2·S3 직업스킬·진형 시스템 변화 총정리</title><style>
+:root{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;
+--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;--warn:#8e2c22;--warnbg:#f7e9e6;}
+@media(prefers-color-scheme:dark){:root{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;
+--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;--warn:#dc6353;--warnbg:#2c1c19;}}
+:root[data-theme="light"]{--paper:#fff;--bg:#e9e5db;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e0d7c5;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f2ecdf;--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#6f4f95;--newbg:#efe7f6;--ok:#3f7a5e;--okbg:#e5f1ea;--warn:#8e2c22;--warnbg:#f7e9e6;}
+:root[data-theme="dark"]{--paper:#16130e;--bg:#0f0d0a;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2e281e;--line2:#463f2d;--panel:#1d190f;--panel2:#241f14;--seal:#dc6353;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#a98bd1;--newbg:#2a2233;--ok:#5fa37e;--okbg:#1c2a22;--warn:#dc6353;--warnbg:#2c1c19;}
+*{box-sizing:border-box;}html,body{margin:0;}
+body{background:var(--bg);color:var(--ink);line-height:1.6;font-size:14px;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.serif{font-family:"Nanum Myeongjo","Apple SD Gothic Neo",Batang,Georgia,serif;}
+.cn{font-family:"Nanum Myeongjo",Batang,serif;color:var(--soft);font-size:.92em;}
+.wrap{max-width:1040px;margin:0 auto;padding:0 18px 70px;}.num{font-variant-numeric:tabular-nums;}
+.cover{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:18px 0;padding:30px;position:relative;overflow:hidden;}
+.cover .seal{position:absolute;top:24px;right:26px;width:92px;height:92px;border:3px solid var(--seal);border-radius:14px;color:var(--seal);display:grid;place-content:center;text-align:center;transform:rotate(4deg);font-family:"Nanum Myeongjo",serif;font-weight:800;line-height:1.05;box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 4px var(--seal);}
+.cover .seal b{font-size:20px;display:block;}.cover .seal span{font-size:8.5px;letter-spacing:.06em;}
+.cover .eye{letter-spacing:.32em;text-transform:uppercase;color:var(--seal);font-weight:700;font-size:11px;margin:0 0 10px;}
+.cover h1{font-family:"Nanum Myeongjo",serif;font-size:32px;line-height:1.16;font-weight:800;margin:6px 0;}
+.cover h1 em{font-style:normal;color:var(--seal);}
+.cover .tag{color:var(--soft);font-size:14px;margin:8px 0 0;max-width:66ch;}
+.cover dl{margin:22px 0 0;border-top:1px solid var(--line2);}
+.cover dl>div{display:flex;gap:14px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px;}
+.cover dt{width:110px;color:var(--faint);font-weight:600;flex:none;}.cover dd{margin:0;font-weight:600;}
+@media(max-width:560px){.cover .seal{display:none;}.cover h1{font-size:25px;}}
+.toc{background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:16px 20px;margin:13px 0;}
+.toc h4{margin:0 0 8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);}
+.toc ol{margin:0;padding-left:1.3em;font-size:12.5px;columns:2;column-gap:26px;}
+.toc li{margin:3px 0;break-inside:avoid;}.toc a{color:var(--ink);text-decoration:none;font-weight:600;}
+.toc a:hover{color:var(--seal);}
+@media(max-width:560px){.toc ol{columns:1;}}
+section{background:var(--paper);border:1px solid var(--line2);border-radius:10px;margin:13px 0;padding:24px 26px;}
+.kick{display:flex;align-items:baseline;gap:11px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin:0 0 15px;flex-wrap:wrap;}
+.kick .no{font-family:"Nanum Myeongjo",serif;font-weight:800;color:var(--seal);font-size:15px;}
+.kick h2{font-family:"Nanum Myeongjo",serif;font-size:21px;font-weight:800;margin:0;}
+.kick .src{margin-left:auto;font-size:11px;color:var(--faint);}
+.lede{color:var(--soft);font-size:12.5px;margin:0 0 14px;max-width:84ch;}
+h3.sub{font-size:14px;font-weight:800;margin:20px 0 9px;display:flex;align-items:center;gap:8px;}
+h3.sub::before{content:"";width:8px;height:8px;background:var(--seal);border-radius:2px;transform:rotate(45deg);}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:100px;line-height:1.5;white-space:nowrap;}
+.b-new{background:var(--newbg);color:var(--new);border:1px solid var(--new);}
+.b-ok{background:var(--okbg);color:var(--ok);border:1px solid var(--ok);}
+.b-off{background:var(--okbg);color:var(--ok);border:1px solid var(--ok);}
+.b-obs{background:color-mix(in srgb,var(--bronze) 18%,transparent);color:var(--bronze);border:1px solid var(--bronze);}
+.b-trap{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn);}
+.b-tip{background:var(--panel2);color:var(--soft);border:1px solid var(--line2);}
+.b-s1{background:var(--okbg);color:var(--ok);border:1px solid var(--ok);}
+.b-s2{background:color-mix(in srgb,#2f6091 16%,transparent);color:#2f6091;border:1px solid #2f6091;}
+.b-s3{background:var(--newbg);color:var(--new);border:1px solid var(--new);}
+@media(prefers-color-scheme:dark){.b-s2{color:#5a93c9;border-color:#5a93c9;}}
+:root[data-theme="dark"] .b-s2{color:#5a93c9;border-color:#5a93c9;}
+.scroll{overflow-x:auto;border:1px solid var(--line2);border-radius:8px;margin:8px 0;}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:var(--paper);min-width:600px;}
+thead th{background:var(--panel2);text-align:left;padding:7px 9px;font-weight:700;font-size:11px;letter-spacing:.03em;color:var(--soft);text-transform:uppercase;border-bottom:2px solid var(--line2);white-space:nowrap;}
+tbody td{padding:6px 9px;border-bottom:1px solid var(--line);vertical-align:top;}
+tbody tr:nth-child(even){background:color-mix(in srgb,var(--panel2) 40%,transparent);}
+tbody td:first-child{font-weight:700;white-space:nowrap;}
+td.r{text-align:right;font-variant-numeric:tabular-nums;}
+tbody tr.hl{background:var(--newbg);}
+ul.pts{margin:6px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
+ul.pts li{font-size:12.5px;line-height:1.55;padding-left:12px;position:relative;}
+ul.pts li::before{content:"·";position:absolute;left:0;color:var(--faint);font-weight:800;}
+.note{background:var(--panel);border:1px solid var(--line2);border-left:4px solid var(--bronze);border-radius:5px;padding:11px 13px;font-size:12px;color:var(--soft);margin:12px 0;}.note b{color:var(--ink);}
+.note.warn{border-left-color:var(--warn);background:var(--warnbg);}
+.note.ok{border-left-color:var(--jade);background:var(--okbg);}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:0 0 6px;}
+.kpi{border:1px solid var(--line2);border-top:3px solid var(--seal);border-radius:8px;padding:12px 14px;background:var(--panel);}
+.kpi h4{margin:0 0 5px;font-size:11.5px;font-weight:800;color:var(--soft);}
+.kpi .big{font-family:"Nanum Myeongjo",serif;font-size:19px;font-weight:800;color:var(--seal);line-height:1.25;}
+.kpi p{margin:7px 0 0;font-size:11px;color:var(--soft);}
+@media(max-width:720px){.kpis{grid-template-columns:1fr;}}
+/* 진형 6칸 배치 도식 */
+.fmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:11px;margin:10px 0;}
+.fmcard{border:1px solid var(--line2);border-radius:9px;background:var(--panel);padding:11px 13px;break-inside:avoid;}
+.fmcard .fmh{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
+.fmcard .fmh b{font-family:"Nanum Myeongjo",serif;font-size:15px;font-weight:800;}
+.fmcard .fmu{font-size:10px;color:var(--faint);margin:2px 0 0;}
+.fmcard .fmf{font-size:11.5px;margin:7px 0 0;}
+.fmcard .fmd{font-size:10.5px;color:var(--soft);margin:5px 0 0;}
+.fmcard .fme{font-size:10px;color:var(--faint);margin:4px 0 0;}
+.sgrid{display:flex;flex-direction:column;gap:4px;margin:8px 0 0;}
+.sgrow{display:grid;grid-template-columns:38px repeat(3,1fr);gap:4px;}
+.sglb{display:flex;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:10px;color:#fff;border-radius:5px;background:#8b8375;}
+.sglb.fr{background:var(--seal);}
+.sgc{border:1px solid var(--line2);border-radius:5px;background:var(--paper);padding:4px 2px;text-align:center;min-height:36px;display:flex;flex-direction:column;justify-content:center;gap:1px;}
+.sgc b{font-size:11px;font-weight:800;}.sgc span{font-size:9px;color:var(--faint);font-variant-numeric:tabular-nums;}
+.sgc.fr{border-color:var(--seal);background:color-mix(in srgb,var(--seal) 8%,var(--paper));}
+.sgc.empty{border-style:dashed;background:transparent;opacity:.35;}
+.foot{color:var(--faint);font-size:11px;line-height:1.65;margin-top:12px;}
+.srclist{font-size:11.5px;line-height:1.9;color:var(--soft);}
+.srclist a{color:var(--seal);text-decoration:none;word-break:break-all;}
+.themebtn{position:fixed;top:12px;right:12px;z-index:9;font-size:12px;padding:6px 12px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);}
+.backlink{font-size:12px;color:var(--seal);text-decoration:none;font-weight:700;}
+@media print{body{background:#fff;}.wrap{max-width:none;padding:0;}.themebtn,.backlink{display:none;}
+section,.cover,.toc{border:none;border-radius:0;margin:0;padding:9mm 8mm;}.cover{page-break-after:always;}
+table{min-width:0;font-size:10.5px;}.scroll{overflow:visible;}tr,.kpi,.note{break-inside:avoid;}
+section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
+@page{size:A4;margin:10mm;}
+</style></head><body>
+<button class="themebtn" onclick="(function(){var r=document.documentElement;var c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');})()">◐ 테마</button>
+<div class="wrap">
+
+<div class="cover">
+ <div class="seal"><span>S2·S3</span><b>SYSTEM</b><span>CHANGES</span></div>
+ <p class="eye">JOB SKILL &middot; FORMATION &middot; SEASON SYSTEM DELTA</p>
+ <h1 class="serif"><em>S2 · S3</em> 직업스킬 · 진형<br>시스템 변화 총정리<br><span style="font-size:18px;color:var(--soft)">S1 대비 무엇이 실제로 달라지는가</span></h1>
+ <p class="tag serif">중국·대만 서버가 S1 → S2 → S3로 넘어가며 <b>직업(직군) 시스템</b>과 <b>진형</b>에 실제로 추가된 것만 관방 공고 기준으로 추린 문서입니다. 결론부터 말하면 <b>6직업 구성과 기본 지령은 S1~S3 내내 그대로</b>이고, S2는 동맹 단위 <b>군략건축</b>, S3는 개인 단위 <b>직업정통</b>과 <b>신규 진형 2종</b>이 얹힙니다.</p>
+ <dl>
+  <div><dt>기준 서버</dt><dd>중국(원본) · 대만 교차 확인</dd></div>
+  <div><dt>1차 출처</dt><dd>TapTap 官方 · 4399 官方 · 网易 MuMu 官方</dd></div>
+  <div><dt>범례</dt><dd><span class="badge b-off">공식</span> 관방 공고 · <span class="badge b-obs">관측</span> 공략·체감 · <span class="badge b-trap">함정</span> 주의 · <span class="badge b-tip">팁</span> 판단</dd></div>
+  <div><dt>시즌 표기</dt><dd><span class="badge b-s1">S1</span> 현 한국 서버 · <span class="badge b-s2">S2</span> · <span class="badge b-s3">S3</span></dd></div>
+  <div><dt>기준일</dt><dd class="num">2026-08-06</dd></div>
+ </dl>
+</div>
+
+<div class="toc">
+ <h4>목차</h4>
+ <ol>
+  <li><a href="#s1">한눈에 — S1 → S2 → S3 변화 매트릭스</a></li>
+  <li><a href="#s2">S1 기준선 — 6직업 기본 지령과 두함</a></li>
+  <li><a href="#s3">S2 변화 — 군략건축 6종</a></li>
+  <li><a href="#s4">S3 변화 — 직업정통(職業精通)</a></li>
+  <li><a href="#s5">진형 — 전 8종 6칸 배치도와 S3 신규 2종</a></li>
+  <li><a href="#s6">그 외 신규 시스템 — 병종·특기</a></li>
+  <li><a href="#s7">S2·S3 신규 무장·전법</a></li>
+  <li><a href="#s8">주의 — 배치별 규칙 차이와 불확실 항목</a></li>
+  <li><a href="#s9">한국 서버(S1) 실행 체크리스트</a></li>
+  <li><a href="#s10">출처</a></li>
+ </ol>
+</div>
+
+<section id="s1">
+ <div class="kick"><span class="no">壹</span><h2 class="serif">한눈에 — S1 → S2 → S3 변화 매트릭스</h2></div>
+ <p class="lede">"직업스킬이 바뀐다"는 말의 실체를 층별로 분리하면 이렇게 정리됩니다. <b>기본 지령은 손대지 않고, 그 위에 새 층이 얹히는 구조</b>입니다.</p>
+ <div class="kpis">
+  <div class="kpi"><h4>직업 구성</h4><div class="big">6직업 불변</div><p>진군·신행·기좌·천공·청낭·병참. S1~S3 내내 이름·수·기본 지령 동일.</p></div>
+  <div class="kpi"><h4>S2의 정체</h4><div class="big">동맹 단위 확장</div><p>개인 직업스킬이 아니라 동맹 관원이 세우는 군략건축 6종으로 직업 색이 확장.</p></div>
+  <div class="kpi"><h4>S3의 정체</h4><div class="big">직업정통 신설</div><p>직업별 전용 기능 1종이 추가되며 직업 격차가 처음으로 전투·전장에 직접 반영.</p></div>
+ </div>
+ <div class="scroll"><table>
+  <thead><tr><th>구분</th><th>S1 (현 한국 서버)</th><th>S2 추가</th><th>S3 추가</th></tr></thead>
+  <tbody>
+   <tr><td>직업 수</td><td>6직업(진군·신행·기좌·천공·청낭·병참)</td><td>변동 없음</td><td>변동 없음</td></tr>
+   <tr><td>직업 지령<br><span class="cn">=직업스킬</span></td><td>직업별 3~4종 기본 지령</td><td>기본 지령 유지 · 체감 밸런스만 이동</td><td>+ 직업정통 기능 1종(직업 전용)</td></tr>
+   <tr><td>성장 축</td><td>직업 두함 5단계(천부점+번영도)</td><td>동일</td><td>두함 단계가 정통 기능·천부 해금과 직결</td></tr>
+   <tr><td>직업 전용 건축</td><td>거마·전탑(천공 전용)</td><td>군략건축 6종 — 단, 동맹 <b>관원</b>이 건설</td><td>정통 건축 4종(의용영·의려·치중영·포석기)</td></tr>
+   <tr class="hl"><td>진형</td><td>6종</td><td><b>추가 없음</b></td><td><b>+2종</b>(구행진·언월진)</td></tr>
+   <tr><td>병종</td><td>기본 4종(방패·기·창·궁) 상성</td><td>고급병종 8종 + 병종전정</td><td>변동 없음</td></tr>
+   <tr><td>전장 영향력</td><td>자원·보급 위주(직업=역할 분담)</td><td>동맹 단위로 직업 색이 확장</td><td>개인 단위 정통으로 전투·전장에 직접 반영</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note ok"><b>핵심 한 줄</b> — 직업을 "갈아타야 하는" 변화는 없습니다. 대신 <b>S3부터는 직업 두함을 3阶까지 올려두지 않으면 직업 자체가 반쪽</b>이 되므로, 두함 육성이 S1식 방치에서 필수 라인으로 승격됩니다.</div>
+</section>
+
+<section id="s2">
+ <div class="kick"><span class="no">貳</span><h2 class="serif">S1 기준선 — 6직업 기본 지령과 두함</h2><span class="src">小米 직업 시스템 · 游侠 두함 효과</span></div>
+ <p class="lede">무엇이 "달라졌는지" 판단하려면 기준선이 필요합니다. 아래가 S1 시점의 직업스킬 전체이며, <b>S2·S3에서도 이 목록 자체는 그대로 유지</b>됩니다.</p>
+ <div class="scroll"><table>
+  <thead><tr><th>직업</th><th>기본 지령(직업스킬)</th><th>두함 승급 시 강화되는 부분</th></tr></thead>
+  <tbody>
+   <tr><td>진군<br><span class="cn">镇军</span></td><td>긴급동원 · 강습돌격 · 세여파죽</td><td>긴급동원 예비병·자원량↑ / 세여파죽 병력 흡수 비율·상한↑ / 강습돌격의 적 부대 전손↑</td></tr>
+   <tr><td>신행<br><span class="cn">神行</span></td><td>이전양전 · 조호리산 · 은폐행군(이속 +50%) · 중정기고</td><td>이전양전 일일 자원 상한↑ / 은폐행군 지속시간↑</td></tr>
+   <tr><td>기좌<br><span class="cn">奇佐</span></td><td>운주유악(세수·경상·연병) · 인지제의(화공·소화·함정) · 진가허실(위장·의병)</td><td>운주유악의 저장경험·동전·자원 자선함↑ / 인지제의 화공·함정 피해↑</td></tr>
+   <tr><td>천공<br><span class="cn">天工</span></td><td>신기보갑 · 전략건축(거마·전탑) · 전쟁기계(투석차·충차)</td><td>고품질 장비 확률↑ / 5阶에서 강화충차·벽력차·강화거마·강화전탑 해금</td></tr>
+   <tr><td>청낭<br><span class="cn">青囊</span></td><td>연약 · 구치(대상 토지 및 주변 1칸 아군 전손 감소) · 기사회생</td><td>단약 품질·선물상자 등급↑ / 구치의 예비병 전환 비율↑ / 기사회생 영향 부대 수↑</td></tr>
+   <tr><td>병참<br><span class="cn">司仓</span></td><td>군둔 · 생산치중 · 오곡풍등</td><td>채굴량·치중량·오곡풍등 자원량↑ / 5阶에서 목재·철광·석재를 식량으로 전환</td></tr>
+  </tbody>
+ </table></div>
+ <h3 class="sub">직업 두함(職業頭銜) 5阶 승급 요구치</h3>
+ <div class="scroll"><table style="min-width:420px">
+  <thead><tr><th>승급</th><th class="r">천부점</th><th class="r">번영도</th></tr></thead>
+  <tbody>
+   <tr><td>1阶 → 2阶</td><td class="r num">6</td><td class="r num">20,000</td></tr>
+   <tr><td>2阶 → 3阶</td><td class="r num">9</td><td class="r num">30,000</td></tr>
+   <tr class="hl"><td>3阶 → 4阶</td><td class="r num">12</td><td class="r num">40,000</td></tr>
+   <tr><td>4阶 → 5阶</td><td class="r num">14</td><td class="r num">60,000</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><b>천부점은 군연(軍演)에서 획득</b>합니다 — 군연 참여 또는 군연 방치 보상 수령으로 천부 경험을 얻고, 일정량 누적되면 천부점 1개가 됩니다. 阶가 오를수록 위 표의 직업스킬 효과가 강해집니다.</div>
+
+ <h3 class="sub">"3阶 = 정통 기능 / 1·2·4·5阶 = 정통 천부"가 무슨 뜻인가</h3>
+ <p class="lede">이 표기가 가장 헷갈리는 부분이라 따로 풀어 씁니다. <b>阶(계)는 그냥 단계</b>라는 뜻이므로 "3阶"는 <b>3단계</b>로 읽으면 됩니다. S3에서 두함 단계마다 열리는 것이 두 종류로 갈립니다.</p>
+ <div class="scroll"><table>
+  <thead><tr><th>구분</th><th>정통 기능 <span class="cn">精通技能</span></th><th>정통 천부 <span class="cn">精通天賦</span></th></tr></thead>
+  <tbody>
+   <tr><td>성격</td><td><b>액티브</b> — 내가 직접 쓰는 지령</td><td><b>패시브</b> — 켜져 있는 상시 강화</td></tr>
+   <tr><td>개수</td><td><b>1개</b>(직업 전용)</td><td><b>4개</b></td></tr>
+   <tr><td>해금 단계</td><td><b>3阶에서 딱 하나</b></td><td><b>1 · 2 · 4 · 5阶에서 각 1개씩</b></td></tr>
+   <tr><td>사용 방식</td><td>사용권 소모 — 활성 즉시 1회 지급 · 24시간마다 1회 충전 · 최대 2회 보유</td><td>사용 개념 없음(자동 적용)</td></tr>
+   <tr><td>예시</td><td>천공 포석기 · 진군 의용영 · 청낭 의려 · 병참 치중영 · 신행 신행돌진 · 기좌 계략강화</td><td>관방 상세 미공개</td></tr>
+  </tbody>
+ </table></div>
+ <h3 class="sub">단계별로 무엇이 열리는가</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>두함 단계</th><th>열리는 것</th><th class="r">누적 천부점</th><th class="r">필요 번영도</th></tr></thead>
+  <tbody>
+   <tr><td>1阶 (시작)</td><td>정통 천부 ①</td><td class="r num">0</td><td class="r num">—</td></tr>
+   <tr><td>2阶</td><td>정통 천부 ②</td><td class="r num">6</td><td class="r num">20,000</td></tr>
+   <tr class="hl"><td>3阶</td><td><b>정통 기능 (액티브 · 직업정통의 본체)</b></td><td class="r num">15</td><td class="r num">30,000</td></tr>
+   <tr><td>4阶</td><td>정통 천부 ③</td><td class="r num">27</td><td class="r num">40,000</td></tr>
+   <tr><td>5阶</td><td>정통 천부 ④ + 기능 상한 강화</td><td class="r num">41</td><td class="r num">60,000</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note ok"><b>실전 결론 두 줄</b><br>
+  ① <b>3阶가 분수령</b>입니다 — 직업정통의 본체(액티브)가 여기 있습니다. 누적 천부점 15점 · 번영도 30,000까지는 반드시 찍어야 하는 라인.<br>
+  ② <b>5阶는 기능 자체를 키워줍니다</b> — 신행돌진 5칸 → 8칸, 의려 병력 보충 600 → 1,000. 즉 5阶는 "패시브 하나 더"가 아니라 액티브 성능 업그레이드입니다.</div>
+ <div class="note warn"><b>미공개 항목</b> — 천부 4개의 개별 효과 텍스트는 관방이 상세 공개하지 않았습니다. <b>해금 단계(1·2·4·5阶)만 확정</b>이고, 각 천부가 정확히 무엇을 얼마나 올려주는지는 S3 도입 후 게임 내 확인이 필요합니다.</div>
+</section>
+
+<section id="s3">
+ <div class="kick"><span class="no">參</span><h2 class="serif">S2 변화 — 군략건축 6종</h2><span class="src">4399 官方 S2 예고 · 7723 실전 해설</span></div>
+ <p class="lede">S2에서 <b>개인 직업스킬은 새로 추가되지 않습니다</b>. 대신 각 직업의 성격을 지도 위에 구현한 군략건축 6종이 신설되어, 직업 운영이 개인 단위에서 동맹 단위로 확장됩니다.</p>
+ <div class="scroll"><table>
+  <thead><tr><th>건축</th><th>색깔(대응 직업)</th><th>효과</th><th>범위·제약</th></tr></thead>
+  <tbody>
+   <tr><td>무위영<br><span class="cn">武卫营</span></td><td>진군</td><td>범위 내에서 아군이 적 부대를 이기면 적 전손의 <b>160%</b>를 식량으로 획득</td><td>3칸</td></tr>
+   <tr><td>의사<br><span class="cn">医舍</span></td><td>청낭</td><td>범위 내 전투에서 아군이 잃은 병력의 <b>10%</b>를 예비병으로 환급</td><td>3칸</td></tr>
+   <tr><td>백공감<br><span class="cn">百工监</span></td><td>천공</td><td>공성기계 제작 시간을 <b>70%</b>로 단축</td><td>3칸</td></tr>
+   <tr><td>곡창<br><span class="cn">谷仓</span></td><td>병참</td><td>주변 아군 영채의 징병 치중 소모 <b>20% 감소</b> + 신속징병 병력 증가</td><td>4칸</td></tr>
+   <tr><td>기문진<br><span class="cn">奇门阵</span></td><td>기좌</td><td>동맹원 부대를 건축 지역으로 즉시 전송</td><td>플레이어당 60분 1회</td></tr>
+   <tr><td>행역<br><span class="cn">行驿</span></td><td>신행</td><td>최대 <b>40개</b> 동맹 부대 집결·조동 + 징병 기능</td><td>건물 타일</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note warn"><b>가장 흔한 오해</b> — "대응 직업" 열은 건축의 성격을 직업에 대응시킨 정리일 뿐, <b>해당 직업이어야 지을 수 있는 것이 아닙니다</b>. 건설 자격은 <b>동맹 관원 여부</b>로만 판정됩니다. 공통 조건: 동맹원이 점령한 지반 위 건설 · 정철 100 + 동맹자금 50,000 · 종류별 1개 상한 · 내구 10,000(철거가 쉬움) · 업그레이드 불가.</div>
+ <h3 class="sub">S2 직업 체감 티어 변동</h3>
+ <ul class="pts">
+  <li><span class="badge b-obs">관측</span> <b>천공 상향</b> — 전반적으로 강해졌지만, 투석차의 텐트(영채) 철거 효율이 깎여 "철거 셔틀" 역할은 크게 약화. 결과적으로 느긋한 플레이 성향에 더 맞는 직업이 됨.</li>
+  <li><span class="badge b-obs">관측</span> <b>신행 급상승</b> — S1 최약체 평가에서 원거리 보급·은신 기습·기계 탈취로 전략 가치가 재평가되며 S2의 대표 상승 직업.</li>
+  <li><span class="badge b-obs">관측</span> <b>청낭 하락</b> — 초반 체력 우위는 유지되지만 중반 이후 수익이 급격히 낮아지는 초반형 직업.</li>
+  <li><span class="badge b-obs">관측</span> S2는 S1보다 숙련자 비중이 높아, 직업의 절대 성능보다 <b>동맹 내 역할 균형</b>이 승패를 더 크게 좌우.</li>
+ </ul>
+</section>
+
+<section id="s4">
+ <div class="kick"><span class="no">肆</span><h2 class="serif">S3 변화 — 직업정통(職業精通)</h2><span class="src">TapTap 官方 · 网易 MuMu 官方</span></div>
+ <p class="lede">S3의 본편입니다. 6직업 각각에 <b>전용 정통 기능 1종</b>과 <b>정통 천부(패시브)</b>가 추가되며, 해금은 전부 직업 두함 단계에 연동됩니다.</p>
+ <h3 class="sub">해금 규칙</h3>
+ <ul class="pts">
+  <li><span class="badge b-off">공식</span> S3 시즌 진입 시 직업정통이 <b>자동 해금</b> — 별도 연구·과금 없음.</li>
+  <li><span class="badge b-off">공식</span> <b>정통 기능</b>(전용 스킬): 직업 두함 <b>3阶</b> 도달 시 자동 활성.</li>
+  <li><span class="badge b-off">공식</span> <b>정통 천부</b>(패시브): 직업 두함 <b>1 · 2 · 4 · 5阶</b>에서 순차 자동 활성.</li>
+  <li><span class="badge b-off">공식</span> 정통 기능 사용권: 활성 즉시 1회 지급 · <b>24시간마다 1회 회복</b> · <b>최대 2회</b>까지 저장.</li>
+  <li><span class="badge b-tip">팁</span> 정통 기능 4종(의용영·의려·치중영·포석기)은 전장에 <b>실제 건물을 세우는</b> 방식 — 위치 선정이 곧 성능입니다.</li>
+ </ul>
+ <h3 class="sub">직업정통 기능 6종 상세</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>직업</th><th>정통 기능</th><th>효과</th><th>수치·제약</th></tr></thead>
+  <tbody>
+   <tr><td>천공<br><span class="cn">天工</span></td><td>포석기<br><span class="cn">抛石机</span></td><td>2~5칸 거리의 지역에 포석 지령 → 30초 준비 후 적 건물·부대에 피해. 투석차와 전탑을 합친 원거리 방어 건물</td><td>탄약 60분당 1발 회복 · 기능 재사용 시 탄약 만충 · 부대로 조작 필요</td></tr>
+   <tr><td>진군<br><span class="cn">镇军</span></td><td>의용영<br><span class="cn">义勇营</span></td><td>아군이 방문하면 전 부대에 [의용] 버프 → 이후 전투 결과와 무관하게 무장별 병력 보충</td><td>무장당 최대 <b>400병력</b> · 플레이어 1일 1회 방문 · 영채 1개당 누적 10회 · 세여파죽과 중첩</td></tr>
+   <tr><td>청낭<br><span class="cn">青囊</span></td><td>의려<br><span class="cn">医庐</span></td><td>전투로 잃은 병사의 일부를 수용 → 부대를 보내 [수편]으로 병력 보충. 소형 병영 개념</td><td>기본 전손의 <b>5%</b> 수용 · 무장당 최대 <b>600</b>(두함 5阶 <b>1,000</b>) · 1일 1회 · 재사용 시 수용 비율 강화 30분</td></tr>
+   <tr><td>병참<br><span class="cn">司仓</span></td><td>치중영<br><span class="cn">辎重营</span></td><td>치중 보급 + 저장 상한을 제공하는 소형 동맹 대영</td><td>인접 아군 영채 저장 상한 <b>+10만</b> · 다만 이 건물이 받는 <b>화공 피해 2배</b> · 재사용 시 치중 만충</td></tr>
+   <tr><td>신행<br><span class="cn">神行</span></td><td>신행돌진<br><span class="cn">神行突进</span></td><td>5칸 내 지역으로 즉시 행군 — 대부분의 건물 차단을 무시하는 사실상 순간이동</td><td>두함 5阶에서 <b>8칸</b>까지 · 사용 후 [정피역갈] <b>10분</b> — 그 동안 은폐행군·중정기고 사용 불가</td></tr>
+   <tr><td>기좌<br><span class="cn">奇佐</span></td><td>계략강화<br><span class="cn">计略强化</span></td><td>계략 시전 시 [강화] 옵션 추가 — 강화 3종</td><td>화공 = 연소 범위 1칸 확대 / 의병 = 정예화로 전투력↑ / 함정 = 피해 범위 확대(대신 외곽 피해 감소)</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><b>동맹 운영이 바뀌는 지점</b> — <span class="badge b-obs">관측</span> S1·S2에서 "있어도 없어도 되는" 취급이던 <b>진군</b>이 의용영으로 확실한 자리를 얻습니다. 동맹의 직업 비율 설계와 정통 기능 발동 지휘가 S3부터 동맹장의 실무가 되며, 기존 "청낭 30~35명" 같은 S1식 비율 공식은 재계산이 필요합니다.</div>
+ <div class="note"><b>명칭 주의</b> — 한글명은 원문 직역입니다. 한국 서버 S3 도입 시 정식 명칭(포석기·의용영·의려·치중영·신행돌진·계략강화)은 재확인이 필요합니다.</div>
+</section>
+
+<section id="s5">
+ <div class="kick"><span class="no">伍</span><h2 class="serif">진형 — 전 8종과 S3 신규 2종</h2><span class="src">TapTap 官方 S3 예고 · 18183</span></div>
+ <p class="lede"><b>S2에는 진형 추가가 없습니다.</b> 진형은 S3에서 처음으로 2종이 늘어 총 8종이 되며, 두 신규 진형은 <b>연구소 과학기술 해금이 필요 없어 시즌 진입 즉시 사용 가능</b>합니다.</p>
+ <div class="note ok"><b>배치 읽는 법</b> — 편성은 무장 <b>3명</b>이고, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 몇 칸을 쓰는지</b>를 정합니다. 아래 도식에서 <b>채워진 칸이 실제 배치 자리</b>이고, 칸 안의 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. 좌·중·우 열 위치는 진형 모양을 보여주기 위한 도식이며, <b>전투 계산에는 전열/후열 구분만 유효</b>합니다.</div>
+ <div class="fmgrid">
+
+  <div class="fmcard">
+   <div class="fmh"><b>일자진</b> <span class="cn">一字阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 3 · 후열 0</span></div>
+   <div class="fmu">해금 · 기본</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc fr"><b>1번</b><span>피격 33%</span></div><div class="sgc fr"><b>2번</b><span>피격 34%</span></div><div class="sgc fr"><b>3번</b><span>피격 33%</span></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc empty"></div><div class="sgc empty"></div><div class="sgc empty"></div></div>
+   </div>
+   <div class="fmf">전열이 받는 피해 8% 감소</div>
+   <div class="fmd">세 무장 모두 전열로 피격률이 거의 동일. 전 진형 중 감뎀이 가장 높아 범용성 1위.</div>
+   <div class="fme">예시 · 유비 · 관우 · 장비</div>
+  </div>
+
+  <div class="fmcard">
+   <div class="fmh"><b>기형진</b> <span class="cn">箕形阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 1 · 후열 2</span></div>
+   <div class="fmu">해금 · 기본</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc empty"></div><div class="sgc fr"><b>1번</b><span>피격 60%</span></div><div class="sgc empty"></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc"><b>2번</b><span>피격 20%</span></div><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div></div>
+   </div>
+   <div class="fmf">전열 받는 피해 6% 감소 · 후열 주는 피해 12% 증가</div>
+   <div class="fmd">전열 1명이 탱킹·어그로, 후열 2명이 딜·보조. 후열 보조는 피격을 회피할 수 있음.</div>
+   <div class="fme">예시 · 서성 · 손책 · 대교</div>
+  </div>
+
+  <div class="fmcard">
+   <div class="fmh"><b>안형진</b> <span class="cn">雁形阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 2 · 후열 1</span></div>
+   <div class="fmu">해금 · 연구소 연구</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc fr"><b>1번</b><span>피격 40%</span></div><div class="sgc empty"></div><div class="sgc fr"><b>2번</b><span>피격 40%</span></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div><div class="sgc empty"></div></div>
+   </div>
+   <div class="fmf">전열 통솔 20 증가 · 후열 주는 피해 15% 증가</div>
+   <div class="fmd">전열 2명이 통솔 상승으로 방어·일부 전법 이득, 후열 1명이 <b>전 진형 최고 증뎀</b>. 폭발 딜러용.</div>
+   <div class="fme">예시 · 손책 · 손견 · 손상향</div>
+  </div>
+
+  <div class="fmcard">
+   <div class="fmh"><b>방원진</b> <span class="cn">方圆阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 2 · 후열 1</span></div>
+   <div class="fmu">해금 · 연구소 연구</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc fr"><b>1번</b><span>피격 40%</span></div><div class="sgc empty"></div><div class="sgc fr"><b>2번</b><span>피격 40%</span></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div><div class="sgc empty"></div></div>
+   </div>
+   <div class="fmf">전열 받는 피해 5% 감소 · 후열 연타 확률 40% 증가</div>
+   <div class="fmd">전열 2명이 피격을 분담하며 감뎀, 후열 1명이 연타율을 대폭 확보. 연타 의존 무장 전용.</div>
+   <div class="fme">예시 · 견희 · 대교 · 손상향</div>
+  </div>
+
+  <div class="fmcard">
+   <div class="fmh"><b>추형진</b> <span class="cn">锥形阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 1 · 후열 2</span></div>
+   <div class="fmu">해금 · 연구소 연구</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc empty"></div><div class="sgc fr"><b>1번</b><span>피격 60%</span></div><div class="sgc empty"></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc"><b>2번</b><span>피격 20%</span></div><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div></div>
+   </div>
+   <div class="fmf">전열 주는 피해 16% 증가 · 후열 받는 피해 5% 감소</div>
+   <div class="fmd">전열 1명이 탱킹과 딜을 겸함. 반격·반사 계열 무장에 적합하고 후열은 보조·딜.</div>
+   <div class="fme">예시 · 전위 · 조조 · 허저</div>
+  </div>
+
+  <div class="fmcard">
+   <div class="fmh"><b>어린진</b> <span class="cn">鱼鳞阵</span> <span class="badge b-s1">S1</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 1 · 후열 2</span></div>
+   <div class="fmu">해금 · 연구소 연구</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc empty"></div><div class="sgc fr"><b>1번</b><span>피격 60%</span></div><div class="sgc empty"></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc"><b>2번</b><span>피격 20%</span></div><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div></div>
+   </div>
+   <div class="fmf">전열 피신(회피) 12% 증가 · 후열 회심·묘책 8% 증가</div>
+   <div class="fmd">전열 회피 특화. 범용성은 낮지만 회피 빌드 특정 무장과는 궁합이 매우 좋음.</div>
+   <div class="fme">예시 · 조운 · 황월영 · 제갈량</div>
+  </div>
+
+  <div class="fmcard" style="border-color:var(--new);background:var(--newbg)">
+   <div class="fmh"><b>구행진</b> <span class="cn">钩行阵</span> <span class="badge b-s3">S3 신규</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 1 · 후열 2</span></div>
+   <div class="fmu">해금 · <b style="color:var(--new)">연구 불필요 · 즉시 사용</b> · 피격률 추정</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc empty"></div><div class="sgc fr"><b>1번</b><span>피격 60%</span></div><div class="sgc empty"></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc"><b>2번</b><span>피격 20%</span></div><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div></div>
+   </div>
+   <div class="fmf"><b>전열 받는 피해 8% 감소 · 후열 연타율 25% 증가</b></div>
+   <div class="fmd">연타 체계 전용. 전열 1명 탱킹 + 후열 2명 연타 딜. 방원진(2전열·연타 40%)의 <b>1전열 버전</b>.</div>
+   <div class="fme">예시 · 서성(전열) · 손권 · 공손찬(후열)</div>
+  </div>
+
+  <div class="fmcard" style="border-color:var(--new);background:var(--newbg)">
+   <div class="fmh"><b>언월진</b> <span class="cn">偃月阵</span> <span class="badge b-s3">S3 신규</span><span style="margin-left:auto;font-size:10px;color:var(--faint)">전열 2 · 후열 1</span></div>
+   <div class="fmu">해금 · <b style="color:var(--new)">연구 불필요 · 즉시 사용</b> · 피격률 추정</div>
+   <div class="sgrid">
+    <div class="sgrow"><span class="sglb fr">전열</span><div class="sgc fr"><b>1번</b><span>피격 40%</span></div><div class="sgc empty"></div><div class="sgc fr"><b>2번</b><span>피격 40%</span></div></div>
+    <div class="sgrow"><span class="sglb">후열</span><div class="sgc empty"></div><div class="sgc"><b>3번</b><span>피격 20%</span></div><div class="sgc empty"></div></div>
+   </div>
+   <div class="fmf"><b>전열 주는 피해 14% 증가 · 후열 받는 피해 5% 감소</b></div>
+   <div class="fmd">전열 딜러 2명 동시 운용. 추형진(1전열·증뎀 16%)의 <b>2전열 버전</b>으로 전열 화력 총량이 더 큼.</div>
+   <div class="fme">예시 · 육손 · 주태(전열) · 여몽(후열)</div>
+  </div>
+
+ </div>
+ <h3 class="sub">진형 요약표</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>진형</th><th>시즌</th><th>전/후열</th><th>피격률(슬롯順)</th><th>해금</th><th>특성</th></tr></thead>
+  <tbody>
+   <tr><td>일자진 <span class="cn">一字阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">3 / 0</td><td class="num">33 / 34 / 33%</td><td>기본</td><td>전열이 받는 피해 8% 감소</td></tr>
+   <tr><td>기형진 <span class="cn">箕形阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">1 / 2</td><td class="num">60 / 20 / 20%</td><td>기본</td><td>전열 받는 피해 6% 감소 · 후열 주는 피해 12% 증가</td></tr>
+   <tr><td>안형진 <span class="cn">雁形阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">2 / 1</td><td class="num">40 / 40 / 20%</td><td>연구소</td><td>전열 통솔 20 증가 · 후열 주는 피해 15% 증가</td></tr>
+   <tr><td>방원진 <span class="cn">方圆阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">2 / 1</td><td class="num">40 / 40 / 20%</td><td>연구소</td><td>전열 받는 피해 5% 감소 · 후열 연타 확률 40% 증가</td></tr>
+   <tr><td>추형진 <span class="cn">锥形阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">1 / 2</td><td class="num">60 / 20 / 20%</td><td>연구소</td><td>전열 주는 피해 16% 증가 · 후열 받는 피해 5% 감소</td></tr>
+   <tr><td>어린진 <span class="cn">鱼鳞阵</span></td><td><span class="badge b-s1">S1</span></td><td class="num">1 / 2</td><td class="num">60 / 20 / 20%</td><td>연구소</td><td>전열 피신 12% 증가 · 후열 회심·묘책 8% 증가</td></tr>
+   <tr class="hl"><td>구행진 <span class="cn">钩行阵</span></td><td><span class="badge b-s3">S3</span></td><td class="num">1 / 2</td><td class="num">60 / 20 / 20% <span class="cn">추정</span></td><td><b>연구 불필요</b></td><td><b>전열 받는 피해 8% 감소 · 후열 연타율 25% 증가</b></td></tr>
+   <tr class="hl"><td>언월진 <span class="cn">偃月阵</span></td><td><span class="badge b-s3">S3</span></td><td class="num">2 / 1</td><td class="num">40 / 40 / 20% <span class="cn">추정</span></td><td><b>연구 불필요</b></td><td><b>전열 주는 피해 14% 증가 · 후열 받는 피해 5% 감소</b></td></tr>
+  </tbody>
+ </table></div>
+ <div class="note warn"><b>확정과 추정의 구분</b> — 신규 2종의 <b>효과 수치와 전열/후열 인원은 확정</b>입니다(구행진 1전열은 서성 전열 배치 실전 기사, 언월진 2전열은 육손·주태 전열 배치 실전 기사로 교차 확인). 다만 <b>위치별 피격률은 공식 미공개</b>여서, 인원 구성이 같은 기존 진형에서 가져온 값입니다. 실제 수치는 S3 도입 후 게임 내 확인이 필요합니다.</div>
+ <h3 class="sub">신규 진형 실전 조합 (중국 서버 관측)</h3>
+ <ul class="pts">
+  <li><span class="badge b-obs">관측</span> <b>구행진 = 연타 체계 전용</b>. 공손찬 · 손권 · 서성(또는 주태) — 공손찬 고유 [위진새외]가 추격 전법이라 손권의 연타율 버프와 맞물려 딜이 안정적.</li>
+  <li><span class="badge b-obs">관측</span> 구행진 전법 예: 서성 = 주갑소과 · 견벽청야 / 손권 = 공기불비 · 승간투극 / 공손찬 = 예불가당 · 횡소천군.</li>
+  <li><span class="badge b-obs">관측</span> <b>언월진 = 전열 딜러의 새 길</b>. 관우 · 견희 · 악진 — 악진 [매전선등]이 전열 증뎀·감뎀을 얹어 관우 발동을 앞당기는 고폭발형.</li>
+  <li><span class="badge b-obs">관측</span> 언월진 대안 = 악진 · 대교 · 마초(대교 자리에 방통 가능). 견희가 없으면 황월영 대체 가능하나 턴 제약이 있음.</li>
+  <li><span class="badge b-tip">팁</span> S1 6종은 그대로 유지되므로 <b>기존 최적해가 대체되는 것이 아니라</b>, 연타·전열딜 두 축의 빈칸이 메워지는 성격의 추가입니다.</li>
+ </ul>
+</section>
+
+<section id="s6">
+ <div class="kick"><span class="no">陸</span><h2 class="serif">그 외 S2·S3 신규 시스템</h2><span class="src">4399 官方 · TapTap 官方 · MuMu 官方</span></div>
+ <p class="lede">직업·진형 외에도 편성과 육성 계획에 직접 영향을 주는 시스템들이 함께 들어옵니다. <b>S2는 병종 쪽 변화가 직업 변화보다 훨씬 큽니다.</b></p>
+ <h3 class="sub">S2 신규 시스템</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>시스템</th><th>내용</th><th>해금·비용</th></tr></thead>
+  <tbody>
+   <tr class="hl"><td>병종진아<br><span class="cn">兵种进阶</span></td><td>기본 병종(방패·기·창·궁) → 고급병종 8종으로 진화, 병종 특성 획득</td><td>무장 <b>35레벨</b> · 동전 50,000 / <b>시즌 내 기본 병종으로 되돌릴 수 없음</b></td></tr>
+   <tr class="hl"><td>병종전정<br><span class="cn">兵种专精</span></td><td>고급병종별 전정 1개 선택(통용전정·특수전정 2계열)</td><td>무장 <b>40레벨</b> · 동전 30,000 / 해금한 전정 간 무료 전환 가능</td></tr>
+   <tr><td>군략건축</td><td>동맹 관원이 세우는 6종 전략 건물 — 3장 참고</td><td>정철 100 + 동맹자금 50,000</td></tr>
+   <tr><td>영웅멱처<br><span class="cn">英雄觅处</span></td><td>시즌 화본 3종 — 스토리 시청으로 무료 영웅 무장·황금·무장 치환권·서간 획득</td><td>시즌 진입 시</td></tr>
+   <tr><td>위성<br><span class="cn">卫城</span></td><td>동맹이 점령 후 부대 조동 거점으로 사용</td><td>시즌 진행</td></tr>
+   <tr><td>동맹 정원</td><td>시즌2 개구 동맹은 생성 즉시 200명 수용</td><td>기본</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><b>육성 계획에 미치는 영향</b> — 무장 35·40레벨이 새로운 관문입니다. S1식 레벨링 계획으로 S2에 들어가면 시즌 초 전투력이 그대로 밀립니다.</div>
+ <h3 class="sub">S2 고급병종 8종 특성</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>대류</th><th>고급병종</th><th>방향</th><th>특성</th></tr></thead>
+  <tbody>
+   <tr><td>창</td><td>모병 <span class="cn">矛兵</span></td><td>후반형</td><td>오전(鏖战) — 4턴부터 주는 피해 10% 증가, 전투 종료까지</td></tr>
+   <tr><td>창</td><td>장창병 <span class="cn">长枪兵</span></td><td>종합형</td><td>파적(破敌) — 일반공격 후 65% 확률로 대상 통솔 8 감소, 2턴, 2중첩</td></tr>
+   <tr><td>기</td><td>경기병 <span class="cn">轻骑兵</span></td><td>폭발형</td><td>질치(疾驰) — 전투 첫 3턴 회피율 3% · 피해 5% 증가</td></tr>
+   <tr><td>기</td><td>중기병 <span class="cn">重骑兵</span></td><td>방어형</td><td>견인(坚韧) — 통솔 10 증가, 자신이 이상 상태일 때 받는 피해 5% 감소</td></tr>
+   <tr><td>궁</td><td>장궁병 <span class="cn">长弓兵</span></td><td>보조형</td><td>통실(洞悉) — 매 턴 첫 피해 후 대상이 받는 피해 5% 증가, 1턴</td></tr>
+   <tr><td>궁</td><td>노병 <span class="cn">弩兵</span></td><td>추가피해</td><td>경노(劲弩) — 주는 피해 5% 증가, 대상 이상 상태 1종당 1% 추가(최대 8%)</td></tr>
+   <tr><td>방패</td><td>중순병 <span class="cn">重盾兵</span></td><td>탱킹형</td><td>불굴(不屈) — 매 턴 시작 시 받는 피해 8% 감소(1턴), 자신 행동 종료 후 4%로 하락</td></tr>
+   <tr><td>방패</td><td>검순병 <span class="cn">剑盾兵</span></td><td>면역형</td><td>전주(专注) — 첫 제어 상태 피격 시 55% 확률로 각성 상태 획득, 1턴</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note">병종 상성(방패병 → 궁병 → 창병 → 기병 → 방패병)은 그대로이고, 고급병종은 그 위에 특성 한 줄이 붙는 구조입니다. <span class="badge b-tip">팁</span> 이상 상태를 다수 거는 편성이면 노병, 제어 위주 상대엔 검순병처럼 <b>상대 조합을 보고 고르는 것이 정석</b>. 되돌릴 수 없으므로 진아 선택은 신중히.</div>
+
+ <h3 class="sub">특기(特技)는 S2·S3에서 어떻게 바뀌나</h3>
+ <p class="lede">"S2·S3에 특기가 추가되나"는 질문의 답은 두 갈래입니다. <b>장비 특기 풀 자체가 늘었다는 관방 자료는 확인되지 않고</b>, 대신 특기를 <b>바꿀 수단</b>이 생기며, 진짜 신규 특기에 해당하는 것은 <b>병종 특성(S2)</b>과 <b>직업정통 기능(S3)</b>입니다.</p>
+ <div class="scroll"><table>
+  <thead><tr><th>항목</th><th>시즌</th><th>내용</th></tr></thead>
+  <tbody>
+   <tr><td>장비 특기 풀</td><td><span class="badge b-s1">S1</span></td><td>대장간·말시장 특기와 전용 특기(무성·풍운·반석 등)는 S1 풀이 그대로 유지. <b>S2·S3 신규 추가 목록은 공개 자료에서 확인되지 않음</b></td></tr>
+   <tr class="hl"><td>특기·특효 권축</td><td><span class="badge b-s2">S2</span></td><td>시즌 상점에서 <b>명예점으로 교환</b>. 진품(珍品) 장비에 사용해 특기를 추가하거나 기존 특기를 교체하며, 장비의 기존 <b>특효는 영향받지 않음</b></td></tr>
+   <tr><td>권축 제한</td><td><span class="badge b-s2">S2</span></td><td><b>해당 시즌 내에서만 사용 가능</b>(다음 시즌 보관 불가) · <b>시즌 창고에서 꺼낸 장비에는 사용 불가</b></td></tr>
+   <tr><td>시즌 창고 이월</td><td><span class="badge b-s2">S2</span></td><td>캐릭터 생성 후 <b>48시간 내</b> 수령. 장비·좌기 각 2건 기본, 운유사해(云游四海)를 채우면 각 4건</td></tr>
+   <tr class="hl"><td>병종 특성 8종</td><td><span class="badge b-s2">S2</span></td><td>고급병종 진화로 붙는 특성 — 위 표 참고. 사실상 S2의 "신규 특기"</td></tr>
+   <tr class="hl"><td>직업정통 기능 6종</td><td><span class="badge b-s3">S3</span></td><td>직업별 전용 액티브 — 4장 참고. 사실상 S3의 "신규 특기"</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><span class="badge b-obs">관측</span> S2는 <b>제어 계열 특기의 가치가 가장 높고</b>, 혼란 체계가 부상하면 <b>[침착]</b>(전투 1턴 혼란 면역)의 우선도가 크게 오릅니다. 권축은 시즌 내 소모품이므로 아끼지 말고 주력 진품 장비에 몰아주는 편이 이득.</div>
+ <h3 class="sub">S3 신규 시스템</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>시스템</th><th>내용</th><th>개방 시점</th></tr></thead>
+  <tbody>
+   <tr class="hl"><td>직업정통<br><span class="cn">职业精通</span></td><td>6직업 전용 정통 기능 + 정통 천부 — 4장 참고</td><td>두함 3阶(기능) / 1·2·4·5阶(천부)</td></tr>
+   <tr><td>정령대<br><span class="cn">政令台</span></td><td>랜덤 제안 3개 중 1개를 골라 개인 버프 — 품질 교사(巧思)·양책(良策)·묘계(妙计)</td><td>매주 월·금 12시 리셋, 주 2회 선택</td></tr>
+   <tr><td>주부공비<br><span class="cn">州府功碑</span></td><td>점령한 주부에 48시간 후 건립·명각 — 출생주=민망, 자원주=풍패, 낙양=천명 시즌 보너스</td><td>주부 점령 후</td></tr>
+   <tr><td>암도잠습<br><span class="cn">暗道潜袭</span></td><td>출생주 ↔ 자원주 사이 고속 이동 통로</td><td>문정중원 단계</td></tr>
+   <tr><td>장서각<br><span class="cn">藏书阁</span></td><td>무훈으로 계승 가능한 전법 4종 구매</td><td>세여파죽 단계</td></tr>
+   <tr><td>천기·지형</td><td>음·청·우·설·폭우·폭설 날씨 표현 + 신규 지형 메커니즘</td><td>시즌 상시</td></tr>
+   <tr class="hl"><td>신규 진형</td><td>구행진 · 언월진 2종</td><td>시즌 진입 즉시(연구 불필요)</td></tr>
+  </tbody>
+ </table></div>
+</section>
+
+<section id="s7">
+ <div class="kick"><span class="no">柒</span><h2 class="serif">S2·S3 신규 무장·전법</h2><span class="src">4399 官方 S2 · TapTap 官方 S3</span></div>
+ <p class="lede">두 시즌 신규 무장·전법은 <b>전원 비한정</b>이라 시즌 진입 후 확보가 가능합니다. 어떤 것을 S1에서 미리 뽑아둘지는 사이트 메타 탭의 "다음 시즌 필수" 목록과 함께 보세요.</p>
+ <div class="scroll"><table>
+  <thead><tr><th>시즌</th><th>신규 무장</th><th>신규 전법</th></tr></thead>
+  <tbody>
+   <tr><td><span class="badge b-s2">S2</span></td><td>가후 · 장료 · 육손 · 진궁 · 전풍 · 법정 · 마운록</td><td>최견극난 · 지인선임 · 삼군탈기 · 승간투극 · 도광양회 · 기정상생 · 고약금탕 · 승적익강 · 임인유현 · 궁추불사</td></tr>
+   <tr><td><span class="badge b-s3">S3</span></td><td>사마의 · 방통 · 주태 · 공손찬 · 악진 · 감부인</td><td>선갑려병 · 동주공제 · 금성탕지 · 명기허실 · 열화장천 · 충예교변</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note"><b>S2 시점 밸런스 조정</b> — 육손 [화소연영]의 연소 확률 25% → <b>40%</b>(지력 영향), [도광양회]의 모략 피해 증가폭 7% → <b>8%</b>.</div>
+</section>
+
+<section id="s8">
+ <div class="kick"><span class="no">捌</span><h2 class="serif">주의 — 배치별 규칙 차이와 불확실 항목</h2><span class="src">TapTap 官方 S3 규칙 최적화</span></div>
+ <p class="lede">여기가 이 문서에서 <b>가장 실수하기 쉬운 부분</b>입니다. 중국 서버는 배치(批次)에 따라 같은 S3도 규칙이 다릅니다.</p>
+ <h3 class="sub">S3 규칙 최적화 — 13차 배치 이후</h3>
+ <ul class="pts">
+  <li><span class="badge b-off">공식</span> 중국은 2월 19일 이후 S3에 진입하는 서버(13차 배치 이후)에 대해 S3 규칙을 크게 손봤습니다.</li>
+  <li><span class="badge b-trap">함정</span> <b>군략건축 취소</b> — S2에서 쓰던 6종이 최적화판 S3에서는 사라집니다.</li>
+  <li><span class="badge b-off">공식</span> 사반 지도 재설계: 출생주 9개 / 자원주 3개(중주·하북·삼진)로 통합·상호 연결 / 하락 관문 6 → 9개(3개는 후속 개방).</li>
+  <li><span class="badge b-off">공식</span> 신규 지형 [험요지지], 신규 건물 [촌락] 추가.</li>
+  <li><span class="badge b-off">공식</span> 성망 시스템(군부 범위) · 주부공비 명각 · 암도잠습(군웅축록 단계 이후) 추가.</li>
+  <li><span class="badge b-off">공식</span> 국책 4종 추가: 유언사기 · 무쇄중루 · 전격선위 · 파부침주.</li>
+  <li><span class="badge b-off">공식</span> 배수일전 6시간으로 조정(공비 명각 + 주부 피점령 동시 충족 필요) · 주 간 가맹 제거, 비신규 구간은 선주재기 1회만 · 유리실소 24시간 → 1시간.</li>
+  <li><span class="badge b-off">공식</span> 패업 적수 1위 동맹에 문정 보상 — 전대·다음 시즌 동맹 정원 각 +20.</li>
+  <li><span class="badge b-obs">관측</span> <b>결론</b> — 대만·한국은 이 최적화판을 받을 가능성이 높으므로, <b>군략건축은 S2 한정 지식으로 취급하는 편이 안전</b>합니다.</li>
+ </ul>
+ <h3 class="sub">전직(轉職) 규칙 — 자료가 엇갈리는 항목</h3>
+ <ul class="pts">
+  <li><span class="badge b-off">공식</span> 기본 규칙은 <b>시즌 중 1회</b> — 개국 시 선택 1회 + 중간 전환 1회.</li>
+  <li><span class="badge b-trap">함정</span> 그런데 S2 초기 중국 공략 다수는 <b>"S2는 전직 불가"</b>로 기술합니다. 배치·시점에 따라 다를 수 있으니 <b>직업을 고르기 전에 반드시 자기 서버 공지를 확인</b>하세요.</li>
+  <li><span class="badge b-off">공식</span> 시즌 리셋 시 이름 재설정과 <b>직업 재선택이 강제</b>됩니다 — 지난 시즌 직업이 자동 계승되지 않습니다.</li>
+  <li><span class="badge b-off">공식</span> 직업 정통 기능 쿨타임 중에는 전직이 막히므로, 전직 계획이 있으면 사용권을 비워두고 진행.</li>
+ </ul>
+ <h3 class="sub">이 문서에서 아직 확정되지 않은 것</h3>
+ <ul class="pts">
+  <li>구행진·언월진의 <b>위치별 피격률</b> — 공식 미공개. 효과 수치와 전열/후열 인원은 확정.</li>
+  <li>직업정통 <b>정통 천부(1·2·4·5阶) 개별 효과</b> — 해금 단계는 공식 확인, 각 천부의 상세 효과 텍스트는 공개 자료에서 미확보.</li>
+  <li>병종전정의 <b>개별 전정 효과 목록</b> — 통용/특수 2계열 구분과 해금 조건은 확인, 각 전정 효과 텍스트는 미확보.</li>
+  <li><b>S2·S3 신규 장비 특기 목록</b> — 관방이 장비 특기 풀 확장을 공고한 자료를 찾지 못했습니다. 현재는 "권축으로 교체 가능"까지만 확정.</li>
+  <li>모든 한글 표기 — 한국 서버 정식 명칭 확정 시 재검증 필요.</li>
+ </ul>
+</section>
+
+<section id="s9">
+ <div class="kick"><span class="no">玖</span><h2 class="serif">한국 서버(S1) 실행 체크리스트</h2></div>
+ <ul class="pts">
+  <li><span class="badge b-tip">팁</span> <b>직업 두함을 올리는 습관부터</b> — 천부점은 군연에서 나옵니다. S3 직업정통이 두함 3阶에 걸려 있어 두함이 곧 직업 파워입니다.</li>
+  <li><span class="badge b-tip">팁</span> <b>무장 35 · 40레벨 라인을 미리 계산</b> — S2 병종진아/병종전정의 관문입니다.</li>
+  <li><span class="badge b-tip">팁</span> <b>진형은 S2에 추가 없음</b> → S1 6종 숙련이 그대로 유효하고, 신규 2종은 S3부터 고민하면 됩니다.</li>
+  <li><span class="badge b-off">공식</span> <b>직업 갈아타기를 서두를 이유 없음</b> — 6직업 구성은 S1~S3 내내 동일. 다만 시즌 리셋마다 재선택은 강제됩니다.</li>
+  <li><span class="badge b-trap">함정</span> <b>S2 진입 공지의 전직 항목을 먼저 확인</b>하고 직업을 고르세요.</li>
+  <li><span class="badge b-tip">팁</span> <b>군략건축은 깊게 파지 말 것</b> — 최적화판 S3에서 사라지는 시스템입니다. S2 한 시즌용 지식으로만.</li>
+  <li><span class="badge b-tip">팁</span> S2·S3 신규 무장·전법은 전원 비한정 → S1 뽑기는 <b>전 시즌 범용 코어</b>(허점 공략·전쟁 종식·청낭 치료·보급 차단 계열)에 집중.</li>
+ </ul>
+</section>
+
+<section id="s10">
+ <div class="kick"><span class="no">拾</span><h2 class="serif">출처</h2></div>
+ <p class="lede">★ = 1차 관방 자료. 모두 로그인 없이 열람 가능.</p>
+ <div class="srclist">
+  ★ TapTap 官方 「S3赛季职业精通系统详解」 · <a href="https://www.taptap.cn/moment/584444677336334731" target="_blank" rel="noopener">taptap.cn/moment/584444677336334731</a><br>
+  ★ TapTap 官方 「S3赛季第一批次服务器更新预告」(신규 진형·장서각·주부공비) · <a href="https://www.taptap.cn/moment/586221037331415736" target="_blank" rel="noopener">taptap.cn/moment/586221037331415736</a><br>
+  ★ TapTap 官方 「S3赛季规则优化预告」(군략건축 취소) · <a href="https://www.taptap.cn/moment/636261382404178612" target="_blank" rel="noopener">taptap.cn/moment/636261382404178612</a><br>
+  ★ 4399 官方 「先锋批次S2赛季更新预告」(군략건축·병종진아·영웅멱처) · <a href="https://bbs.4399.cn/thread-view-tid-45798117" target="_blank" rel="noopener">bbs.4399.cn/thread-view-tid-45798117</a><br>
+  ★ TapTap 官方 「S2赛季前瞻丨兵种进阶情报公开」 · <a href="https://www.taptap.cn/moment/566018315542070053" target="_blank" rel="noopener">taptap.cn/moment/566018315542070053</a><br>
+  网易 MuMu 官方 「S3赛季职业精通效果解析」 · <a href="https://mumu.163.com/news/official/20240924/25239_1182882.html" target="_blank" rel="noopener">mumu.163.com/news/official/20240924/25239_1182882.html</a><br>
+  网易 MuMu 官方 「政令台详解」 · <a href="https://mumu.163.com/news/official/20241118/25239_1194372.html" target="_blank" rel="noopener">mumu.163.com/news/official/20241118/25239_1194372.html</a><br>
+  游侠 「S3赛季职业精通效果一览」 · <a href="https://m.ali213.net/news/gl2409/1504353.html" target="_blank" rel="noopener">m.ali213.net/news/gl2409/1504353.html</a><br>
+  游侠 「职业头衔效果一览」 · <a href="https://m.ali213.net/news/gl2406/1424391.html" target="_blank" rel="noopener">m.ali213.net/news/gl2406/1424391.html</a><br>
+  小米 「职业系统是什么？」(기본 지령) · <a href="https://game.xiaomi.com/viewpoint/1579299286_1713840806325_13" target="_blank" rel="noopener">game.xiaomi.com/viewpoint/1579299286_1713840806325_13</a><br>
+  18183 「S3新增阵型有哪些」(구행진·언월진) · <a href="https://www.18183.com/sg/4916396.html" target="_blank" rel="noopener">18183.com/sg/4916396.html</a><br>
+  7723 「S2赛季军略建筑实战解读」 · <a href="https://3g.7723.cn/strategy/356227.html" target="_blank" rel="noopener">3g.7723.cn/strategy/356227.html</a><br>
+  7724 「S2选什么职业好」(전직 제한 언급) · <a href="https://m.7724.com/sgmdtx/news/156720.html" target="_blank" rel="noopener">m.7724.com/sgmdtx/news/156720.html</a><br>
+  9game 「S2有那些改动」(천공 조정) · <a href="https://www.9game.cn/sgmdtx/10323292.html" target="_blank" rel="noopener">9game.cn/sgmdtx/10323292.html</a><br>
+  TW 官方 「S3賽季 風雲再起」 · <a href="https://newslg.biligames.com/s3info/" target="_blank" rel="noopener">newslg.biligames.com/s3info/</a><br>
+  巴哈姆特 GNN 「S3 賽季風雲再起」(대만 일정·職業系統) · <a href="https://gnn.gamer.com.tw/detail.php?sn=303581" target="_blank" rel="noopener">gnn.gamer.com.tw/detail.php?sn=303581</a><br>
+  9game 「阵法攻略图文解析」(진형 6종 배치·해금·예시 편성) · <a href="https://www.9game.cn/sgmdtx/10172162.html" target="_blank" rel="noopener">9game.cn/sgmdtx/10172162.html</a><br>
+  腾讯新闻 「陆逊和周泰站位偃月阵前排」(언월진 2전열 실전 확인) · <a href="https://news.qq.com/rain/a/20240926A0A1C900" target="_blank" rel="noopener">news.qq.com/rain/a/20240926A0A1C900</a><br>
+  3G游戏网 「钩行阵用法攻略」(구행진 1전열·전법 예시) · <a href="https://www.gameggg.com/article/473.html" target="_blank" rel="noopener">gameggg.com/article/473.html</a><br>
+  3G游戏网 「偃月阵玩法攻略」 · <a href="https://www.gameggg.com/article/474.html" target="_blank" rel="noopener">gameggg.com/article/474.html</a><br>
+  52pk 「S2赛季仓库装备选择推荐」(특기·특효 권축 규칙) · <a href="https://www.52pk.net/news/nqxk3184.html" target="_blank" rel="noopener">52pk.net/news/nqxk3184.html</a><br>
+  游侠 「装备专属特技效果一览」(전용 특기 10종) · <a href="https://www.gameggg.com/article/1306.html" target="_blank" rel="noopener">gameggg.com/article/1306.html</a>
+ </div>
+ <div class="foot" style="margin-top:16px">
+  <a class="backlink" href="index.html#guide">← 통합 사이트 공략·팁 탭으로</a><br>
+  이 문서와 같은 내용은 사이트 <b>공략·팁 → S2·S3 변화</b> 섹션(직업스킬 S2·S3 변화 / S2·S3 신규 시스템·진형)에도 들어 있고, 진형 8종은 <b>참고</b> 탭과 <b>덱빌더</b> 진형 선택에 반영되어 있습니다.<br>
+  중국 서버 원본 기준 · 대만 교차 확인 · 한국 서버 미도입 항목 포함 · 개인 학습용 정리 · 기준일 2026-08-06
+ </div>
+</section>
+
+</div></body></html>

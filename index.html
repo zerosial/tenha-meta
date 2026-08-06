@@ -162,6 +162,24 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .poslabel{flex:0 0 52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:13px;color:#fff;border-radius:8px;background:var(--t2);text-align:center;}
 .poslabel[data-pos="전열"]{background:var(--seal);}
 .poslabel[data-pos="후열"]{background:var(--t2);}
+/* 진형 6칸 배치 도식 */
+.sgrid{display:flex;flex-direction:column;gap:5px;margin:6px 0;}
+.sgrow{display:grid;grid-template-columns:44px repeat(3,1fr);gap:5px;align-items:stretch;}
+.sglb{display:flex;align-items:center;justify-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:11px;color:#fff;border-radius:6px;background:var(--t2);}
+.sglb[data-pos="전열"]{background:var(--seal);}
+.sgc{border:1px solid var(--line2);border-radius:6px;background:var(--panel);padding:5px 4px;text-align:center;display:flex;flex-direction:column;gap:1px;min-height:40px;justify-content:center;}
+.sgc b{font-size:11.5px;font-weight:800;line-height:1.2;}
+.sgc span{font-size:9.5px;color:var(--faint);}
+.sgc.fr{border-color:color-mix(in srgb,var(--seal) 55%,var(--line2));background:color-mix(in srgb,var(--seal) 8%,var(--panel));}
+.sgc.bk{border-color:color-mix(in srgb,var(--t2) 55%,var(--line2));}
+.sgc.empty{border-style:dashed;background:transparent;opacity:.4;}
+.fmcard{border:1px solid var(--line2);border-radius:10px;background:var(--paper);padding:12px 14px;}
+.fmcard .fmh{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:2px;}
+.fmcard .fmh b{font-family:"Nanum Myeongjo",serif;font-size:15px;font-weight:800;}
+.fmcard .fmfeat{font-size:11.5px;color:var(--ink);margin:6px 0 0;}
+.fmcard .fmdesc{font-size:11px;color:var(--soft);margin:5px 0 0;}
+.fmcard .fmex{font-size:10.5px;color:var(--faint);margin:4px 0 0;}
+.g-fm{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
 .sjb.new{background:var(--new);}
 .tsj{font-size:8.5px;font-weight:800;color:var(--faint);margin-left:3px;opacity:.85;}
@@ -222,12 +240,12 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  <section id="tab-ref"></section>
 </main>
 <div class="footer">
- <div style="margin-bottom:6px">정적 문서(인쇄용): <a href="overview.html">S1 종합자료</a> · <a href="roster.html">S1~15 로스터</a> · <a href="new-tactics.html">신규전법 상세</a> · <a href="s2s3-guide.html">S2·S3 가이드</a></div>
+ <div style="margin-bottom:6px">정적 문서(인쇄용): <a href="overview.html">S1 종합자료</a> · <a href="roster.html">S1~15 로스터</a> · <a href="new-tactics.html">신규전법 상세</a> · <a href="s2s3-guide.html">S2·S3 가이드</a> · <a href="s2s3-system.html"><b>S2·S3 직업스킬·진형 시스템 변화</b></a></div>
  데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=8"></script>
-<script src="guides.js?v=21"></script>
+<script src="data.js?v=10"></script>
+<script src="guides.js?v=23"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -391,15 +409,30 @@ function fcModal(i){
 function loadToBuilder(i){const f=(window._curForms||[])[i];if(!f)return;deck=[null,null,null];f.gens.slice(0,3).forEach((g,k)=>deck[k]=g.cn);closeModal();built.builder=0;show('builder');}
 
 /* ---------------- DECK BUILDER ---------------- */
-// ===== 진형 데이터 (say-bot 기준) =====
-const SHAPES=[
- {name:'일자진',front:3,hit:[33,34,33],feat:'전열이 받는 피해 8% 감소'},
- {name:'기형진',front:1,hit:[60,20,20],feat:'전열 받는 피해 6%↓ · 후열 주는 피해 12%↑'},
- {name:'안형진',front:2,hit:[40,40,20],feat:'전열 통솔 20↑ · 후열 주는 피해 15%↑'},
- {name:'방원진',front:2,hit:[40,40,20],feat:'전열 받는 피해 5%↓ · 후열 연타 확률 40%↑'},
- {name:'추형진',front:1,hit:[60,20,20],feat:'전열 주는 피해 16%↑ · 후열 받는 피해 5%↓'},
- {name:'어린진',front:1,hit:[60,20,20],feat:'전열 피신 12%↑ · 후열 회심·묘책 8%↑'},
-];
+// ===== 진형 데이터 — DATA.FORMS 단일 소스에서 파생 (피격률 say-bot / 배치·해금 9game 관방 해설) =====
+const SHAPES=(D.FORMS||[]).map(f=>({
+ name:f.name, cn:f.cn, front:f.front, hit:(f.hit||[]).map(h=>parseInt(h,10)||0),
+ feat:(f.feats||[]).join(' · '), sj:f.sj, est:f.est, unlock:f.unlock, desc:f.desc, ex:f.ex
+}));
+/* 6칸 배치 도식 — 전열 3칸 / 후열 3칸 그리드에서 진형이 쓰는 칸만 채움.
+   칸 채우기 순서: 1명=중앙 / 2명=좌·우 / 3명=전체. 슬롯 번호는 피격률 배열 순서와 일치. */
+function shapeCells(front){
+ const pat=n=>n===3?[1,1,1]:n===2?[1,0,1]:n===1?[0,1,0]:[0,0,0];
+ const f=pat(front), b=pat(3-front); let s=0;
+ return {front:f.map(v=>v?s++:null), back:b.map(v=>v?s++:null)};
+}
+function shapeGridHtml(sh,labels){
+ const c=shapeCells(sh.front);
+ const cell=(idx,row)=>{
+  if(idx===null) return `<div class="sgc empty"></div>`;
+  const nm=labels&&labels[idx];
+  return `<div class="sgc ${row}">${nm?`<b>${esc(nm)}</b>`:`<b class="mut">${idx+1}번</b>`}<span class="num">피격 ${sh.hit[idx]}%</span></div>`;
+ };
+ return `<div class="sgrid">
+  <div class="sgrow"><span class="sglb" data-pos="전열">전열</span>${c.front.map(i=>cell(i,'fr')).join('')}</div>
+  <div class="sgrow"><span class="sglb" data-pos="후열">후열</span>${c.back.map(i=>cell(i,'bk')).join('')}</div>
+ </div>`;
+}
 let deck=[null,null,null];
 let deckTacs=[[],[],[]];
 let deckShapeIdx=4; // 추형진
@@ -453,7 +486,7 @@ function renderBuilder(){
  el.innerHTML=`<h2 class="head serif">덱 빌더</h2><p class="sub">진형·부대 위치·장수·전법을 편성하면 진형 효과·조합 보너스·연계·속성 합계가 자동 계산됩니다. 편성은 공유 링크로 저장됩니다.</p>
  <div class="filters">
   <label class="mut" style="font-weight:700">진형</label>
-  <select id="shapeSel" class="search" style="flex:0 0 auto;min-width:120px">${SHAPES.map((s,i)=>`<option value="${i}" ${i===deckShapeIdx?'selected':''}>${esc(s.name)}</option>`).join('')}</select>
+  <select id="shapeSel" class="search" style="flex:0 0 auto;min-width:150px">${SHAPES.map((s,i)=>`<option value="${i}" ${i===deckShapeIdx?'selected':''}>${esc(s.name)}${s.sj?` — ${s.sj} 신규`:''}</option>`).join('')}</select>
   <span class="mut" id="shapeInfo"></span>
   <span style="flex:1"></span>
   <select id="loadSj" class="search" style="flex:0 0 auto;min-width:70px"><option value="">시즌</option>${SEASONS.map(s=>`<option value="${s}">S${s}</option>`).join('')}</select>
@@ -461,6 +494,7 @@ function renderBuilder(){
   <button class="tbtn" onclick="shareDeck()">🔗 공유</button>
   <button class="tbtn" onclick="resetDeck()">↺ 초기화</button>
  </div>
+ <div id="shapeMap" style="border:1px solid var(--line2);border-radius:10px;background:var(--panel);padding:10px 12px;margin-bottom:12px"></div>
  <div id="posSlots" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
  <div id="recBox"></div>
  <div class="synbox" id="synbox"></div>
@@ -480,7 +514,10 @@ function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
 function drawDeck(){
  const S=shape();
  document.getElementById('shapeSel').value=deckShapeIdx;
- document.getElementById('shapeInfo').innerHTML=`전열 ${S.front}·후열 ${3-S.front} · 피격 ${S.hit.join('/')}% · ${esc(S.feat)}`;
+ document.getElementById('shapeInfo').innerHTML=`전열 ${S.front}·후열 ${3-S.front} · 피격 ${S.hit.join('/')}%${S.est?'<span class="mut">(추정)</span>':''} · ${esc(S.feat)}${S.sj==='S3'?' <span class="bnew">S3 신규</span>':''}`;
+ const mm=document.getElementById('shapeMap');
+ if(mm) mm.innerHTML=`<div class="mut" style="font-size:10.5px;margin-bottom:4px"><b>${esc(S.name)}</b> 배치 — 전열 3칸·후열 3칸 중 채워진 칸이 실제 자리 (해금 ${esc(S.unlock||'-')})</div>`
+  +shapeGridHtml(S,deck.map((cn,i)=>cn?((GEN[cn]||{}).kr||cn):'빈 자리'));
  document.getElementById('posSlots').innerHTML=deck.map((cn,i)=>{
   const pos=slotPos(i), hit=slotHit(i);
   const label=`<div class="poslabel" data-pos="${pos}">${pos}<small style="display:block;font-size:9px;opacity:.85">피격 ${hit}%</small></div>`;
@@ -618,7 +655,7 @@ function renderGuide(){
  const G=window.GUIDES; const el=document.getElementById('tab-guide');
  if(!G){el.innerHTML='<p class="mut">가이드 데이터를 불러오지 못했습니다.</p>';return;}
  const tagCls={'공식':'g-off','관측':'g-obs','함정':'g-trap','팁':'g-tip'};
- const SEC=[['뽑기·과금',['gacha','banner','next']],['초반·육성',['early','jobs','daily','interior','mid']],['전투·조합',['comp','pvp','builds','equip']],['전법·병법',['tier','combo','status','bingfa']],['운영·시즌',['f2p','mistakes','inherit','season']]];
+ const SEC=[['뽑기·과금',['gacha','banner','next']],['S2·S3 변화',['job23','sys23']],['초반·육성',['early','jobs','daily','interior','mid']],['전투·조합',['comp','pvp','builds','equip']],['전법·병법',['tier','combo','status','bingfa']],['운영·시즌',['f2p','mistakes','inherit','season']]];
  const placed=new Set(SEC.flatMap(s=>s[1]));
  const secs=SEC.map(([lb,keys])=>[lb,keys.map(k=>G.cats.find(c=>c.key===k)).filter(Boolean)]);
  const rest=G.cats.filter(c=>!placed.has(c.key)); if(rest.length) secs.push(['기타',rest]);
@@ -630,12 +667,14 @@ function renderGuide(){
   <div class="foot" style="margin-top:16px"><b>출처(해외 서버 공략)</b> · ${G.sources.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</div>`;
  document.getElementById('gcat').onclick=e=>{const b=e.target.closest('button');if(!b)return;guideCat=b.dataset.k;renderGuide();};
  const cat=G.cats.find(c=>c.key===guideCat)||G.cats[0];
+ // *강조* 마커만 허용하는 안전 렌더 (그 외 태그는 이스케이프)
+ const mk=s=>esc(s).replace(/\*([^*]+)\*/g,'<b>$1</b>');
  const gcard=gr=>{
    let inner;
    if(gr.tb){ // 표: {head:[...], rows:[[cell,...],...]}  (셀에 [text,tag] 가능)
-     inner=`<div style="overflow-x:auto"><table class="gtb"><thead><tr>${gr.tb.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${gr.tb.rows.map(r=>`<tr>${r.map(c=>{const t=Array.isArray(c)?c[0]:c,tag=Array.isArray(c)?c[1]:'';return `<td>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>${gr.note?`<p class="mut" style="font-size:11px;margin:6px 0 0">${esc(gr.note)}</p>`:''}`;
+     inner=`<div style="overflow-x:auto"><table class="gtb"><thead><tr>${gr.tb.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${gr.tb.rows.map(r=>`<tr>${r.map(c=>{const t=Array.isArray(c)?c[0]:c,tag=Array.isArray(c)?c[1]:'';return `<td>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${mk(t)}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>${gr.note?`<p class="mut" style="font-size:11px;margin:6px 0 0">${mk(gr.note)}</p>`:''}`;
    } else {
-     inner=`<ul>${gr.items.map(it=>{const t=Array.isArray(it)?it[0]:it,tag=Array.isArray(it)?it[1]:'';return `<li>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${esc(t)}</li>`;}).join('')}</ul>`;
+     inner=`<ul>${gr.items.map(it=>{const t=Array.isArray(it)?it[0]:it,tag=Array.isArray(it)?it[1]:'';return `<li>${tag?`<span class="gtag ${tagCls[tag]||''}">${tag}</span> `:''}${mk(t)}</li>`;}).join('')}</ul>`;
    }
    return `<div class="gcardx${gr.tb?' wide':''}"><h4>${esc(gr.h)}</h4>${inner}</div>`;
  };
@@ -678,12 +717,42 @@ function renderEV(){
 /* ---------------- REFERENCE ---------------- */
 function renderRef(){
  const el=document.getElementById('tab-ref');
- const forms=D.FORMS.map(f=>`<tr><td><b>${esc(f.name)}</b></td><td class="num">${(f.hit||[]).map(h=>h||'-').join(' / ')}</td><td class="mut">${(f.feats||[]).map(esc).join('<br>')}</td></tr>`).join('');
- const eq=(arr)=>arr.map(e=>`<tr><td><b>${esc(e.name)}</b></td><td class="mut" style="font-size:11px">${esc(e.desc)}</td></tr>`).join('');
- el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub">진형(위치별 피격률·특성) · 장비 특기(대장간/말시장) 글로서리.</p>
- <h3 class="sub2">진형</h3><div class="scroll"><table><thead><tr><th>진형</th><th>피격률(전/중/후)</th><th>특성</th></tr></thead><tbody>${forms}</tbody></table></div>
- <h3 class="sub2">대장간 특기</h3><div class="scroll"><table><tbody>${eq(D.EQUIP.forge)}</tbody></table></div>
- <h3 class="sub2">말 시장 특기</h3><div class="scroll"><table><tbody>${eq(D.EQUIP.horse)}</tbody></table></div>`;
+ const fmCards=SHAPES.map(sh=>`<div class="fmcard">
+   <div class="fmh"><b>${esc(sh.name)}</b> <span class="cn">${esc(sh.cn||'')}</span>
+    ${sh.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}
+    <span class="mut" style="margin-left:auto;font-size:10px">전열 ${sh.front} · 후열 ${3-sh.front}</span></div>
+   <div class="mut" style="font-size:10.5px">해금 · ${esc(sh.unlock||'-')}${sh.est?' <span style="color:var(--new)">· 피격률 추정</span>':''}</div>
+   ${shapeGridHtml(sh)}
+   <div class="fmfeat">${(D.FORMS.find(f=>f.name===sh.name)||{}).feats?.map(esc).join('<br>')||''}</div>
+   <div class="fmdesc">${esc(sh.desc||'')}</div>
+   ${sh.ex?`<div class="fmex">중국 서버 예시 편성 · ${esc(sh.ex)}</div>`:''}
+  </div>`).join('');
+ const forms=D.FORMS.map(f=>`<tr><td><b>${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span> ${f.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}</td><td class="num">${f.front} / ${3-f.front}</td><td class="num">${(f.hit||[]).map(h=>h||'-').join(' / ')}${f.est?' <span class="mut">추정</span>':''}</td><td class="mut">${esc(f.unlock||'-')}</td><td class="mut">${(f.feats||[]).map(esc).join('<br>')}</td></tr>`).join('');
+ const eq=(arr)=>arr.map(e=>`<tr><td><b>${esc(e.name)}</b>${e.tag?`<div class="mut" style="font-size:9.5px">${esc(e.tag)}</div>`:''}</td><td class="mut" style="font-size:11px">${esc(e.desc)}</td></tr>`).join('');
+ el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub">진형(배치·피격률·해금) · 병종 특성 · 직업정통 기능 · 장비 특기(대장간/말시장) 글로서리. <span class="bnew">S3 신규</span> <span class="bok">S1</span> 배지로 시즌을 구분했습니다.</p>
+
+ <h3 class="sub2">진형 배치 <span class="mut" style="font-weight:400">전 8종 (S1 6종 + S3 신규 2종)</span></h3>
+ <div class="note"><b>배치 읽는 법</b> — 편성은 무장 3명이며, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 몇 칸을 쓰는지</b>를 정합니다. 아래 도식의 채워진 칸이 실제 배치 자리이고, 칸 안 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. 좌·중·우 열 위치는 진형 모양을 보여주기 위한 도식이며 <b>전투 계산에는 전열/후열 구분만 유효</b>합니다.<br>
+  <b>S3 신규 2종</b>은 <b>연구소 연구 없이 시즌 진입 즉시 사용</b> 가능합니다. 효과 수치는 확정이나 <b>위치별 피격률은 공식 미공개</b>여서, 효과 구조가 같은 기존 진형에서 유추한 <span class="mut">추정</span>값입니다(구행진↔기형진·추형진 계열 1전열 / 언월진↔안형진·방원진 계열 2전열).</div>
+ <div class="grid g-fm">${fmCards}</div>
+
+ <h3 class="sub2">진형 요약표</h3>
+ <div class="scroll"><table><thead><tr><th>진형</th><th>전/후열</th><th>피격률(슬롯順)</th><th>해금</th><th>특성</th></tr></thead><tbody>${forms}</tbody></table></div>
+
+ <h3 class="sub2">병종 특성 <span class="bnew">S2 신규</span> <span class="mut" style="font-weight:400">고급병종 8종</span></h3>
+ <div class="note">S2의 <b>병종진아</b>(무장 35레벨 · 동전 50,000)로 기본 병종(방패·기·창·궁) → 고급병종 8종으로 진화하면 아래 특성이 붙습니다. 이어 <b>병종전정</b>(40레벨 · 동전 30,000)에서 전정 1개를 고르며, 통용전정·특수전정 2계열이 있고 해금한 전정 간에는 무료로 전환됩니다. <b>시즌 내 기본 병종으로 되돌릴 수 없으니</b> 진아 선택은 신중히. 병종 상성(방패병→궁병→창병→기병→방패병)은 그대로입니다.</div>
+ <div class="scroll"><table><tbody>${eq(D.EQUIP.troop||[])}</tbody></table></div>
+
+ <h3 class="sub2">직업정통 기능 <span class="bnew">S3 신규</span> <span class="mut" style="font-weight:400">직업별 전용 1종</span></h3>
+ <div class="note">직업 <b>두함 3阶</b> 도달 시 자동 활성. 사용권은 활성 즉시 1회 지급 · 24시간마다 1회 회복 · 최대 2회 저장. 자세한 두함·천부 구조는 <a href="#guide" onclick="guideCat='job23';built.guide=0;show('guide');return false;">공략·팁 → 직업스킬 S2·S3 변화</a> 참고.</div>
+ <div class="scroll"><table><tbody>${eq(D.EQUIP.mastery||[])}</tbody></table></div>
+
+ <h3 class="sub2">특기 획득·이월 규칙 <span class="bnew">S2 신규</span></h3>
+ <div class="scroll"><table><tbody>${eq(D.EQUIP.scroll||[])}</tbody></table></div>
+ <div class="note">아래 대장간·말시장 특기 목록은 <b>S1 기준 풀</b>입니다. S2·S3에서 <b>장비 특기 자체가 새로 추가되었다는 관방 자료는 확인되지 않았고</b>, 대신 <b>특기를 바꿀 수 있는 권축</b>이 시즌 상점에 생기는 형태입니다. 전용 특기(무성·풍운·반석 등)는 해당 장비 전용으로 유지됩니다.</div>
+
+ <h3 class="sub2">대장간 특기 <span class="bok">S1</span></h3><div class="scroll"><table><tbody>${eq(D.EQUIP.forge)}</tbody></table></div>
+ <h3 class="sub2">말 시장 특기 <span class="bok">S1</span></h3><div class="scroll"><table><tbody>${eq(D.EQUIP.horse)}</tbody></table></div>`;
 }
 
 /* ---------------- INIT ---------------- */
