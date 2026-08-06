@@ -244,8 +244,8 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=12"></script>
-<script src="guides.js?v=25"></script>
+<script src="data.js?v=13"></script>
+<script src="guides.js?v=26"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META;
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -681,7 +681,7 @@ function renderGuide(){
  document.getElementById('gbody').innerHTML=`<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">`+cat.groups.map(gcard).join('')+`</div>`;
  if(guideCat==='banner') renderEV();
 }
-// 뽑기 수별 기대값 계산기 + 마일스톤 표 (KR 공식: 전설 무장 4%+전법 4%=8%, 무장:전법 1:1, 상시 소프트천장·명장팩 300 자선)
+// 뽑기 수별 기대값 계산기 + 마일스톤 표 (KR 공식: 전설 무장 4%+전법 4%=8%, 무장:전법 1:1, 상시 소프트천장·명장팩 300 자유 선택)
 function evCalc(n){
  const gold=0.08*n;                    // 기대 전설(금색) = 무장 4% + 전법 4%
  const p1=n>=20?1:1-Math.pow(0.92,n);  // 전설 1개+ 확률 (천장 반영)
@@ -690,7 +690,7 @@ function evCalc(n){
 function renderEV(){
  const body=document.getElementById('gbody'); if(!body) return;
  const mile=[5,10,20,50,100,200,300,400];
- const rows=mile.map(n=>{const e=evCalc(n);const note=n===20?'20뽑 천장':n===100?'지정탐방 심원 확정':n===300?'명장팩 자선 1 확정':n===400?'삼황 하드천장':'';
+ const rows=mile.map(n=>{const e=evCalc(n);const note=n===20?'20뽑 천장':n===100?'지정탐방 소원 확정':n===300?'명장팩 자유 선택 1 확정':n===400?'삼황 하드천장':'';
    return `<tr><td class="num">${n}</td><td class="num">${e.gold.toFixed(1)}</td><td class="num">${Math.round(e.p1*100)}%</td><td class="num">${e.wj.toFixed(1)}</td><td class="num">${e.zf.toFixed(1)}</td><td class="mut">${note}</td></tr>`;}).join('');
  const w=document.createElement('div'); w.className='gcardx'; w.style.marginTop='14px';
  w.innerHTML=`<h4>🎲 뽑기 수별 기대값 계산기</h4>
@@ -701,7 +701,7 @@ function renderEV(){
   </div>
   <div id="evOut" style="font-size:12.5px;line-height:1.7"></div>
   <div style="overflow-x:auto;margin-top:10px"><table class="evtb"><thead><tr><th>뽑기</th><th>기대 금색</th><th>금색 1+</th><th>기대 무장</th><th>기대 전법</th><th>비고</th></tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="mut" style="font-size:11px;margin-top:8px">※ KR 공식 확률 기준 근사치 — 상시 인재 모집 카드팩: 전설 무장 4% + 전설 전법 4% = 8%(무장:전법 1:1). 자선(신규 명장팩 300뽑, S2+)·삼황 천장(≈400뽑, 관측)은 확률과 별개의 확정 보장. 5연=390골드(≈1연 78골드).</p>`;
+  <p class="mut" style="font-size:11px;margin-top:8px">※ KR 공식 확률 기준 근사치 — 상시 인재 모집 카드팩: 전설 무장 4% + 전설 전법 4% = 8%(무장:전법 1:1). 자유 선택(신규 명장팩 300뽑, S2+)·삼황 천장(≈400뽑, 관측)은 확률과 별개의 확정 보장. 5연=390골드(≈1연 78골드).</p>`;
  body.appendChild(w);
  const nEl=document.getElementById('evN'),rEl=document.getElementById('evR'),out=document.getElementById('evOut');
  function upd(n){n=Math.max(1,Math.min(2000,n|0));const e=evCalc(n);
@@ -709,7 +709,7 @@ function renderEV(){
    out.innerHTML=`뽑기 <b>${n}회</b> (≈${cost.toLocaleString()}골드) 기준<br>
     · 기대 금색 <b>${e.gold.toFixed(1)}개</b> · 금색 1개+ 확률 <b>${Math.round(e.p1*100)}%</b><br>
     · 기대 무장 <b>~${e.wj.toFixed(1)}</b> · 기대 전법 <b>~${e.zf.toFixed(1)}</b><br>
-    · 명장팩 자선(300뽑) <b>${Math.round(e.jaseon*100)}%</b> 진행 · 삼황 천장(400뽑) <b>${Math.round(e.sanhwang*100)}%</b> 진행${n>=300?' → <span style="color:var(--jade);font-weight:800">자선 1명 확정</span>':''}`;}
+    · 명장팩 자유 선택(300뽑) <b>${Math.round(e.jaseon*100)}%</b> 진행 · 삼황 천장(400뽑) <b>${Math.round(e.sanhwang*100)}%</b> 진행${n>=300?' → <span style="color:var(--jade);font-weight:800">자유 선택 1명 확정</span>':''}`;}
  nEl.oninput=()=>{rEl.value=Math.min(600,nEl.value||1);upd(+nEl.value);};
  rEl.oninput=()=>{nEl.value=rEl.value;upd(+rEl.value);};
  upd(300);
