@@ -142,7 +142,7 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
    <tr><td>직업 수</td><td>6직업(진군·신행·기좌·천공·청낭·병참)</td><td>변동 없음</td><td>변동 없음</td></tr>
    <tr><td>직업 지령<br><span class="cn">=직업스킬</span></td><td>직업별 3~4종 기본 지령</td><td>기본 지령 유지 · 체감 밸런스만 이동</td><td>+ 직업정통 기능 1종(직업 전용)</td></tr>
    <tr><td>성장 축</td><td>직업 두함 5단계(천부점+번영도)</td><td>동일</td><td>두함 단계가 정통 기능·천부 해금과 직결</td></tr>
-   <tr><td>직업 전용 건축</td><td>거마·전탑(천공 전용)</td><td>군략건축 6종 — 단, 동맹 <b>관원</b>이 건설</td><td>정통 건축 4종(의용영·의려·치중영·포석기)</td></tr>
+   <tr><td>직업 전용 건축</td><td>거마·전탑(천공 전용)</td><td>군략건축 6종 — 단, 동맹 <b>관원</b>이 건설</td><td>정통 건축 4종(의용병 주둔지·야전 치료소·보급 주둔지·투석 포대)</td></tr>
    <tr class="hl"><td>진형</td><td>6종</td><td><b>추가 없음</b></td><td><b>+2종</b>(구행진·언월진)</td></tr>
    <tr><td>병종</td><td>기본 4종(방패·기·창·궁) 상성</td><td>고급병종 8종 + 병종전정</td><td>변동 없음</td></tr>
    <tr><td>전장 영향력</td><td>자원·보급 위주(직업=역할 분담)</td><td>동맹 단위로 직업 색이 확장</td><td>개인 단위 정통으로 전투·전장에 직접 반영</td></tr>
@@ -154,17 +154,50 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
 <section id="s2">
  <div class="kick"><span class="no">貳</span><h2 class="serif">S1 기준선 — 6직업 기본 지령과 두함</h2><span class="src">小米 직업 시스템 · 游侠 두함 효과</span></div>
  <p class="lede">무엇이 "달라졌는지" 판단하려면 기준선이 필요합니다. 아래가 S1 시점의 직업스킬 전체이며, <b>S2·S3에서도 이 목록 자체는 그대로 유지</b>됩니다.</p>
+ <p class="lede">원문이 4자 한자라 <b>한국어로 풀어 쓰고 원문을 병기</b>했습니다. 아래 19종이 각 직업이 지도 위에서 쓰는 지령 전부이며, S3에서는 여기에 정통 기능 1종이 더해집니다.</p>
  <div class="scroll"><table>
-  <thead><tr><th>직업</th><th>기본 지령(직업스킬)</th><th>두함 승급 시 강화되는 부분</th></tr></thead>
+  <thead><tr><th>직업</th><th>지령(한국어 · 원문)</th><th>상세효과</th></tr></thead>
   <tbody>
-   <tr><td>진군<br><span class="cn">镇军</span></td><td>긴급동원 · 강습돌격 · 세여파죽</td><td>긴급동원 예비병·자원량↑ / 세여파죽 병력 흡수 비율·상한↑ / 강습돌격의 적 부대 전손↑</td></tr>
-   <tr><td>신행<br><span class="cn">神行</span></td><td>이전양전 · 조호리산 · 은폐행군(이속 +50%) · 중정기고</td><td>이전양전 일일 자원 상한↑ / 은폐행군 지속시간↑</td></tr>
-   <tr><td>기좌<br><span class="cn">奇佐</span></td><td>운주유악(세수·경상·연병) · 인지제의(화공·소화·함정) · 진가허실(위장·의병)</td><td>운주유악의 저장경험·동전·자원 자선함↑ / 인지제의 화공·함정 피해↑</td></tr>
-   <tr><td>천공<br><span class="cn">天工</span></td><td>신기보갑 · 전략건축(거마·전탑) · 전쟁기계(투석차·충차)</td><td>고품질 장비 확률↑ / 5阶에서 강화충차·벽력차·강화거마·강화전탑 해금</td></tr>
-   <tr><td>청낭<br><span class="cn">青囊</span></td><td>연약 · 구치(대상 토지 및 주변 1칸 아군 전손 감소) · 기사회생</td><td>단약 품질·선물상자 등급↑ / 구치의 예비병 전환 비율↑ / 기사회생 영향 부대 수↑</td></tr>
-   <tr><td>병참<br><span class="cn">司仓</span></td><td>군둔 · 생산치중 · 오곡풍등</td><td>채굴량·치중량·오곡풍등 자원량↑ / 5阶에서 목재·철광·석재를 식량으로 전환</td></tr>
+   <tr><td rowspan="3">진군<br><span class="cn">镇军</span><br><span class="cn" style="font-size:.85em">정면 전투</span></td><td><b>긴급 동원</b> <span class="cn">紧急动员</span></td><td>[모병]과 [둔전] 중 하나를 골라 실행. 모병은 즉시 예비병을 대량 획득하고, 둔전은 예비병을 소모해 자원으로 바꾼다.</td></tr>
+   <tr><td><b>강습 돌격</b> <span class="cn">强袭突击</span></td><td>발동하면 내 모든 부대가 효과를 얻어 일정 시간 지속. 그 동안 다른 플레이어 부대와 싸우면 <b>상대의 전손이 증가</b>한다.</td></tr>
+   <tr><td><b>파죽지세</b> <span class="cn">势如破竹</span></td><td>발동 중 다른 플레이어 부대를 이기면 상대 전손의 일정 비율을 <b>내 병력으로 즉시 흡수</b>한다. 전투 1회당·총량 각각 상한이 있고, 무승부에서는 흡수되지 않는다.</td></tr>
+
+   <tr><td rowspan="4">신행<br><span class="cn">神行</span><br><span class="cn" style="font-size:.85em">유격 기동</span></td><td><b>전리품 징발</b> <span class="cn">以战养战</span></td><td>전투에서 이기면 상대의 강약에 따라 자원을 추가로 얻는다. 하루 자원 총량 상한은 <b>40만</b>.</td></tr>
+   <tr><td><b>수비군 유인</b> <span class="cn">调虎离山</span></td><td>토지의 수비군을 다시 뽑는다. 내 병종이 <b>상성상 유리한 수비군</b>이 나오도록 재추첨하는 용도.</td></tr>
+   <tr><td><b>은밀 행군</b> <span class="cn">隐蔽行军</span></td><td>여러 아군 부대를 은신 상태로 만들고 이동 속도를 <b>50%</b> 높인다. 기좌의 화계나 치중 기습과 함께 쓰면 효과가 크다.</td></tr>
+   <tr><td><b>전열 재정비</b> <span class="cn">重整旗鼓</span></td><td>예비병을 소모해 토지 위에 있는 내 부대 1개의 병력을 즉시 가득 채운다.</td></tr>
+
+   <tr><td rowspan="3">기좌<br><span class="cn">奇佐</span><br><span class="cn" style="font-size:.85em">계략 지원</span></td><td><b>정책 결정</b> <span class="cn">运筹帷幄</span></td><td>[세수]·[경상]·[연병] 중 택1. 세수는 동전, 경상은 자원 전환, 연병은 저장 경험을 준다. 확률적으로 서간도 얻는다.</td></tr>
+   <tr><td><b>지형 활용</b> <span class="cn">因地制宜</span></td><td>[화공]·[소화]·[함정] 중 택1. <b>화공</b>은 지정 지역을 불태우고 1분마다 주변 적 건물로 번지며 거마·전탑 내구를 깎고 영채 안 병사를 매분 감소시킨다. <b>소화</b>는 불붙은 지역을 진화한다. <b>함정</b>은 적이 지나갈 길에 미리 설치해 통과 시 폭발 피해를 준다.</td></tr>
+   <tr><td><b>허실 교란</b> <span class="cn">真假虚实</span></td><td>내 부대를 아군으로 위장시키거나, 가짜 부대인 [의병]을 만들어 상대의 판단을 흐린다. 의병은 직접 조작할 수 없다.</td></tr>
+
+   <tr><td rowspan="3">천공<br><span class="cn">天工</span><br><span class="cn" style="font-size:.85em">공병</span></td><td><b>장비 제작 상자</b> <span class="cn">神机宝匣</span></td><td>매일 책서를 소모해 무작위 품질의 장비 상자를 얻는다. 두함 단계가 높을수록 좋은 품질이 나올 확률이 오른다.</td></tr>
+   <tr><td><b>전략 건축</b> <span class="cn">战略建筑</span></td><td>[거마]와 [전탑]을 건설한다. 거마는 적의 진군을 막고 약 30분이면 완성된다. 전탑은 <b>3×3 범위</b>의 적 부대를 원거리로 공격한다.</td></tr>
+   <tr><td><b>공성 병기</b> <span class="cn">战争器械</span></td><td>책서를 소모해 [투석차]와 [충차]를 제작한다. 충차는 성 공략 전용이고 투석차는 여러 상황에 쓸 수 있다.</td></tr>
+
+   <tr><td rowspan="3">청낭<br><span class="cn">青囊</span><br><span class="cn" style="font-size:.85em">치료·유지력</span></td><td><b>단약 제조</b> <span class="cn">炼药</span></td><td>오미자·금창약·행군산 등 단약을 만든다. 오미자는 무장 체력을 회복시키고, 추가로 기능성 단약 선물 상자가 나와 아군에게 줄 수 있다.</td></tr>
+   <tr><td><b>구호</b> <span class="cn">救治</span></td><td>지정 토지와 주변 1칸 범위의 아군 부대 중 <b>무작위 5개</b>가 효과를 얻어 <b>25분</b> 지속. 전투 후 사망병의 <b>50%</b>가 예비병으로 전환되고 중상 시간이 50% 줄어든다.</td></tr>
+   <tr><td><b>기사회생</b> <span class="cn">起死回生</span></td><td>출전한 무장 전원의 <b>중상 상태를 해제</b>하고 30분간 지속. 지속 중 패배해도 중상 시간이 50% 줄어든다.</td></tr>
+
+   <tr><td rowspan="3">병참<br><span class="cn">司仓</span><br><span class="cn" style="font-size:.85em">보급·자원</span></td><td><b>군용 농지</b> <span class="cn">军屯</span></td><td>동맹원이 채굴할 수 있는 <b>고급 전답</b>을 설치한다. 아군은 시설-군둔 화면에서 이를 보고 추가로 둔전 채굴을 할 수 있다. 하루 채굴 횟수에 상한이 있다.</td></tr>
+   <tr><td><b>치중 생산</b> <span class="cn">生产辎重</span></td><td>성지나 대영에 대량의 치중을 생산해 작전을 지원한다.</td></tr>
+   <tr><td><b>오곡 풍작</b> <span class="cn">五谷丰登</span></td><td>매일 1회, 손실 없이 즉시 대량의 자원을 획득한다.</td></tr>
   </tbody>
  </table></div>
+
+ <h3 class="sub">두함이 오르면 직업별로 강해지는 부분</h3>
+ <div class="scroll"><table>
+  <thead><tr><th>직업</th><th>두함 승급 시 강화</th></tr></thead>
+  <tbody>
+   <tr><td>진군</td><td>긴급 동원의 예비병·자원량 증가 / 파죽지세의 흡수 비율·흡수 상한 증가 / 강습 돌격이 적 부대에 주는 전손 증가</td></tr>
+   <tr><td>신행</td><td>전리품 징발의 일일 자원 상한 증가 / 은밀 행군의 지속 시간 증가</td></tr>
+   <tr><td>기좌</td><td>정책 결정으로 얻는 저장 경험·동전·자원 자선함 증가 / 지형 활용의 화공·함정 피해 증가</td></tr>
+   <tr><td>천공</td><td>장비 상자의 고품질 확률 증가. <b>5阶</b>에서 [강화 충차]·[벽력차] 해금(공성 효과 상승), [강화 거마]·[강화 전탑] 해금(거마 내구·전탑 동시 공격 대상 수 증가)</td></tr>
+   <tr><td>청낭</td><td>단약 품질과 선물 상자의 고급 단약 확률 증가 / 구호의 예비병 전환 비율 증가 / 기사회생이 영향을 주는 부대 수 증가</td></tr>
+   <tr><td>병참</td><td>군용 농지 채굴량·치중 생산량·오곡 풍작 자원량 모두 증가. <b>5阶</b>에서 목재·철광·석재를 일정 비율로 식량으로 전환 가능</td></tr>
+  </tbody>
+ </table></div>
+ <div class="note">천부와 기능은 <b>리셋</b>할 수 있습니다 — 모든 천부·기능을 미활성 상태로 되돌리고 천부점을 전액 반환받는 기능이 있으며, 기능 쿨타임 중에는 리셋이 불가합니다.</div>
  <h3 class="sub">직업 두함(職業頭銜) 5阶 승급 요구치</h3>
  <div class="scroll"><table style="min-width:420px">
   <thead><tr><th>승급</th><th class="r">천부점</th><th class="r">번영도</th></tr></thead>
@@ -186,7 +219,7 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
    <tr><td>개수</td><td><b>1개</b>(직업 전용)</td><td><b>4개</b></td></tr>
    <tr><td>해금 단계</td><td><b>3阶에서 딱 하나</b></td><td><b>1 · 2 · 4 · 5阶에서 각 1개씩</b></td></tr>
    <tr><td>사용 방식</td><td>사용권 소모 — 활성 즉시 1회 지급 · 24시간마다 1회 충전 · 최대 2회 보유</td><td>사용 개념 없음(자동 적용)</td></tr>
-   <tr><td>예시</td><td>천공 포석기 · 진군 의용영 · 청낭 의려 · 병참 치중영 · 신행 신행돌진 · 기좌 계략강화</td><td>관방 상세 미공개</td></tr>
+   <tr><td>예시</td><td>천공 투석 포대 · 진군 의용병 주둔지 · 청낭 야전 치료소 · 병참 보급 주둔지 · 신행 순간 행군 · 기좌 계략 강화</td><td>관방 상세 미공개</td></tr>
   </tbody>
  </table></div>
  <h3 class="sub">단계별로 무엇이 열리는가</h3>
@@ -202,7 +235,7 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
  </table></div>
  <div class="note ok"><b>실전 결론 두 줄</b><br>
   ① <b>3阶가 분수령</b>입니다 — 직업정통의 본체(액티브)가 여기 있습니다. 누적 천부점 15점 · 번영도 30,000까지는 반드시 찍어야 하는 라인.<br>
-  ② <b>5阶는 기능 자체를 키워줍니다</b> — 신행돌진 5칸 → 8칸, 의려 병력 보충 600 → 1,000. 즉 5阶는 "패시브 하나 더"가 아니라 액티브 성능 업그레이드입니다.</div>
+  ② <b>5阶는 기능 자체를 키워줍니다</b> — 순간 행군 5칸 → 8칸, 야전 치료소 병력 보충 600 → 1,000. 즉 5阶는 "패시브 하나 더"가 아니라 액티브 성능 업그레이드입니다.</div>
  <div class="note warn"><b>미공개 항목</b> — 천부 4개의 개별 효과 텍스트는 관방이 상세 공개하지 않았습니다. <b>해금 단계(1·2·4·5阶)만 확정</b>이고, 각 천부가 정확히 무엇을 얼마나 올려주는지는 S3 도입 후 게임 내 확인이 필요합니다.</div>
 </section>
 
@@ -210,14 +243,14 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
  <div class="kick"><span class="no">參</span><h2 class="serif">S2 변화 — 군략건축 6종</h2><span class="src">4399 官方 S2 예고 · 7723 실전 해설</span></div>
  <p class="lede">S2에서 <b>개인 직업스킬은 새로 추가되지 않습니다</b>. 대신 각 직업의 성격을 지도 위에 구현한 군략건축 6종이 신설되어, 직업 운영이 개인 단위에서 동맹 단위로 확장됩니다.</p>
  <div class="scroll"><table>
-  <thead><tr><th>건축</th><th>색깔(대응 직업)</th><th>효과</th><th>범위·제약</th></tr></thead>
+  <thead><tr><th>건축(한국어 · 원문)</th><th>성격</th><th>상세효과</th><th>범위·제약</th></tr></thead>
   <tbody>
-   <tr><td>무위영<br><span class="cn">武卫营</span></td><td>진군</td><td>범위 내에서 아군이 적 부대를 이기면 적 전손의 <b>160%</b>를 식량으로 획득</td><td>3칸</td></tr>
-   <tr><td>의사<br><span class="cn">医舍</span></td><td>청낭</td><td>범위 내 전투에서 아군이 잃은 병력의 <b>10%</b>를 예비병으로 환급</td><td>3칸</td></tr>
-   <tr><td>백공감<br><span class="cn">百工监</span></td><td>천공</td><td>공성기계 제작 시간을 <b>70%</b>로 단축</td><td>3칸</td></tr>
-   <tr><td>곡창<br><span class="cn">谷仓</span></td><td>병참</td><td>주변 아군 영채의 징병 치중 소모 <b>20% 감소</b> + 신속징병 병력 증가</td><td>4칸</td></tr>
-   <tr><td>기문진<br><span class="cn">奇门阵</span></td><td>기좌</td><td>동맹원 부대를 건축 지역으로 즉시 전송</td><td>플레이어당 60분 1회</td></tr>
-   <tr><td>행역<br><span class="cn">行驿</span></td><td>신행</td><td>최대 <b>40개</b> 동맹 부대 집결·조동 + 징병 기능</td><td>건물 타일</td></tr>
+   <tr><td><b>무위 병영</b><br><span class="cn">武卫营</span></td><td>진군</td><td>범위 안에서 아군이 적 부대를 이기면 적 전손의 <b>160%</b>에 해당하는 식량을 획득. 방어전 자원 회수용</td><td>3칸</td></tr>
+   <tr><td><b>치료소</b><br><span class="cn">医舍</span></td><td>청낭</td><td>범위 안의 전투에서 아군이 잃은 병력의 <b>10%</b>를 예비병으로 되돌려 줌. 동맹 방어선 유지용</td><td>3칸</td></tr>
+   <tr><td><b>공방 감독소</b><br><span class="cn">百工监</span></td><td>천공</td><td>범위 안에서 공성 기계 제작 시간이 <b>70%</b>로 단축. 공성 준비 가속용</td><td>3칸</td></tr>
+   <tr><td><b>곡물 창고</b><br><span class="cn">谷仓</span></td><td>병참</td><td>주변 아군 영채의 징병 치중 소모 <b>20% 감소</b> + 신속 징병으로 얻는 병력 증가</td><td>4칸</td></tr>
+   <tr><td><b>기문 전송진</b><br><span class="cn">奇门阵</span></td><td>기좌</td><td>동맹원의 부대를 이 건물이 있는 지역으로 즉시 전송</td><td>플레이어당 60분 1회</td></tr>
+   <tr><td><b>역참</b><br><span class="cn">行驿</span></td><td>신행</td><td>동맹 부대를 최대 <b>40개</b>까지 모아 조동, 징병 기능도 포함. 대규모 집결 거점</td><td>건물 타일</td></tr>
   </tbody>
  </table></div>
  <div class="note warn"><b>가장 흔한 오해</b> — "대응 직업" 열은 건축의 성격을 직업에 대응시킨 정리일 뿐, <b>해당 직업이어야 지을 수 있는 것이 아닙니다</b>. 건설 자격은 <b>동맹 관원 여부</b>로만 판정됩니다. 공통 조건: 동맹원이 점령한 지반 위 건설 · 정철 100 + 동맹자금 50,000 · 종류별 1개 상한 · 내구 10,000(철거가 쉬움) · 업그레이드 불가.</div>
@@ -239,22 +272,23 @@ section{page-break-inside:auto;}h3.sub{break-after:avoid;}}
   <li><span class="badge b-off">공식</span> <b>정통 기능</b>(전용 스킬): 직업 두함 <b>3阶</b> 도달 시 자동 활성.</li>
   <li><span class="badge b-off">공식</span> <b>정통 천부</b>(패시브): 직업 두함 <b>1 · 2 · 4 · 5阶</b>에서 순차 자동 활성.</li>
   <li><span class="badge b-off">공식</span> 정통 기능 사용권: 활성 즉시 1회 지급 · <b>24시간마다 1회 회복</b> · <b>최대 2회</b>까지 저장.</li>
-  <li><span class="badge b-tip">팁</span> 정통 기능 4종(의용영·의려·치중영·포석기)은 전장에 <b>실제 건물을 세우는</b> 방식 — 위치 선정이 곧 성능입니다.</li>
+  <li><span class="badge b-tip">팁</span> 정통 기능 4종(의용병 주둔지·야전 치료소·보급 주둔지·투석 포대)은 전장에 <b>실제 건물을 세우는</b> 방식 — 위치 선정이 곧 성능입니다.</li>
  </ul>
- <h3 class="sub">직업정통 기능 6종 상세</h3>
+ <h3 class="sub">직업정통 기능 6종 — 상세효과</h3>
+ <p class="lede">원문이 4자 한자라 <b>한국어로 풀어 쓰고 원문을 병기</b>했습니다. 여섯 중 넷은 지도에 <b>건물을 세우는</b> 방식이고, 신행만 지령, 기좌만 기존 계략에 옵션이 붙는 형태입니다.</p>
  <div class="scroll"><table>
-  <thead><tr><th>직업</th><th>정통 기능</th><th>효과</th><th>수치·제약</th></tr></thead>
+  <thead><tr><th>직업</th><th>정통 기능</th><th>상세효과</th><th>수치·제약</th></tr></thead>
   <tbody>
-   <tr><td>천공<br><span class="cn">天工</span></td><td>포석기<br><span class="cn">抛石机</span></td><td>2~5칸 거리의 지역에 포석 지령 → 30초 준비 후 적 건물·부대에 피해. 투석차와 전탑을 합친 원거리 방어 건물</td><td>탄약 60분당 1발 회복 · 기능 재사용 시 탄약 만충 · 부대로 조작 필요</td></tr>
-   <tr><td>진군<br><span class="cn">镇军</span></td><td>의용영<br><span class="cn">义勇营</span></td><td>아군이 방문하면 전 부대에 [의용] 버프 → 이후 전투 결과와 무관하게 무장별 병력 보충</td><td>무장당 최대 <b>400병력</b> · 플레이어 1일 1회 방문 · 영채 1개당 누적 10회 · 세여파죽과 중첩</td></tr>
-   <tr><td>청낭<br><span class="cn">青囊</span></td><td>의려<br><span class="cn">医庐</span></td><td>전투로 잃은 병사의 일부를 수용 → 부대를 보내 [수편]으로 병력 보충. 소형 병영 개념</td><td>기본 전손의 <b>5%</b> 수용 · 무장당 최대 <b>600</b>(두함 5阶 <b>1,000</b>) · 1일 1회 · 재사용 시 수용 비율 강화 30분</td></tr>
-   <tr><td>병참<br><span class="cn">司仓</span></td><td>치중영<br><span class="cn">辎重营</span></td><td>치중 보급 + 저장 상한을 제공하는 소형 동맹 대영</td><td>인접 아군 영채 저장 상한 <b>+10만</b> · 다만 이 건물이 받는 <b>화공 피해 2배</b> · 재사용 시 치중 만충</td></tr>
-   <tr><td>신행<br><span class="cn">神行</span></td><td>신행돌진<br><span class="cn">神行突进</span></td><td>5칸 내 지역으로 즉시 행군 — 대부분의 건물 차단을 무시하는 사실상 순간이동</td><td>두함 5阶에서 <b>8칸</b>까지 · 사용 후 [정피역갈] <b>10분</b> — 그 동안 은폐행군·중정기고 사용 불가</td></tr>
-   <tr><td>기좌<br><span class="cn">奇佐</span></td><td>계략강화<br><span class="cn">计略强化</span></td><td>계략 시전 시 [강화] 옵션 추가 — 강화 3종</td><td>화공 = 연소 범위 1칸 확대 / 의병 = 정예화로 전투력↑ / 함정 = 피해 범위 확대(대신 외곽 피해 감소)</td></tr>
+   <tr><td>천공<br><span class="cn">天工</span></td><td><b>투석 포대</b><br><span class="cn">抛石机</span></td><td>투석차와 전탑을 합친 <b>원거리 공격 건물</b>을 세운다. 2~5칸 거리의 지역에 포석 지령을 내리면 30초 준비 후 적 건물과 부대에 피해를 준다.</td><td>탄약 <b>60분마다 1발</b> 회복 · 기능 재사용 시 탄약 만충 · 발사에 부대 조작 필요</td></tr>
+   <tr><td>진군<br><span class="cn">镇军</span></td><td><b>의용병 주둔지</b><br><span class="cn">义勇营</span></td><td>아군이 방문할 수 있는 <b>병영</b>을 세운다. 방문한 부대는 [의용]을 얻어, 이후 전투에서 <b>이기든 지든</b> 무장마다 병력을 보충받는다.</td><td>무장당 최대 <b>400병력</b> · 플레이어 1일 1회 방문 · 병영 1개당 누적 10회 · 파죽지세와 중첩</td></tr>
+   <tr><td>청낭<br><span class="cn">青囊</span></td><td><b>야전 치료소</b><br><span class="cn">医庐</span></td><td>소형 병영 역할의 <b>치료 시설</b>을 세운다. 전투로 잃은 병사가 이곳에 수용되고, 부대를 보내 [수편]하면 병력을 보충한다.</td><td>전손의 <b>5%</b> 수용 · 무장당 최대 <b>600</b>(두함 5阶 <b>1,000</b>) · 1일 1회 · 재사용 시 수용 비율 30분 강화</td></tr>
+   <tr><td>병참<br><span class="cn">司仓</span></td><td><b>보급 주둔지</b><br><span class="cn">辎重营</span></td><td>치중을 보급하고 저장 상한을 늘려 주는 <b>소형 동맹 대영</b>을 세운다.</td><td>인접 아군 영채 저장 상한 <b>+10만</b> · 다만 이 건물이 받는 <b>화공 피해 2배</b>(화계 취약) · 재사용 시 치중 만충</td></tr>
+   <tr><td>신행<br><span class="cn">神行</span></td><td><b>순간 행군</b><br><span class="cn">神行突进</span></td><td>부대를 5칸 안의 지역으로 즉시 이동시킨다. 대부분의 <b>건물 차단을 무시</b>하는 사실상의 순간이동.</td><td>두함 5阶에서 <b>8칸</b> · 사용 후 [정피역갈] <b>10분</b> — 그 동안 은밀 행군·전열 재정비 사용 불가</td></tr>
+   <tr><td>기좌<br><span class="cn">奇佐</span></td><td><b>계략 강화</b><br><span class="cn">计略强化</span></td><td>계략을 쓸 때 <b>[강화] 옵션</b>을 추가로 고를 수 있다.</td><td>강화 화공 = 번지는 범위 1칸 확대 / 강화 의병 = 정예화로 전투력 상승 / 강화 함정 = 피해 범위 확대(대신 외곽 피해 감소)</td></tr>
   </tbody>
  </table></div>
- <div class="note"><b>동맹 운영이 바뀌는 지점</b> — <span class="badge b-obs">관측</span> S1·S2에서 "있어도 없어도 되는" 취급이던 <b>진군</b>이 의용영으로 확실한 자리를 얻습니다. 동맹의 직업 비율 설계와 정통 기능 발동 지휘가 S3부터 동맹장의 실무가 되며, 기존 "청낭 30~35명" 같은 S1식 비율 공식은 재계산이 필요합니다.</div>
- <div class="note"><b>명칭 주의</b> — 한글명은 원문 직역입니다. 한국 서버 S3 도입 시 정식 명칭(포석기·의용영·의려·치중영·신행돌진·계략강화)은 재확인이 필요합니다.</div>
+ <div class="note"><b>동맹 운영이 바뀌는 지점</b> — <span class="badge b-obs">관측</span> S1·S2에서 "있어도 없어도 되는" 취급이던 <b>진군</b>이 의용병 주둔지로 확실한 자리를 얻습니다. 동맹의 직업 비율 설계와 정통 기능 발동 지휘가 S3부터 동맹장의 실무가 되며, 기존 "청낭 30~35명" 같은 S1식 비율 공식은 재계산이 필요합니다.</div>
+ <div class="note"><b>명칭 주의</b> — 이 문서의 스킬명은 원문 4자 한자를 한국어로 풀어 쓴 것입니다. 중국 공략과 대조할 때는 <b>괄호 안 한자를 기준</b>으로 보세요. 한국 서버 정식 명칭은 S3 도입 시 확정됩니다.</div>
 </section>
 
 <section id="s5">
