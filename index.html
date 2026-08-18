@@ -181,6 +181,39 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fmcard .fmdesc{font-size:11px;color:var(--soft);margin:5px 0 0;}
 .fmcard .fmex{font-size:10.5px;color:var(--faint);margin:4px 0 0;}
 .g-fm{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
+/* S3 티어덱(강덱 합집) */
+.g-td{grid-template-columns:repeat(auto-fill,minmax(345px,1fr));}
+.tdcard{border:1px solid var(--line2);border-radius:10px;background:var(--paper);overflow:hidden;display:flex;flex-direction:column;}
+.tdcard .tdh{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 11px;background:var(--panel2);border-bottom:1px solid var(--line);}
+.tdcard .tdh .nm{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:14.5px;}
+.tdcard .tdh .sq{font-size:9.5px;font-weight:800;color:#fff;background:var(--jade);border-radius:4px;padding:1px 6px;}
+.tdcard .tdh .shp{font-size:10.5px;font-weight:800;color:var(--bronze);border:1px solid var(--bronze);border-radius:100px;padding:0 7px;cursor:pointer;}
+.tdcard .tdd{padding:6px 11px;font-size:11px;color:var(--soft);border-bottom:1px dashed var(--line);}
+.tdcard .tdd div{padding-left:9px;position:relative;}
+.tdcard .tdd div::before{content:"·";position:absolute;left:0;color:var(--faint);font-weight:800;}
+.tdrow{display:flex;gap:9px;padding:7px 11px;border-bottom:1px dashed var(--line);align-items:flex-start;}
+.tdrow .ti{flex:1;min-width:0;}
+.tdrow .tn{font-weight:800;font-size:13px;}
+.tdrow .tmeta{font-size:10px;color:var(--faint);margin-top:1px;}
+.tdsk{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+.tdsk .tm,.tdcell .tm,.tdtb td .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--ink);cursor:pointer;line-height:1.6;}
+.tdsk .tm.leg,.tdcell .tm.leg,.tdtb td .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
+.tdsk .tm.hero,.tdcell .tm.hero,.tdtb td .tm.hero{border-color:var(--hero);color:var(--hero);background:color-mix(in srgb,var(--hero) 12%,transparent);}
+.tdsk .tm.alt,.tdcell .tm.alt,.tdtb td .tm.alt{border-style:dashed;opacity:.75;}
+.tdsk .tm.nolink,.tdcell .tm.nolink,.tdtb td .tm.nolink{cursor:default;color:var(--soft);}
+.tdcell .bfx{font-size:10.5px;color:var(--jade);border:1px solid color-mix(in srgb,var(--jade) 45%,transparent);background:color-mix(in srgb,var(--jade) 10%,transparent);border-radius:100px;padding:0 7px;cursor:pointer;}
+.tdcell .bfx.g{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
+.tdcell .bfx.nolink{cursor:default;color:var(--soft);border-color:var(--line2);background:var(--panel);}
+.tdcell{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+.tdfoot{margin-top:auto;padding:6px 11px;text-align:right;font-size:10px;color:var(--seal);font-weight:800;cursor:pointer;background:var(--panel);border-top:1px solid var(--line);}
+.tdtb{border-collapse:collapse;width:100%;font-size:12px;}
+.tdtb th,.tdtb td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top;}
+.tdtb thead th{background:var(--panel2);font-weight:800;font-size:11px;}
+.tdtb td:first-child,.tdtb tbody th{background:var(--panel2);font-weight:800;font-size:10.5px;color:var(--soft);white-space:nowrap;width:76px;}
+.tdtb tbody tr:nth-child(even) td:not(:first-child){background:color-mix(in srgb,var(--panel2) 40%,transparent);}
+.tdgh{display:flex;gap:7px;align-items:center;}
+.tdstat{font-size:11.5px;font-weight:700;color:var(--seal);}
+.tdsetlbl{font-size:11px;font-weight:800;color:var(--faint);margin:14px 0 6px;padding-left:2px;}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
 .sjb.new{background:var(--new);}
 .tsj{font-size:8.5px;font-weight:800;color:var(--faint);margin-left:3px;opacity:.85;}
@@ -233,6 +266,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <main>
  <section id="tab-meta"></section>
  <section id="tab-season"></section>
+ <section id="tab-td"></section>
  <section id="tab-srank"></section>
  <section id="tab-builder"></section>
  <section id="tab-tac"></section>
@@ -243,11 +277,12 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </main>
 <div class="footer">
  <div style="margin-bottom:6px">정적 문서(인쇄용): <a href="overview.html">S1 종합자료</a> · <a href="roster.html">S1~15 로스터</a> · <a href="new-tactics.html">신규전법 상세</a> · <a href="s2s3-guide.html">S2·S3 가이드</a> · <a href="s2s3-system.html"><b>S2·S3 직업스킬·진형 시스템 변화</b></a></div>
- 데이터: sgmdtx.com(中 편성·전법·장수) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
+ 데이터: sgmdtx.com(中 편성·전법·장수) · S3 티어덱=铁血雕馋 S3強隊合集·出隊路線(한글 번역 시트) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=16"></script>
 <script src="guides.js?v=26"></script>
+<script src="tierdecks.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -265,12 +300,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
+const TABS=[['meta','메타'],['td','S3 티어덱'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,td:renderTd,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" onclick="show('${k}')">${l}</button>`).join('');
@@ -341,6 +376,151 @@ function renderMeta(){
  <div>${prepC}</div>`;
  if(innerWidth<=760){document.getElementById('metagrid').style.gridTemplateColumns='1fr';}
 
+}
+
+/* ---------------- S3 티어덱 (강덱 합집 · 출대 루트) ---------------- */
+const TD=window.TIERDECKS||{groups:[]};
+const nk=s=>String(s==null?'':s).replace(/\s+/g,'');
+const KRTAC={};Object.keys(TAC).forEach(cn=>{const k=nk((TAC[cn]||{}).kr);if(k&&!(k in KRTAC))KRTAC[k]=cn;});
+const TACNM=Object.keys(KRTAC).filter(k=>k.length>1).sort((a,b)=>b.length-a.length);
+const BFTYPO={'기림':'기임','치국론론':'치국론','출사펴':'출사표','한녀':'한녀전','풍속':'풍속통의','논무':'논무','장서각도략':'장서각도략'};
+const BFIDX={};BF.forEach((b,i)=>{const k=nk(b.kr);if(!(k in BFIDX))BFIDX[k]=i;});
+const SPEC={};['forge','horse','troop','mastery','almm','scroll'].forEach(k=>(D.EQUIP[k]||[]).forEach(e=>{const n=nk(e.name).replace(/[\[\]]/g,'');if(n&&!(n in SPEC))SPEC[n]=e;}));
+const FMBY={};(D.FORMS||[]).forEach(f=>{FMBY[nk(f.name)]=f;});
+const TDF=[['sk1','전법 1'],['sk2','전법 2'],['alt','대체 전법'],['unit','병종'],['spec','병종 특화'],
+           ['book','병서'],['nd1','병서 ①'],['nd2','병서 ②'],['eqattr','장비 속성'],['eq','장비 특기'],
+           ['mount','탈것 특기'],['stat','스탯 배분']];
+
+function tdTierCls(t){return /^T0/.test(t)?'T0':/^T1(\.|$|-)/.test(t)&&!/^T1\.[2-9]/.test(t)?'T1':'T2';}
+/* 전법 칩 */
+function tdChip(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');if(!t)return '';
+ const cn=KRTAC[nk(t)];
+ if(!cn)return `<span class="tm nolink ${alt?'alt':''}">${alt?'↔':''}${esc(t)}</span>`;
+ return `<span class="tm ${gradeCls(cn)} ${alt?'alt':''}" onclick="event.stopPropagation();tacModal('${cn}')">${alt?'↔':''}${esc(tName(cn))}</span>`;}
+function tdSk(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
+  let main=String(l).replace(/[（(]([^）)]*)[）)]/g,(m,x)=>{alts.push(x);return ' ';});
+  const op=main.search(/[（(]/);                        // 원문의 닫히지 않은 괄호 = 대체 표기
+  if(op>=0){alts.push(main.slice(op+1));main=main.slice(0,op);}
+  main.split(/[\/、,+]|→/).forEach(x=>{const c=tdChip(x,false);if(c)out.push(c);});
+  alts.forEach(a=>a.split(/[\/、,]/).forEach(x=>{const c=tdChip(x,true);if(c)out.push(c);}));});
+ return out.join('');}
+/* 공백 무시 인라인 매칭 — 대체 전법처럼 여러 전법이 공백으로 이어진 셀용 */
+function tdInline(txt){txt=String(txt||'');
+ const idx=[],ch=[];for(let i=0;i<txt.length;i++)if(!/\s/.test(txt[i])){ch.push(txt[i]);idx.push(i);}
+ const flat=ch.join(''),used=new Array(flat.length).fill(false),mk=[];
+ TACNM.forEach(nm=>{let p=0;while((p=flat.indexOf(nm,p))!==-1){let free=true;
+   for(let k=p;k<p+nm.length;k++)if(used[k]){free=false;break;}
+   if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],idx[p+nm.length-1]+1,KRTAC[nm]]);}
+   p++;}});
+ mk.sort((a,b)=>a[0]-b[0]);let out='',pos=0;
+ mk.forEach(m=>{if(m[0]<pos)return;out+=esc(txt.slice(pos,m[0]));
+  out+=`<span class="tm ${gradeCls(m[2])}" onclick="event.stopPropagation();tacModal('${m[2]}')">${esc(txt.slice(m[0],m[1]))}</span>`;pos=m[1];});
+ out+=esc(txt.slice(pos));return out;}
+/* 병서 · 특기 */
+function tdBook(lines){return (lines||[]).map(l=>{const g=/^[금金][·.]/.test(l);
+  let n=String(l).replace(/^[금金][·.]\s*/,'').trim();const key=nk(BFTYPO[nk(n)]||n);const i=BFIDX[key];
+  const lb=(g?'<b style="font-size:9px">금</b> ':'')+esc(n);
+  return i==null?`<span class="bfx nolink">${lb}</span>`:`<span class="bfx ${g?'g':''}" onclick="event.stopPropagation();bfModal(${i})">${lb}</span>`;}).join(' ');}
+function tdSpec(lines){return (lines||[]).map(l=>String(l).split(/[\/、,\s]+/).filter(Boolean).map(n=>{
+   const e=SPEC[nk(n).replace(/[\[\]]/g,'')];
+   return e?`<span class="tm" onclick="event.stopPropagation();spModal('${esc(nk(n))}')">${esc(n)}</span>`
+           :`<span class="tm nolink">${esc(n)}</span>`;}).join('')).join('');}
+function spModal(k){const e=SPEC[k];if(!e)return;
+ openModal(`<div class="mh"><b style="font-size:16px">${esc(e.name)}</b><button class="x" onclick="closeModal()">×</button></div>
+ <div class="mb"><div style="font-size:13px;line-height:1.6">${esc(e.desc||'')}</div></div>`);}
+function tdAttr(lines){return (lines||[]).map(l=>{const m=String(l).match(/무력|지력|통솔|선공|공성|매력/g);
+  return `<b class="tdstat">${esc(m?m.join(' · '):l)}</b>`;}).join(' ');}
+function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
+ const rows=(f.pos||[]).map((r,ri)=>`<div class="sgrow"><div class="sglb" data-pos="${ri===0?'전열':'후열'}">${ri===0?'전열':'후열'}</div>${
+   String(r).split('').map(c=>`<div class="sgc ${c==='o'?(ri===0?'fr':'bk'):'empty'}"></div>`).join('')}</div>`).join('');
+ openModal(`<div class="mh"><b style="font-size:16px">${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span>
+  ${f.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}<button class="x" onclick="closeModal()">×</button></div>
+ <div class="mb"><div class="mut">전열 ${f.front} / 후열 ${3-f.front} · 피격률 ${(f.hit||[]).join(' / ')||'-'} · ${esc(f.unlock||'')}</div>
+  <div class="sgrid">${rows}</div>
+  <div class="fmfeat">${(f.feats||[]).map(esc).join('<br>')}</div>
+  <div class="fmdesc">${esc(f.desc||'')}</div>${f.ex?`<div class="fmex">예 · ${esc(f.ex)}</div>`:''}</div>`);}
+
+/* 카드 · 모달 */
+function tdCard(d,i){
+ const gens=d.gens.map(g=>{const cn=GKR[nk(g.kr)]||'';
+   const meta=[(g.unit||[]).join('/'),(g.spec||[]).join('/')].filter(Boolean).join(' · ');
+   return `<div class="tdrow">${cn?avHtml(cn,'sm'):'<span class="av sm"></span>'}
+    <div class="ti"><span class="tn">${cn?facChip(cn):''} ${esc(g.kr)}</span>${cn?' '+sjBadge(cn):''}
+     <div class="tmeta">${esc(meta)}</div>
+     <div class="tdsk">${tdSk(g.sk1)}${tdSk(g.sk2)}</div></div></div>`;}).join('');
+ return `<div class="tdcard">
+  <div class="tdh">${d.order?`<span class="sq">${esc(d.order)}</span>`:''}
+   ${d.tier?`<span class="tier ${tdTierCls(d.tier)}">${esc(d.tier)}</span>`:''}
+   <span class="nm">${esc(d.name||d.title)}</span>
+   ${d.pre?`<span class="chip" style="background:var(--panel);color:var(--soft);border:1px solid var(--line2)">${esc(d.pre)}</span>`:''}
+   ${d.shape?`<span class="shp" onclick="event.stopPropagation();fmModalByName('${esc(d.shape)}')">${esc(d.shape)}</span>`:''}</div>
+  ${(d.desc||[]).length?`<div class="tdd">${d.desc.map(x=>`<div>${esc(x)}</div>`).join('')}</div>`:''}
+  ${gens}
+  <div class="tdfoot" onclick="tdModal(${i})">편성 상세(병서·장비·스탯) →</div></div>`;}
+
+function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
+ const head=d.gens.map(g=>{const cn=GKR[nk(g.kr)]||'';
+   return `<th><div class="tdgh">${cn?avHtml(cn,'sm'):''}<div><div style="font-weight:800;font-size:13px">${esc(g.kr)}</div>
+    <div class="mut" style="font-size:10px">${cn?esc(((GEN[cn]||{}).bing)||''):''}</div></div></div></th>`;}).join('');
+ const rows=TDF.map(f=>{const key=f[0];
+   if(!d.gens.some(g=>(g[key]||[]).length))return '';
+   const tds=d.gens.map(g=>{const v=g[key]||[];let h='';
+     if(!v.length)h='<span class="mut">-</span>';
+     else if(key==='sk1'||key==='sk2')h=`<div class="tdcell">${tdSk(v)}</div>`;
+     else if(key==='alt')h=v.map(x=>tdInline(x)).join('<br>');
+     else if(key==='book'||key==='nd1'||key==='nd2')h=`<div class="tdcell">${tdBook(v)}</div>`;
+     else if(key==='eq'||key==='mount')h=`<div class="tdcell">${tdSpec(v)}</div>`;
+     else if(key==='eqattr')h=`<div class="tdcell">${tdAttr(v)}</div>`;
+     else h=v.map(esc).join('<br>');
+     return `<td>${h}</td>`;}).join('');
+   return `<tr><td>${f[1]}</td>${tds}</tr>`;}).join('');
+ openModal(`<div class="mh">${d.order?`<span class="sq">${esc(d.order)}</span>`:''}
+  ${d.tier?`<span class="tier ${tdTierCls(d.tier)}">${esc(d.tier)}</span>`:''}
+  <b style="font-size:16px">${esc(d.name||d.title)}</b>
+  ${d.shape?`<span class="shp" onclick="fmModalByName('${esc(d.shape)}')">${esc(d.shape)}</span>`:''}
+  <button class="x" onclick="closeModal()">×</button></div>
+ <div class="mb">${(d.desc||[]).length?`<div class="note" style="margin:0 0 10px">${d.desc.map(esc).join('<br>')}</div>`:''}
+  <div class="scroll"><table class="tdtb"><thead><tr><th></th>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="mut" style="margin-top:8px">전법·병서·특기 이름 클릭 = 효과 상세. 시트 원문 표기를 그대로 옮겼으며 매칭되지 않은 항목(회색)은 링크가 없습니다.</div></div>`,1);}
+
+/* 렌더 */
+const GKR={};Object.keys(GEN).forEach(cn=>{const k=nk((GEN[cn]||{}).kr);if(k&&!(k in GKR))GKR[k]=cn;});
+let tdState={kind:'tier',grp:'all',q:''};
+function tdGroups(){return (TD.groups||[]).filter(g=>g.kind===tdState.kind);}
+function renderTd(){
+ const el=document.getElementById('tab-td');
+ const gs=tdGroups(),nT=(TD.groups||[]).filter(g=>g.kind==='tier').reduce((a,g)=>a+g.decks.length,0),
+       nC=(TD.groups||[]).filter(g=>g.kind==='coex').reduce((a,g)=>a+g.decks.length,0);
+ el.innerHTML=`<h2 class="head serif">S3 티어덱</h2>
+ <p class="sub">중국 <b>铁血雕馋</b>의 S3 강덱 합집·출대 루트를 한글 번역 시트에서 그대로 옮긴 자료. 시즌별 편성(sgmdtx) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>편성 상세</b>를 누르면 전체 빌드 표가 열립니다.</p>
+ <div class="note"><b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
+  <div style="margin-top:5px">출처 ${esc(TD.src||'')} · ${esc(TD.ver||'')}</div></div>
+ <div class="ttabs" id="tdKind">
+  <button data-k="tier" class="${tdState.kind==='tier'?'on':''}">티어 강덱 <span class="tn">${nT}</span></button>
+  <button data-k="coex" class="${tdState.kind==='coex'?'on':''}">5팀 공존 · 출대 루트 <span class="tn">${nC}</span></button></div>
+ <div class="filters"><div class="spill" id="tdGrp">
+  <button data-g="all" class="${tdState.grp==='all'?'on':''}">전체</button>
+  ${gs.map(g=>`<button data-g="${g.id}" class="${tdState.grp===g.id?'on':''}">${esc(g.label)}</button>`).join('')}</div></div>
+ <div class="filters"><input class="search" id="tdQ" placeholder="덱 이름·장수 검색 (예: 초원마, 주태)" value="${esc(tdState.q)}"><span class="mut" id="tdCnt"></span></div>
+ <div id="tdBody"></div>`;
+ document.getElementById('tdKind').onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.kind=b.dataset.k;tdState.grp='all';renderTd();};
+ document.getElementById('tdGrp').onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.grp=b.dataset.g;renderTd();};
+ const q=document.getElementById('tdQ');q.oninput=()=>{tdState.q=q.value;tdBody();};
+ tdBody();
+}
+function tdBody(){
+ const q=nk(tdState.q),list=[],html=[];window._tdList=list;
+ tdGroups().filter(g=>tdState.grp==='all'||g.id===tdState.grp).forEach(g=>{
+  const ds=g.decks.filter(d=>!q||nk(d.title+d.name+d.gens.map(x=>x.kr).join('')).indexOf(q)>=0);
+  if(!ds.length)return;
+  html.push(`<h3 class="sub2">${esc(g.label)}${g.sub&&g.sub!==g.label?` <span class="mut" style="font-weight:700">${esc(g.sub)}</span>`:''} <span class="mut">${ds.length}덱 · 原 ${esc(g.cn||'')}</span></h3>`);
+  let set=null,buf=[];
+  const flush=()=>{if(!buf.length)return;html.push((set?`<div class="tdsetlbl">${esc(set)}</div>`:'')+`<div class="grid g-td">${buf.join('')}</div>`);buf=[];};
+  ds.forEach(d=>{if((d.set||'')!==(set||'')){flush();set=d.set||'';}
+   const i=list.push(d)-1;buf.push(tdCard(d,i));});
+  flush();});
+ document.getElementById('tdBody').innerHTML=html.join('')||'<p class="mut">해당 조건의 덱이 없습니다.</p>';
+ document.getElementById('tdCnt').textContent=list.length+'개 덱';
 }
 
 /* ---------------- SEASON RANKING (graph) ---------------- */
