@@ -201,6 +201,14 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fcard .tdd div{padding-left:9px;position:relative;}
 .fcard .tdd div::before{content:"·";position:absolute;left:0;color:var(--faint);font-weight:800;}
 .fcard .frow .tacmini .tm.min{opacity:.62;border-style:dashed;}
+.tdinfo{border:1px solid var(--line2);border-left:4px solid var(--jade);border-radius:6px;background:var(--panel);margin:12px 0;}
+.tdinfo>summary{cursor:pointer;padding:9px 13px;font-size:11.5px;color:var(--soft);}
+.tdinfo>summary b{color:var(--ink);}
+.tdinfo[open]>summary{border-bottom:1px solid var(--line);}
+.tdinfo-b{padding:10px 13px 12px;font-size:11.5px;color:var(--soft);line-height:1.62;}
+.tdinfo-b p{margin:0 0 7px;}.tdinfo-b p:last-child{margin-bottom:0;}
+.tdinfo-b b{color:var(--ink);}
+.tdinfo-b .tdh2{display:inline-block;min-width:74px;color:var(--jade);}
 .tdkv{display:grid;grid-template-columns:40px 1fr;gap:3px 8px;font-size:11.5px;align-items:start;}
 .tdkv .k{color:var(--faint);font-size:10px;font-weight:800;padding-top:2px;}
 .sjb{font-size:9px;font-weight:800;color:#fff;background:var(--faint);padding:0 5px;border-radius:100px;vertical-align:middle;}
@@ -508,6 +516,14 @@ function renderTd(){
  <p class="sub">중국 <b>铁血雕馋</b>의 S3 강덱 합집·출대 루트를 한글 번역 시트에서 그대로 옮긴 자료. 시즌별 편성(sgmdtx) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>편성 상세</b>를 누르면 전체 빌드 표가 열립니다.</p>
  <div class="note"><b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
   <div style="margin-top:5px">출처 ${esc(TD.src||'')} · ${esc(TD.ver||'')}</div></div>
+ <details class="tdinfo"><summary><b>장서각(藏书阁) · 장품도략</b>이란? — 「장서각 조감초」처럼 장서각이 전제인 덱 읽는 법</summary>
+  <div class="tdinfo-b">
+   <p><b class="tdh2">도략(병서) 칸</b> 무장은 <b>25·30·35레벨</b>에 도략 칸이 1개씩 열려 <b>최대 3칸</b>(해금 동전 1만·3만·5만). 각 칸은 랜덤 3권 중 1권을 연구하며, 후보 9권 안에 <b>같은 계열은 중복 등장하지 않음</b>. 3권을 다 배우면 서간 4개로 재수리(리롤) 가능, <b>10회 이내 전용 금서 보장</b>. <b>전용(專屬) 도략은 무장당 동시 1개만 적용</b>.</p>
+   <p><b class="tdh2">장서각</b> 시즌 한정 컨텐츠. 패업 단계 도달(또는 시나리오 6~7일차)에 개방되고 <b>무훈 3만</b>으로 장품도략을 구매. <b>4권</b>이 배치되어 개방 시 2권 + 7일 후 2권 해금. <b>시즌 종료 시 소멸(이월 없음)</b>, 금색 등급은 랜덤 해금·재수리로 획득 불가.</p>
+   <p><b class="tdh2">한 권에 3효과?</b> 장품도략 1권이 도략 3권의 효과를 합쳐주는 것은 <b>아님</b> — 칸은 그대로 3칸이고, 장품은 그 중 <b>한 칸</b>에 들어가는 다절 효과의 강력한 한 권(예 손책 《制霸》 후열 피해 500%+체력 100% 회복, 추격 시 1000%/200%, 발동 55%). 대신 <b>전용 금서와는 양립 불가</b>(전용 1개 제한)라는 것이 실제 트레이드오프.</p>
+   <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. 지력 기반 발동으로 적에게 <b>혼란</b>을 걸고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
+   <p class="mut"><b>미확정</b> · 장품도략을 끼면 남은 2칸(범용)까지 잠기는지는 공식 문구가 없습니다. 다만 이 표와 중섭 편성 DB(sgmdtx) 모두 장품·연의 도략 보유 장수는 <b>그 한 권만 표기</b>되고(같은 편성 동료는 3권 표기) 범용·금서와 섞인 사례가 없어, 실무에선 “장서각 도략 하나로 병서 세팅 끝”으로 취급합니다.</p>
+  </div></details>
  <div class="ttabs" id="tdKind">
   <button data-k="tier" class="${tdState.kind==='tier'?'on':''}">티어 강덱 <span class="tn">${nT}</span></button>
   <button data-k="coex" class="${tdState.kind==='coex'?'on':''}">5팀 공존 · 출대 루트 <span class="tn">${nC}</span></button></div>
