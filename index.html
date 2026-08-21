@@ -377,7 +377,7 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  </div>`);}
 
 /* ---------------- META (한국 시즌 환산 · 한국 S1~S4 = 中 S1~S11) ---------------- */
-const KSEA=[['S1',[1]],['S2',[2,3]],['S3',[4,5,6,7,8]],['S4',[9,10,11]]];
+const KSEA=[['S2',[2,3]],['S3',[4,5,6,7,8]],['S4',[9,10,11]]];   // 한국 S2~S4 = 中 S2~S11
 let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt'};
 function metaAgg(tier){
  const G={},T={},forms=[];
@@ -392,7 +392,7 @@ function metaAgg(tier){
         const y=T[t]||(T[t]={cn:t,tot:0,by:{}});y.tot++;y.by[i]=(y.by[i]||0)+1;});
     });});});
   forms.push(n);});
- const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[3]||0)-(a.by[3]||0));
+ const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[2]||0)-(a.by[2]||0));
  return {gen:srt(G),tac:srt(T),forms:forms};
 }
 function metaRows(rows,isTac,max,forms){
@@ -420,16 +420,16 @@ function renderMeta(){
  const el=document.getElementById('tab-meta');
  const A=metaAgg(mState.tier);
  const g0=A.gen[0]||{cn:'',tot:0,by:{}}, t0=A.tac[0]||{cn:'',tot:0,by:{}};
- const rise=A.gen.map(r=>({r,d:(r.by[3]||0)-(r.by[2]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
+ const rise=A.gen.map(r=>({r,d:(r.by[2]||0)-(r.by[1]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
  const cnOf=i=>'中 '+(KSEA[i][1].length>1?'S'+KSEA[i][1][0]+'~S'+KSEA[i][1][KSEA[i][1].length-1]:'S'+KSEA[i][1][0]);
  const th=(k,l,tip)=>`<th class="num sortable ${mState.sort===k?'on':''}" data-k="${k}" title="${tip||''}">${l}</th>`;
  const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
- el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S1~S4 기준</span></h2>
- <p class="sub">중국 서버 편성(T0·T1)을 <b>한국 시즌으로 환산</b>해 집계했습니다 — 한국 S1=中 S1 · S2=中 S2~S3 · S3=中 S4~S8 · S4=中 S9~S11. 아직 한국에 오지 않은 구간(中 S12~)은 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다. 환산 근거는 <b>참고</b> 탭의 시즌 환산표에 있습니다.</p>
+ el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S2~S4 기준</span></h2>
+ <p class="sub">중국 서버 편성(T0·T1)을 <b>한국 시즌으로 환산</b>해 집계했습니다 — <b>한국 S2=中 S2~S3 · S3=中 S4~S8 · S4=中 S9~S11</b> (中 S2~S11). <b>티어덱 탭이 다루는 한국 S2·S3·S4와 같은 범위</b>이며, 지나간 한국 S1(中 S1)과 아직 오지 않은 中 S12~는 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다. 환산 근거는 <b>참고</b> 탭의 시즌 환산표에 있습니다.</p>
  <div class="kpis">
   <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>통산 <b>${g0.tot}회</b> · ${byTxt(g0)}</p></div>
   <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
-  <div class="kpi"><h4>📈 한국 S4 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S3 ${rise.r.by&&rise.r.by[2]||0}회 → S4 ${rise.r.by&&rise.r.by[3]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
+  <div class="kpi"><h4>📈 한국 S4 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S3 ${rise.r.by&&rise.r.by[1]||0}회 → S4 ${rise.r.by&&rise.r.by[2]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
  </div>
  <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.</div>
  <div class="filters">
@@ -444,7 +444,7 @@ function renderMeta(){
   <tbody id="mBody"></tbody></table></div>`;
  const fill=()=>{document.getElementById('mBody').innerHTML=
    metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',60,A.forms)
-   ||`<tr><td colspan="7" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
+   ||`<tr><td colspan="6" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
  document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
  document.getElementById('mMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.mode=b.dataset.m;renderMeta();};
  document.getElementById('mView').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.view=b.dataset.v;renderMeta();};
@@ -460,12 +460,11 @@ function futureHtml(){
  const F=window.FUTURE;if(!F)return '';
  const mapRows=F.map.map(m=>`<tr class="${m.pred?'pred':''}">
    <td><b>한국 ${esc(m.kr)}</b>${m.pred?' <span class="bnew">예상</span>':''}</td>
-   <td>${esc(m.tw)}</td><td>${esc(m.cn)}</td>
+   <td>${esc(m.tw)}</td><td>${esc(m.cn)}</td><td class="mut">${esc(m.script||'-')}</td>
    <td class="num">${m.gens?m.gens+'명':'<span class="mut">·</span>'}</td>
    <td class="num">${m.tacs?m.tacs+'종':'<span class="mut">·</span>'}</td>
    <td class="mut">${esc(m.note||'')}</td></tr>`).join('');
- const ALIAS={'SP제갈량':'제갈량(2)','황보숭':'황보숭(2)'};
- const gtag=n=>{const cn=GKR[nk(ALIAS[n]||n)]||GKR[nk(String(n).replace(/^SP/,''))];
+ const gtag=n=>{const cn=tdCn(n)||GKR[nk(String(n).replace(/^SP/,''))];
    const g=GEN[cn]||{};const sj=cn?sjBadge(cn):'';
    return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(n)} ${sj}</span>`
             :`<span class="tag">${esc(n)}</span>`;};
@@ -483,10 +482,16 @@ function futureHtml(){
  return `<h3 class="sub2">시즌 환산표 <span class="mut" style="font-weight:400">한국 ↔ 대만 ↔ 중국</span></h3>
  <div class="note">${F.premise.map(p=>`<div style="margin-bottom:4px">· ${p}</div>`).join('')}</div>
  <div class="scroll"><table class="mtb">
-  <thead><tr><th>한국</th><th>대만</th><th>중국</th><th class="num">신규 무장</th><th class="num">신규 전법</th><th>비고</th></tr></thead>
+  <thead><tr><th>한국</th><th>대만</th><th>중국(무장 풀)</th><th>시나리오</th><th class="num">신규 무장</th><th class="num">신규 전법</th><th>비고</th></tr></thead>
   <tbody>${mapRows}</tbody></table></div>
+ <div class="note" style="margin:8px 0 0">${F.cnNote||''}</div>
  <div class="mut" style="margin:8px 0 0">${F.tail}</div>
  <div class="mut" style="margin:4px 0 0">${esc(F.unlinked||'')}</div>
+ ${F.yeoni?`<h3 class="sub2">연의(演義) 시스템 <span class="mut" style="font-weight:400">한국 S3부터</span></h3>
+ <div class="note">${F.yeoni.what}
+  ${F.yeoni.how.map(x=>`<div style="margin-top:5px">· ${x}</div>`).join('')}
+  <div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>
+  <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>`:''}
  <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
  <div style="display:grid;gap:11px">${seas}</div>
  <h3 class="sub2">티어덱 원본 시트 보는 법</h3>
@@ -558,7 +563,9 @@ function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
   <div class="fmdesc">${esc(f.desc||'')}</div>${f.ex?`<div class="fmex">예 · ${esc(f.ex)}</div>`:''}</div>`);}
 
 /* 카드 · 모달 — 시즌별 편성(fcardHtml/fcModal)과 동일 양식 */
-function tdCn(kr){const k=nk(kr);if(GKR[k])return GKR[k];
+const GALIAS={'SP제갈량':'제갈량(2)','SP제갈량량':'제갈량(2)','황보숭':'황보숭(2)'};
+function tdCn(kr){const a=GALIAS[nk(kr)];if(a&&GKR[nk(a)])return GKR[nk(a)];
+ const k=nk(kr);if(GKR[k])return GKR[k];
  let s2=nk(String(kr||'').replace(/\(.*?\)/g,''));
  for(let i=0;i<3&&!GKR[s2];i++)s2=s2.replace(/^(SP|연의|[위촉오군]·)/,'');
  return GKR[s2]||'';}
@@ -571,7 +578,8 @@ function tdBookChips(g){return ['book','nd1','nd2'].map(k=>(g[k]||[]).map(v=>{
   }).join('')).join('');}
 function tdCard(d,i){
  const gens=d.gens.map(g=>{const cn=tdCn(g.kr),G=GEN[cn]||{};
-   const sig=G.skill?`<span class="tm sig ${gradeCls(G.skill)}" onclick="event.stopPropagation();tacModal('${G.skill}')">◈ ${esc(tName(G.skill))}</span>`:'';
+   const vari=/연의|전환|전직/.test(g.kr);
+   const sig=G.skill?`<span class="tm sig ${gradeCls(G.skill)}" title="${vari?'연의 특성·전직 표기 — 실제 고유 전법·병종은 원본과 다를 수 있습니다':''}" onclick="event.stopPropagation();tacModal('${G.skill}')">◈ ${esc(tName(G.skill))}${vari?'*':''}</span>`:'';
    return `<div class="frow" ${cn?`onclick="event.stopPropagation();genModal('${cn}')"`:''}>
      ${cn?avHtml(cn,'sm'):'<span class="av sm"></span>'}
      <div class="gi"><span class="gn">${cn?facChip(cn):''} ${esc(g.kr)}</span> ${cn?sjBadge(cn):''}
