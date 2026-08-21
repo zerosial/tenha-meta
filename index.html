@@ -211,6 +211,8 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .mtb td.num.on{color:var(--seal);font-weight:800;}
 .mtb tbody tr:hover{background:var(--panel2);}
 .mtb td.mbar{width:120px;padding-right:12px;}
+.mtb tr.pred td{opacity:.85;}
+.mtb tr.pred td:first-child{border-left:3px solid var(--new);}
 .mtb td.mbar>span{display:block;height:9px;border-radius:2px;background:var(--seal);min-width:1px;}
 .tdinfo{border:1px solid var(--line2);border-left:4px solid var(--jade);border-radius:6px;background:var(--panel);margin:12px 0;}
 .tdinfo>summary{cursor:pointer;padding:9px 13px;font-size:11.5px;color:var(--soft);}
@@ -267,6 +269,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
   <div class="logo"><span class="mk serif">天</span><span>천하결전 <em>메타랩</em></span></div>
   <span class="sp"></span>
   <span class="mut" id="stat"></span>
+  <button class="tbtn" id="sjBtn" onclick="toggleSj()" title="장수·전법 배지의 시즌 표기를 한국/중국 기준으로 전환">시즌 韓</button>
   <button class="tbtn" onclick="toggleTheme()">◐</button>
  </div>
  <nav class="tabs" id="tabs"></nav>
@@ -290,7 +293,8 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=16"></script>
 <script src="guides.js?v=26"></script>
-<script src="tierdecks.js?v=1"></script>
+<script src="tierdecks.js?v=2"></script>
+<script src="future.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
@@ -300,8 +304,25 @@ const AVBASE='https://cdn.sgmdtx.com/img/avatar/';
 function avHtml(cn,cls){const g=GEN[cn]||{};const kr=g.kr||cn;const av=g.av;const ini=esc((kr||cn)[0]);
  return `<span class="av ${cls||''}">${av?`<img loading="lazy" src="${AVBASE}${esc(av)}" onerror="this.remove()">`:''}<b>${ini}</b></span>`;}
 function facChip(cn){const f=(GEN[cn]||{}).faction;return f?`<span class="chip f-${f}">${FAC[f]}</span>`:'';}
-function sjBadge(cn){const g=GEN[cn]||{};return g.sj?`<span class="sjb ${g.official===false?'new':''}">${esc(g.sj)}</span>`:'';}
-function tsjB(cn){const s=(TAC[cn]||{}).sj;return s?`<span class="tsj">${esc(s)}</span>`:'';}
+/* ---------- 시즌 환산 (중국 → 한국) ---------- */
+const CN2KR=[[1,1,'S1'],[2,3,'S2'],[4,8,'S3'],[9,11,'S4'],[12,14,'S5'],[15,17,'S6']];
+const KRPRED={S5:1,S6:1};
+function krSj(sj){const m=/^S(\d+)/.exec(String(sj||''));if(!m)return null;const n=+m[1];
+ const r=CN2KR.find(x=>n>=x[0]&&n<=x[1]);return r?{kr:r[2],pred:!!KRPRED[r[2]],cn:'S'+n}:null;}
+let sjMode='kr';try{sjMode=localStorage.getItem('tenhaSjMode')||'kr';}catch(e){}
+function sjLabel(sj){const k=krSj(sj);
+ if(!k)return {txt:esc(sj||''),tip:''};
+ return sjMode==='kr'
+  ?{txt:k.kr+(k.pred?'?':''),tip:'한국 '+k.kr+(k.pred?'(예상)':'')+' = 중국 '+k.cn}
+  :{txt:k.cn,tip:'중국 '+k.cn+' = 한국 '+k.kr+(k.pred?'(예상)':'')};}
+function toggleSj(){sjMode=sjMode==='kr'?'cn':'kr';
+ try{localStorage.setItem('tenhaSjMode',sjMode);}catch(e){}
+ const b=document.getElementById('sjBtn');if(b)b.textContent=sjMode==='kr'?'시즌 韓':'시즌 中';
+ built={};show((location.hash||'#meta').slice(1));}
+function sjBadge(cn){const g=GEN[cn]||{};if(!g.sj)return '';const l=sjLabel(g.sj);
+ return `<span class="sjb ${g.official===false?'new':''}" title="${l.tip}">${l.txt}</span>`;}
+function tsjB(cn){const s=(TAC[cn]||{}).sj;if(!s)return '';const l=sjLabel(s);
+ return `<span class="tsj" title="${l.tip}">${l.txt}</span>`;}
 function tyB(t){return t?`<span class="ty ty-${t}">${t}</span>`:'';}
 function tName(cn){return (TAC[cn]||{}).kr||cn;}
 function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
@@ -316,6 +337,7 @@ function show(id){
  if(!built[id]){({meta:renderMeta,td:renderTd,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
+(function(){const b=document.getElementById('sjBtn');if(b)b.textContent=sjMode==='kr'?'시즌 韓':'시즌 中';})();
 document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" onclick="show('${k}')">${l}</button>`).join('');
 function toggleTheme(){const r=document.documentElement;const c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark');}
 
@@ -354,26 +376,28 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  <h4 style="margin:14px 0 4px">등장 편성 <span class="mut">${apps.length}건</span></h4><div class="mut" style="font-size:11px">${apps.slice(0,40).map(esc).join(' · ')||'-'}</div>
  </div>`);}
 
-/* ---------------- META (中·台 S1~S5 = 한국 S1~S4 상당) ---------------- */
-const MSJ=[1,2,3,4,5];
+/* ---------------- META (한국 시즌 환산 · 한국 S1~S4 = 中 S1~S11) ---------------- */
+const KSEA=[['S1',[1]],['S2',[2,3]],['S3',[4,5,6,7,8]],['S4',[9,10,11]]];
 let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt'};
 function metaAgg(tier){
- const G={},T={};
- MSJ.forEach(s=>{(SEA[s]||[]).filter(f=>tier==='all'||f.tier===tier).forEach(f=>{
-   f.gens.forEach(g=>{
-     const r=G[g.cn]||(G[g.cn]={cn:g.cn,tot:0,by:{}});r.tot++;r.by[s]=(r.by[s]||0)+1;
-     g.tacs.forEach((t,i)=>{const x=TAC[t]||{};
-       if(i===0||x.minimal||x.bf)return;
-       const y=T[t]||(T[t]={cn:t,tot:0,by:{}});y.tot++;y.by[s]=(y.by[s]||0)+1;});
-   });});});
- const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[5]||0)-(a.by[5]||0));
- return {gen:srt(G),tac:srt(T),
-   forms:MSJ.map(s=>(SEA[s]||[]).filter(f=>tier==='all'||f.tier===tier).length)};
+ const G={},T={},forms=[];
+ KSEA.forEach(([kr,list],i)=>{
+  let n=0;
+  list.forEach(s=>{(SEA[s]||[]).filter(f=>tier==='all'||f.tier===tier).forEach(f=>{
+    n++;
+    f.gens.forEach(g=>{
+      const r=G[g.cn]||(G[g.cn]={cn:g.cn,tot:0,by:{}});r.tot++;r.by[i]=(r.by[i]||0)+1;
+      g.tacs.forEach((t,k)=>{const x=TAC[t]||{};
+        if(k===0||x.minimal||x.bf)return;
+        const y=T[t]||(T[t]={cn:t,tot:0,by:{}});y.tot++;y.by[i]=(y.by[i]||0)+1;});
+    });});});
+  forms.push(n);});
+ const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[3]||0)-(a.by[3]||0));
+ return {gen:srt(G),tac:srt(T),forms:forms};
 }
 function metaRows(rows,isTac,max,forms){
+ const key=mState.sort, val=r=>key==='tot'?r.tot:(r.by[key]||0);
  const pct=(n,i)=>forms[i]?Math.round(n/forms[i]*100):0;
- const key=mState.sort;
- const val=r=>key==='tot'?r.tot:(r.by[key]||0);
  const q=nk(mState.q);
  let list=rows.filter(r=>{const kr=(isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{})).kr||r.cn;
    return !q||nk(kr).indexOf(q)>=0||nk(r.cn).indexOf(q)>=0;});
@@ -382,33 +406,32 @@ function metaRows(rows,isTac,max,forms){
  const top=Math.max(1,...list.map(val));
  return list.map(r=>{
   const o=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
-  const nm=esc(o.kr||r.cn);
   const badge=isTac?(o.grade==='전설'?'style="color:var(--leg)"':o.grade==='영웅'?'style="color:var(--hero)"':''):'';
-  const cells=MSJ.map((s,i)=>{const n=r.by[s]||0;
-    const tip=`S${s} ${n}회 / ${forms[i]}편성 = ${pct(n,i)}%`;
+  const cells=KSEA.map(([kr],i)=>{const n=r.by[i]||0;
+    const tip=`한국 ${kr} · ${n}회 / ${forms[i]}편성 = ${pct(n,i)}%`;
     const txt=!n?'<span class="mut">·</span>':(mState.mode==='pct'?pct(n,i)+'<span class="mut">%</span>':n);
-    return `<td class="num ${key==+s?'on':''}" title="${tip}">${txt}</td>`;}).join('');
-  const click=isTac?`tacModal('${r.cn}')`:`genModal('${r.cn}')`;
-  return `<tr onclick="${click}" style="cursor:pointer">
-   <td><b ${badge}>${nm}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
+    return `<td class="num ${key==i?'on':''}" title="${tip}">${txt}</td>`;}).join('');
+  return `<tr onclick="${isTac?`tacModal('${r.cn}')`:`genModal('${r.cn}')`}" style="cursor:pointer">
+   <td><b ${badge}>${esc(o.kr||r.cn)}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
    ${cells}<td class="num"><b>${r.tot}</b></td>
    <td class="mbar"><span style="width:${val(r)/top*100}%"></span></td></tr>`;}).join('');
 }
 function renderMeta(){
  const el=document.getElementById('tab-meta');
  const A=metaAgg(mState.tier);
- const g0=A.gen[0]||{cn:'',tot:0}, t0=A.tac[0]||{cn:'',tot:0};
- const rise=A.gen.slice().map(r=>({r,d:(r.by[5]||0)-(r.by[4]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:''},d:0};
- const newest=A.gen.filter(r=>((GEN[r.cn]||{}).sj||'')==='S5').slice(0,1)[0];
- const th=(k,l)=>`<th class="num sortable ${mState.sort===k?'on':''}" data-k="${k}">${l}</th>`;
- el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">中·台 S1~S5</span></h2>
- <p class="sub">중국·대만 서버 <b>S1~S5</b> 편성(T0·T1)만 집계 — 한국 서버 <b>S1~S4</b>에 해당하는 구간입니다. 이후 시즌(S6~S15)은 아직 한국에 오지 않았으므로 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다.</p>
+ const g0=A.gen[0]||{cn:'',tot:0,by:{}}, t0=A.tac[0]||{cn:'',tot:0,by:{}};
+ const rise=A.gen.map(r=>({r,d:(r.by[3]||0)-(r.by[2]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
+ const cnOf=i=>'中 '+(KSEA[i][1].length>1?'S'+KSEA[i][1][0]+'~S'+KSEA[i][1][KSEA[i][1].length-1]:'S'+KSEA[i][1][0]);
+ const th=(k,l,tip)=>`<th class="num sortable ${mState.sort===k?'on':''}" data-k="${k}" title="${tip||''}">${l}</th>`;
+ const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
+ el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S1~S4 기준</span></h2>
+ <p class="sub">중국 서버 편성(T0·T1)을 <b>한국 시즌으로 환산</b>해 집계했습니다 — 한국 S1=中 S1 · S2=中 S2~S3 · S3=中 S4~S8 · S4=中 S9~S11. 아직 한국에 오지 않은 구간(中 S12~)은 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다. 환산 근거는 <b>참고</b> 탭의 시즌 환산표에 있습니다.</p>
  <div class="kpis">
-  <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>S1~S5 통산 <b>${g0.tot}회</b> 등장 · ${MSJ.map(s=>'S'+s+' '+(g0.by&&g0.by[s]||0)).join(' · ')}</p></div>
-  <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>S1~S5 통산 <b>${t0.tot}회</b> 채용 · ${MSJ.map(s=>'S'+s+' '+(t0.by&&t0.by[s]||0)).join(' · ')}</p></div>
-  <div class="kpi"><h4>📈 S5 급상승 장수</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S4 ${rise.r.by&&rise.r.by[4]||0}회 → S5 ${rise.r.by&&rise.r.by[5]||0}회 (<b>+${rise.d}</b>)${newest?` · S5 신규 최다는 <b>${esc((GEN[newest.cn]||{}).kr||'')}</b> ${newest.tot}회`:''}</p></div>
+  <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>통산 <b>${g0.tot}회</b> · ${byTxt(g0)}</p></div>
+  <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
+  <div class="kpi"><h4>📈 한국 S4 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S3 ${rise.r.by&&rise.r.by[2]||0}회 → S4 ${rise.r.by&&rise.r.by[3]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
  </div>
- <div class="note"><b>집계 범위</b> · 시즌별 편성 수 ${MSJ.map((s,i)=>'S'+s+' '+A.forms[i]+'개').join(' · ')} (T0·T1, T2 제외) · <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수 · 배지 = 출시 시즌(<span class="bok">S1</span> 한국 보유 · <span class="bnew">번역</span> 미수록).</div>
+ <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.</div>
  <div class="filters">
   <div class="seg" id="mTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===mState.tier?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="mMode">${[['cnt','횟수'],['pct','채용률']].map(([k,l])=>`<button data-m="${k}" class="${k===mState.mode?'on':''}">${l}</button>`).join('')}</div>
@@ -417,11 +440,11 @@ function renderMeta(){
   ${mState.sort!=='tot'?`<button class="tbtn" id="mReset">정렬 초기화(합계)</button>`:''}
  </div>
  <div class="scroll"><table class="mtb">
-  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${MSJ.map(s=>th(s,'S'+s)).join('')}${th('tot','합계')}<th></th></tr></thead>
+  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${KSEA.map(([kr],i)=>th(i,'한국 '+kr,cnOf(i))).join('')}${th('tot','합계')}<th></th></tr></thead>
   <tbody id="mBody"></tbody></table></div>`;
  const fill=()=>{document.getElementById('mBody').innerHTML=
    metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',60,A.forms)
-   ||`<tr><td colspan="8" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
+   ||`<tr><td colspan="7" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
  document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
  document.getElementById('mMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.mode=b.dataset.m;renderMeta();};
  document.getElementById('mView').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.view=b.dataset.v;renderMeta();};
@@ -430,6 +453,46 @@ function renderMeta(){
  const rb=document.getElementById('mReset');if(rb)rb.onclick=()=>{mState.sort='tot';renderMeta();};
  const q=document.getElementById('mQ');q.oninput=()=>{mState.q=q.value;fill();};
  fill();
+}
+
+/* ---------------- 시즌 환산 · 미래시(카드팩) ---------------- */
+function futureHtml(){
+ const F=window.FUTURE;if(!F)return '';
+ const mapRows=F.map.map(m=>`<tr class="${m.pred?'pred':''}">
+   <td><b>한국 ${esc(m.kr)}</b>${m.pred?' <span class="bnew">예상</span>':''}</td>
+   <td>${esc(m.tw)}</td><td>${esc(m.cn)}</td>
+   <td class="num">${m.gens?m.gens+'명':'<span class="mut">·</span>'}</td>
+   <td class="num">${m.tacs?m.tacs+'종':'<span class="mut">·</span>'}</td>
+   <td class="mut">${esc(m.note||'')}</td></tr>`).join('');
+ const ALIAS={'SP제갈량':'제갈량(2)','황보숭':'황보숭(2)'};
+ const gtag=n=>{const cn=GKR[nk(ALIAS[n]||n)]||GKR[nk(String(n).replace(/^SP/,''))];
+   const g=GEN[cn]||{};const sj=cn?sjBadge(cn):'';
+   return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(n)} ${sj}</span>`
+            :`<span class="tag">${esc(n)}</span>`;};
+ const seas=F.seasons.map(s=>`<div class="gcardx wide">
+   <h4>한국 ${esc(s.kr)} <span class="mut" style="font-weight:700">${esc(s.tw)} · ${esc(s.cn)}</span>
+     <span class="mut" style="font-weight:700;margin-left:6px">신규 무장 ${s.newGens}명 · 신규 전법 ${s.newTacs}종</span></h4>
+   <div class="note" style="margin:0 0 8px">${s.rule}</div>
+   ${s.packs.map(p=>`<div style="margin-bottom:7px"><b class="mut" style="color:var(--seal)">${esc(p.name)}</b>
+     ${p.same?`<span class="mut"> — ${esc(p.same)}</span>`:''}
+     ${p.gens?`<div style="margin-top:3px">${p.gens.map(gtag).join('')}${p.tacs?` <span class="mut">+ 전법 ${p.tacs}종</span>`:''}</div>`:''}</div>`).join('')}
+   <div class="mut" style="margin:8px 0 3px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업 카드팩 목록 (열릴 때마다 등장)</div>
+   ${s.pae.map(row=>`<div style="margin:2px 0">${row.map(gtag).join('')}</div>`).join('')}
+   <div class="mut" style="margin-top:8px">근거 · ${s.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div>
+  </div>`).join('');
+ return `<h3 class="sub2">시즌 환산표 <span class="mut" style="font-weight:400">한국 ↔ 대만 ↔ 중국</span></h3>
+ <div class="note">${F.premise.map(p=>`<div style="margin-bottom:4px">· ${p}</div>`).join('')}</div>
+ <div class="scroll"><table class="mtb">
+  <thead><tr><th>한국</th><th>대만</th><th>중국</th><th class="num">신규 무장</th><th class="num">신규 전법</th><th>비고</th></tr></thead>
+  <tbody>${mapRows}</tbody></table></div>
+ <div class="mut" style="margin:8px 0 0">${F.tail}</div>
+ <div class="mut" style="margin:4px 0 0">${esc(F.unlinked||'')}</div>
+ <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
+ <div style="display:grid;gap:11px">${seas}</div>
+ <h3 class="sub2">티어덱 원본 시트 보는 법</h3>
+ <div class="note">원본(<a href="${F.sheet.u}" target="_blank" rel="noopener">대만 티어덱 시트</a>)은 크게 <b>${F.sheet.groups.join(' / ')}</b> 로 나뉩니다.
+  시즌별 티어덱 시트 안의 기준표는 앞에서부터 <b>${F.sheet.tables.map((t,i)=>(i+1)+') '+t).join(' · ')}</b> 순서입니다.
+  이 사이트 <b>티어덱</b> 탭의 그룹 이름이 이 기준표와 1:1로 대응합니다.</div>`;
 }
 
 /* ---------------- 티어덱 (강덱 합집 · 출대 루트) ---------------- */
@@ -629,7 +692,7 @@ function tdBody(){
 let srState={sj:1,tier:'all'};
 function renderSrank(){
  const el=document.getElementById('tab-srank');
- el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">각 시즌 편성에서 장수·전법 등장 빈도를 막대그래프로. 티어(전체/T0)로 좁혀 볼 수 있습니다.</p>
+ el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">각 시즌 편성에서 장수·전법 등장 빈도를 막대그래프로. 티어(전체/T0)로 좁혀 볼 수 있습니다. <b>시즌 번호는 중국 서버 기준</b>입니다 — 한국 환산은 S1=中S1 · S2=中S2~S3 · S3=中S4~S8 · S4=中S9~S11 (자세한 표는 <b>참고</b> 탭).</p>
  <div class="filters"><div class="spill" id="srSj">${SEASONS.map(s=>`<button data-s="${s}" class="${s===srState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
  <div class="filters"><div class="seg" id="srTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="srGrid"></div>`;
@@ -651,7 +714,7 @@ function renderSrank(){
 let seaState={sj:1,tier:'all',fac:'all'};
 function renderSeason(){
  const el=document.getElementById('tab-season');
- el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0·T1 편성(T2 제외). 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
+ el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0·T1 편성(T2 제외). <b>시즌 번호는 중국 서버 기준</b>입니다 — 한국 환산은 S1=中S1 · S2=中S2~S3 · S3=中S4~S8 · S4=中S9~S11 (자세한 표는 <b>참고</b> 탭). 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
  <div class="filters"><div class="spill" id="sjpill">${SEASONS.map(s=>`<button data-sj="${s}" class="${s===seaState.sj?'on':''}">S${s}</button>`).join('')}</div></div>
  <div class="filters">
   <div class="seg" id="tierseg">${['all','T0','T1'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'T0·T1':t}</button>`).join('')}</div>
@@ -1070,7 +1133,9 @@ function renderRef(){
   </div>`).join('');
  const forms=D.FORMS.map(f=>`<tr><td><b>${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span> ${f.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}</td><td class="num">${f.front} / ${3-f.front}</td><td class="num">${(f.hit||[]).map(h=>h||'-').join(' / ')}${f.est?' <span class="mut">추정</span>':''}</td><td class="mut">${esc(f.unlock||'-')}</td><td class="mut">${(f.feats||[]).map(esc).join('<br>')}</td></tr>`).join('');
  const eq=(arr)=>arr.map(e=>`<tr><td><b>${esc(e.name)}</b>${e.tag?`<div class="mut" style="font-size:9.5px">${esc(e.tag)}</div>`:''}</td><td class="mut" style="font-size:11px">${esc(e.desc)}</td></tr>`).join('');
- el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub">진형(배치·피격률·해금) · 직업 지령 19종 · 직업숙련 기능 · 군략건축 · 병종 특성 · 장비 특기(대장간/말시장) 글로서리. <span class="bnew">S3 신규</span> <span class="bok">S1</span> 배지로 시즌을 구분하고, 원문 한자 스킬명은 한국어로 풀어 병기했습니다.</p>
+ el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub"><b>시즌 환산표(한국↔대만↔중국)·미래시 카드팩</b> · 진형(배치·피격률·해금) · 직업 지령 19종 · 직업숙련 기능 · 군략건축 · 병종 특성 · 장비 특기(대장간/말시장) 글로서리. <span class="bnew">S3 신규</span> <span class="bok">S1</span> 배지로 시즌을 구분하고, 원문 한자 스킬명은 한국어로 풀어 병기했습니다.</p>
+
+ ${futureHtml()}
 
  <h3 class="sub2">진형 배치 <span class="mut" style="font-weight:400">전 8종 (S1 6종 + S3 신규 2종)</span></h3>
  <div class="note"><b>배치 읽는 법</b> — 편성은 무장 3명이며, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 어느 칸을 쓰는지</b>를 정합니다. 아래 도식의 채워진 칸이 실제 배치 자리이고, 칸 안 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. <b>좌·중·우 위치는 진형마다 다르며</b>(예: 어린진은 전열 좌측 1칸 + 후열 중앙·우측 2칸) 도식은 실제 배치 모양을 그대로 옮긴 것입니다. 다만 <b>전투 계산에 반영되는 것은 전열/후열 구분과 슬롯별 피격률</b>이며 좌·우 자체에는 별도 보정이 없습니다.<br>
