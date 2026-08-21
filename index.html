@@ -414,13 +414,16 @@ function metaAgg(tier){
     });});});
   forms.push(n);});
  const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[2]||0)-(a.by[2]||0));
- return {gen:srt(G),tac:srt(T),forms:forms};
+ const formsBy={};
+ KSEA.forEach(([kr,list])=>list.forEach(s2=>{formsBy[s2]=(SEA[s2]||[]).filter(f=>tier==='all'||f.tier===tier).length;}));
+ return {gen:srt(G),tac:srt(T),forms:forms,formsBy:formsBy};
 }
 function krIdx(sj){const k=krSj(sj);if(!k)return null;
  const i=KSEA.findIndex(([kr])=>kr===k.kr);return i<0?null:i;}
-function metaRows(rows,isTac,max,forms){
+function metaRows(rows,isTac,max,forms,formsBy){
  const key=mState.sort, val=r=>key==='tot'?r.tot:(r.by[key]||0);
- const pct=(n,i)=>forms[i]?Math.round(n/forms[i]*100):0;
+ const sjNum=sj=>{const m=/^S(\d+)$/.exec(sj||'');return m?+m[1]:0;};
+ const avail=(i,born)=>KSEA[i][1].reduce((a,s2)=>a+(s2>=born?(formsBy[s2]||0):0),0);   // 출시 이후 편성만
  const q=nk(mState.q);
  let list=rows.filter(r=>{const O=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
    if(mState.born){const k=krSj(O.sj);if(!k||k.kr!==mState.born)return false;}   // 출시 시즌으로 걸러내기
@@ -432,11 +435,15 @@ function metaRows(rows,isTac,max,forms){
  return list.map(r=>{
   const o=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
   const badge=isTac?(o.grade==='전설'?'style="color:var(--leg)"':o.grade==='영웅'?'style="color:var(--hero)"':''):'';
-  const born=krIdx(o.sj);                                   // 출시 시즌(한국 환산) 열 번호
+  const born=krIdx(o.sj), bs=sjNum(o.sj);                   // 출시 시즌(한국 환산 열 / 中 번호)
   const cells=KSEA.map(([kr],i)=>{const n=r.by[i]||0;
     const pre=born!=null&&i<born;                            // 그 시즌엔 아직 미출시
-    const tip=pre?`한국 ${kr} 시점 미출시 (출시 한국 ${KSEA[born][0]})`:`한국 ${kr} · ${n}회 / ${forms[i]}편성 = ${pct(n,i)}%`;
-    const txt=!n?`<span class="mut">${pre?'–':'·'}</span>`:(mState.mode==='pct'?pct(n,i)+'<span class="mut">%</span>':n);
+    const av=avail(i,bs), p=av?Math.min(100,Math.round(n/av*100)):0;
+    const part=av>0&&av<forms[i];                            // 구간 중간에 출시 → 분모가 일부
+    const tip=pre?`한국 ${kr} 시점 미출시 (출시 한국 ${KSEA[born][0]})`
+      :`한국 ${kr} · ${n}회 / 출시 이후 ${av}편성 = ${p}%${part?` (구간 전체 ${forms[i]}편성 기준 ${forms[i]?Math.round(n/forms[i]*100):0}%)`:''}`;
+    const txt=!n?`<span class="mut">${pre?'–':'·'}</span>`
+      :(mState.mode==='pct'?p+'<span class="mut">%</span>'+(part?'<span class="mut" title="출시가 구간 중간이라 분모가 일부입니다">*</span>':''):n);
     return `<td class="num ${key==i?'on':''}" title="${tip}">${txt}</td>`;}).join('');
   return `<tr onclick="${isTac?`tacModal('${r.cn}')`:`genModal('${r.cn}')`}" style="cursor:pointer">
    <td><b ${badge}>${esc(o.kr||r.cn)}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
@@ -489,9 +496,10 @@ function renderMeta(){
   <tbody id="mBody"></tbody></table></div>
  <div class="mut" style="margin-top:6px"><b>출시 S1~S4 버튼</b> = 그 시즌에 <b>새로 나온</b> 장수·전법만 골라 봅니다(칩 숫자 = 해당 시즌 출시 종수). 열은 항상 시즌별 사용량입니다.</div>
  <div class="mut" style="margin-top:3px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5+ <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
+ <div class="mut" style="margin-top:3px"><b>채용률</b>은 <b>출시 이후 편성만 분모</b>로 계산합니다 — 구간(예: 한국 S3 = 中 S4~S8) 끝에 나온 무장이 불리하게 보이지 않도록. 분모가 구간의 일부인 칸에는 <b>*</b>가 붙고, 툴팁에 구간 전체 기준 비율도 함께 나옵니다.</div>
  <div class="mut" style="margin-top:3px"><b>·</b> = 그 시즌에 있었지만 T0·T1 편성에 채용 0 · <b>–</b> = 그 시즌에는 아직 미출시(출시 시즌은 이름 옆 배지) · 칸에 마우스를 올리면 회수/편성수/비율이 나옵니다.</div>`;
  const fill=()=>{document.getElementById('mBody').innerHTML=
-   metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',80,A.forms)
+   metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',80,A.forms,A.formsBy)
    ||`<tr><td colspan="6" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
  document.getElementById('mBorn').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.born=b.dataset.b;renderMeta();};
  document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
