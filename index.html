@@ -201,6 +201,17 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fcard .tdd div{padding-left:9px;position:relative;}
 .fcard .tdd div::before{content:"·";position:absolute;left:0;color:var(--faint);font-weight:800;}
 .fcard .frow .tacmini .tm.min{opacity:.62;border-style:dashed;}
+.mtb{border-collapse:collapse;width:100%;font-size:12px;}
+.mtb th,.mtb td{border-bottom:1px solid var(--line);padding:5px 9px;text-align:left;white-space:nowrap;}
+.mtb thead th{background:var(--panel2);font-size:10.5px;font-weight:800;color:var(--soft);position:sticky;top:0;}
+.mtb th.sortable{cursor:pointer;}
+.mtb th.sortable:hover{color:var(--ink);}
+.mtb th.sortable.on{color:var(--seal);}
+.mtb td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.mtb td.num.on{color:var(--seal);font-weight:800;}
+.mtb tbody tr:hover{background:var(--panel2);}
+.mtb td.mbar{width:120px;padding-right:12px;}
+.mtb td.mbar>span{display:block;height:9px;border-radius:2px;background:var(--seal);min-width:1px;}
 .tdinfo{border:1px solid var(--line2);border-left:4px solid var(--jade);border-radius:6px;background:var(--panel);margin:12px 0;}
 .tdinfo>summary{cursor:pointer;padding:9px 13px;font-size:11.5px;color:var(--soft);}
 .tdinfo>summary b{color:var(--ink);}
@@ -274,7 +285,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </main>
 <div class="footer">
  <div style="margin-bottom:6px">정적 문서(인쇄용): <a href="overview.html">S1 종합자료</a> · <a href="roster.html">S1~15 로스터</a> · <a href="new-tactics.html">신규전법 상세</a> · <a href="s2s3-guide.html">S2·S3 가이드</a> · <a href="s2s3-system.html"><b>S2·S3 직업스킬·진형 시스템 변화</b></a></div>
- 데이터: sgmdtx.com(中 편성·전법·장수) · S3 티어덱=铁血雕馋 S3強隊合集·出隊路線(한글 번역 시트) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · S1~S15(S16 미공개) · 신규 항목은 임시 번역(색표시) · 개인 학습용
+ 데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=16"></script>
@@ -297,7 +308,7 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['td','S3 티어덱'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
+const TABS=[['meta','메타'],['td','티어덱'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
@@ -343,40 +354,86 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  <h4 style="margin:14px 0 4px">등장 편성 <span class="mut">${apps.length}건</span></h4><div class="mut" style="font-size:11px">${apps.slice(0,40).map(esc).join(' · ')||'-'}</div>
  </div>`);}
 
-/* ---------------- META ---------------- */
+/* ---------------- META (中·台 S1~S5 = 한국 S1~S4 상당) ---------------- */
+const MSJ=[1,2,3,4,5];
+let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt'};
+function metaAgg(tier){
+ const G={},T={};
+ MSJ.forEach(s=>{(SEA[s]||[]).filter(f=>tier==='all'||f.tier===tier).forEach(f=>{
+   f.gens.forEach(g=>{
+     const r=G[g.cn]||(G[g.cn]={cn:g.cn,tot:0,by:{}});r.tot++;r.by[s]=(r.by[s]||0)+1;
+     g.tacs.forEach((t,i)=>{const x=TAC[t]||{};
+       if(i===0||x.minimal||x.bf)return;
+       const y=T[t]||(T[t]={cn:t,tot:0,by:{}});y.tot++;y.by[s]=(y.by[s]||0)+1;});
+   });});});
+ const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[5]||0)-(a.by[5]||0));
+ return {gen:srt(G),tac:srt(T),
+   forms:MSJ.map(s=>(SEA[s]||[]).filter(f=>tier==='all'||f.tier===tier).length)};
+}
+function metaRows(rows,isTac,max,forms){
+ const pct=(n,i)=>forms[i]?Math.round(n/forms[i]*100):0;
+ const key=mState.sort;
+ const val=r=>key==='tot'?r.tot:(r.by[key]||0);
+ const q=nk(mState.q);
+ let list=rows.filter(r=>{const kr=(isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{})).kr||r.cn;
+   return !q||nk(kr).indexOf(q)>=0||nk(r.cn).indexOf(q)>=0;});
+ if(key!=='tot')list=list.slice().sort((a,b)=>val(b)-val(a)||b.tot-a.tot);
+ list=list.filter(r=>val(r)>0).slice(0,max);
+ const top=Math.max(1,...list.map(val));
+ return list.map(r=>{
+  const o=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
+  const nm=esc(o.kr||r.cn);
+  const badge=isTac?(o.grade==='전설'?'style="color:var(--leg)"':o.grade==='영웅'?'style="color:var(--hero)"':''):'';
+  const cells=MSJ.map((s,i)=>{const n=r.by[s]||0;
+    const tip=`S${s} ${n}회 / ${forms[i]}편성 = ${pct(n,i)}%`;
+    const txt=!n?'<span class="mut">·</span>':(mState.mode==='pct'?pct(n,i)+'<span class="mut">%</span>':n);
+    return `<td class="num ${key==+s?'on':''}" title="${tip}">${txt}</td>`;}).join('');
+  const click=isTac?`tacModal('${r.cn}')`:`genModal('${r.cn}')`;
+  return `<tr onclick="${click}" style="cursor:pointer">
+   <td><b ${badge}>${nm}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
+   ${cells}<td class="num"><b>${r.tot}</b></td>
+   <td class="mbar"><span style="width:${val(r)/top*100}%"></span></td></tr>`;}).join('');
+}
 function renderMeta(){
  const el=document.getElementById('tab-meta');
- const genB=META.genB, tacB=META.tacB, off=tacB.filter(t=>!t.new), nw=tacB.filter(t=>t.new);
- const gmax=Math.max(...genB.map(x=>x.cnt)), omax=Math.max(...off.map(x=>x.cnt)), nmax=Math.max(...nw.map(x=>x.cnt));
- const genRows=genB.slice(0,30).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> ${x.new?'<span class="bnew">번역</span>':''}</div><div class="bar"><span class="${x.new?'nw':''}" style="width:${x.cnt/gmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
- const offRows=off.slice(0,24).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> ${tyB(x['유형'])}</div><div class="bar"><span style="width:${x.cnt/omax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
- const nwRows=nw.slice(0,20).map((x,i)=>`<div class="rowbar"><div class="lb"><b>${esc(x.kr)}</b> <span class="cn">${esc(x.won||'')}</span></div><div class="bar"><span class="nw" style="width:${x.cnt/nmax*100}%"></span></div><b class="num">${x.cnt}</b></div>`).join('');
- const P=META.prep||{gens:[],tacs:[]};
- const sjCol=sj=>({S1:'var(--jade)',S2:'var(--wei)',S3:'var(--hero)'}[sj]||'var(--bronze)');
- const prepTags=(arr,isTac)=>arr.slice().filter(x=>((isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{})).grade)==='전설').sort((a,b)=>(b.cnt||0)-(a.cnt||0)).map(x=>{const sj=(isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{})).sj||'';const c=sjCol(sj);return `<span class="tag" style="border:1.5px solid ${c}">${esc(x.kr)} ${sj?`<span class="sjb" style="background:${c}">${esc(sj)}</span>`:''} <b class="c" style="color:${c}">${x.cnt||0}</b></span>`;}).join('');
- const prepC=`<h3 class="sub2">다음 시즌(S2·S3) 필수 — S1에서 미리 뽑을 것</h3>
-  <div class="note" style="margin:0 0 8px"><b>가차 전설급(노랑)만 집계</b> — 영웅급(보라)은 무조건 획득이라 제외. 등장 많은 순. <b>테두리·배지 = 출시 시즌</b>: <span style="color:var(--jade);font-weight:800">S1 지금 확보</span> · <span style="color:var(--wei);font-weight:800">S2</span> · <span style="color:var(--hero);font-weight:800">S3</span> · <span style="color:var(--bronze);font-weight:800">이후</span>. 우측 숫자 = S2·S3 등장 횟수.</div>
-  <div style="margin-bottom:6px"><b class="mut">장수</b><br>${prepTags(P.gens,false)}</div>
-  <div style="margin-top:8px"><b class="mut">전법</b><br>${prepTags(P.tacs,true)}</div>`;
-
- el.innerHTML=`<h2 class="head serif">메타 요약</h2><p class="sub">중국 서버 S1~S15 전 편성(T0·T1) 통산 분석. 편성 등장 횟수 기준(승률 아님).</p>
+ const A=metaAgg(mState.tier);
+ const g0=A.gen[0]||{cn:'',tot:0}, t0=A.tac[0]||{cn:'',tot:0};
+ const rise=A.gen.slice().map(r=>({r,d:(r.by[5]||0)-(r.by[4]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:''},d:0};
+ const newest=A.gen.filter(r=>((GEN[r.cn]||{}).sj||'')==='S5').slice(0,1)[0];
+ const th=(k,l)=>`<th class="num sortable ${mState.sort===k?'on':''}" data-k="${k}">${l}</th>`;
+ el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">中·台 S1~S5</span></h2>
+ <p class="sub">중국·대만 서버 <b>S1~S5</b> 편성(T0·T1)만 집계 — 한국 서버 <b>S1~S4</b>에 해당하는 구간입니다. 이후 시즌(S6~S15)은 아직 한국에 오지 않았으므로 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다.</p>
  <div class="kpis">
-  <div class="kpi"><h4>🏆 부동의 1위 전법</h4><div class="big">허점 공략</div><p>15시즌 중 13시즌 T1+ · 통산 135회. 전쟁 종식·청낭 치료·보급 차단이 뒤를 잇는 S1 코어가 전 역사 지배.</p></div>
-  <div class="kpi"><h4>✅ S2는 S1로 대비</h4><div class="big">전법 대부분</div><p>S2 상위 전법은 거의 전부 S1 확보 가능. 신규는 육손·장료 등 일부 장수.</p></div>
-  <div class="kpi"><h4>🆕 후속 최강 신규</h4><div class="big">절충어모</div><p>S4 등장, 통산 130회. 금성탕지·명기허실 등 S3+ 신규 전법 도감 참고.</p></div>
+  <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>S1~S5 통산 <b>${g0.tot}회</b> 등장 · ${MSJ.map(s=>'S'+s+' '+(g0.by&&g0.by[s]||0)).join(' · ')}</p></div>
+  <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>S1~S5 통산 <b>${t0.tot}회</b> 채용 · ${MSJ.map(s=>'S'+s+' '+(t0.by&&t0.by[s]||0)).join(' · ')}</p></div>
+  <div class="kpi"><h4>📈 S5 급상승 장수</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S4 ${rise.r.by&&rise.r.by[4]||0}회 → S5 ${rise.r.by&&rise.r.by[5]||0}회 (<b>+${rise.d}</b>)${newest?` · S5 신규 최다는 <b>${esc((GEN[newest.cn]||{}).kr||'')}</b> ${newest.tot}회`:''}</p></div>
  </div>
- <div class="note"><b>범례</b> · <span class="bok">S1</span> 한국 보유/확보 가능 · <span class="bnew">번역</span> S1 미수록(임시 한글). 상세는 각 도감 탭.</div>
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="metagrid">
-  <div><h3 class="sub2">S1~S15 장수 T1+ TOP 30</h3>${genRows}</div>
-  <div><h3 class="sub2">S1~S15 전법 T1+ (공식) TOP 24</h3>${offRows}<h3 class="sub2">신규 전법 <span class="bnew">번역</span> TOP 20</h3>${nwRows}</div>
+ <div class="note"><b>집계 범위</b> · 시즌별 편성 수 ${MSJ.map((s,i)=>'S'+s+' '+A.forms[i]+'개').join(' · ')} (T0·T1, T2 제외) · <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수 · 배지 = 출시 시즌(<span class="bok">S1</span> 한국 보유 · <span class="bnew">번역</span> 미수록).</div>
+ <div class="filters">
+  <div class="seg" id="mTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===mState.tier?'on':''}">${l}</button>`).join('')}</div>
+  <div class="seg" id="mMode">${[['cnt','횟수'],['pct','채용률']].map(([k,l])=>`<button data-m="${k}" class="${k===mState.mode?'on':''}">${l}</button>`).join('')}</div>
+  <div class="seg" id="mView">${[['gen','장수 사용량'],['tac','전법 사용량']].map(([k,l])=>`<button data-v="${k}" class="${k===mState.view?'on':''}">${l}</button>`).join('')}</div>
+  <input class="search" id="mQ" placeholder="장수·전법 이름 검색" value="${esc(mState.q)}">
+  ${mState.sort!=='tot'?`<button class="tbtn" id="mReset">정렬 초기화(합계)</button>`:''}
  </div>
- <div>${prepC}</div>`;
- if(innerWidth<=760){document.getElementById('metagrid').style.gridTemplateColumns='1fr';}
-
+ <div class="scroll"><table class="mtb">
+  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${MSJ.map(s=>th(s,'S'+s)).join('')}${th('tot','합계')}<th></th></tr></thead>
+  <tbody id="mBody"></tbody></table></div>`;
+ const fill=()=>{document.getElementById('mBody').innerHTML=
+   metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',60,A.forms)
+   ||`<tr><td colspan="8" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
+ document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
+ document.getElementById('mMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.mode=b.dataset.m;renderMeta();};
+ document.getElementById('mView').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.view=b.dataset.v;renderMeta();};
+ document.querySelector('.mtb thead').onclick=e=>{const h=e.target.closest('th.sortable');if(!h)return;
+  mState.sort=h.dataset.k==='tot'?'tot':+h.dataset.k;renderMeta();};
+ const rb=document.getElementById('mReset');if(rb)rb.onclick=()=>{mState.sort='tot';renderMeta();};
+ const q=document.getElementById('mQ');q.oninput=()=>{mState.q=q.value;fill();};
+ fill();
 }
 
-/* ---------------- S3 티어덱 (강덱 합집 · 출대 루트) ---------------- */
-const TD=window.TIERDECKS||{groups:[]};
+/* ---------------- 티어덱 (강덱 합집 · 출대 루트) ---------------- */
+const TD=window.TIERDECKS||{seasons:[]};
 const nk=s=>String(s==null?'':s).replace(/\s+/g,'');
 const KRTAC={};Object.keys(TAC).forEach(cn=>{const k=nk((TAC[cn]||{}).kr);if(k&&!(k in KRTAC))KRTAC[k]=cn;});
 const TACNM=Object.keys(KRTAC).filter(k=>k.length>1).sort((a,b)=>b.length-a.length);
@@ -438,6 +495,10 @@ function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
   <div class="fmdesc">${esc(f.desc||'')}</div>${f.ex?`<div class="fmex">예 · ${esc(f.ex)}</div>`:''}</div>`);}
 
 /* 카드 · 모달 — 시즌별 편성(fcardHtml/fcModal)과 동일 양식 */
+function tdCn(kr){const k=nk(kr);if(GKR[k])return GKR[k];
+ let s2=nk(String(kr||'').replace(/\(.*?\)/g,''));
+ for(let i=0;i<3&&!GKR[s2];i++)s2=s2.replace(/^(SP|연의|[위촉오군]·)/,'');
+ return GKR[s2]||'';}
 function tdRole(g){return [(g.unit||[]).join('/'),(g.spec||[]).join('/')].filter(Boolean).join(' · ');}
 function tdBookChips(g){return ['book','nd1','nd2'].map(k=>(g[k]||[]).map(v=>{
    const gold=/^[금金][·.]/.test(v);let n=String(v).replace(/^[금金][·.]\s*/,'').trim();
@@ -446,7 +507,7 @@ function tdBookChips(g){return ['book','nd1','nd2'].map(k=>(g[k]||[]).map(v=>{
    return i==null?`<span class="tm min">${lb}</span>`:`<span class="tm" onclick="event.stopPropagation();bfModal(${i})">${lb}</span>`;
   }).join('')).join('');}
 function tdCard(d,i){
- const gens=d.gens.map(g=>{const cn=GKR[nk(g.kr)]||'',G=GEN[cn]||{};
+ const gens=d.gens.map(g=>{const cn=tdCn(g.kr),G=GEN[cn]||{};
    const sig=G.skill?`<span class="tm sig ${gradeCls(G.skill)}" onclick="event.stopPropagation();tacModal('${G.skill}')">◈ ${esc(tName(G.skill))}</span>`:'';
    return `<div class="frow" ${cn?`onclick="event.stopPropagation();genModal('${cn}')"`:''}>
      ${cn?avHtml(cn,'sm'):'<span class="av sm"></span>'}
@@ -465,7 +526,7 @@ function tdCard(d,i){
   ${gens}</div>`;}
 
 function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
- const cns=d.gens.map(g=>GKR[nk(g.kr)]||'');
+ const cns=d.gens.map(g=>tdCn(g.kr));
  const gens=d.gens.map((g,k)=>{const cn=cns[k],G=GEN[cn]||{},sk=TAC[G.skill]||{};
    const picks=[].concat(g.sk1||[],g.sk2||[]).map(l=>tdSk([l])).join('');
    const alt=(g.alt||[]).map(x=>tdInline(x)).join('<br>');
@@ -478,7 +539,7 @@ function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
    return `<div class="fcg">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${cn?avHtml(cn,'lg'):''}
        <div><div style="font-weight:800;font-size:14px">${cn?facChip(cn):''} ${esc(g.kr)} ${cn?sjBadge(cn):''} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
-       <div class="mut" style="font-size:10px">${esc(tdRole(g))}${cn?` · 무${G.wl||'-'}·지${G.zl||'-'}·통${G.ts||'-'}·선${G.xg||'-'}`:''}</div>
+       <div class="mut" style="font-size:10px">${[tdRole(g)?esc(tdRole(g)):'',cn?`무${G.wl||'-'}·지${G.zl||'-'}·통${G.ts||'-'}·선${G.xg||'-'}`:''].filter(Boolean).join(' · ')}</div>
        ${G.skill?`<div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer" onclick="tacModal('${G.skill}')">◈ 고유 · ${esc(tName(G.skill))}</div>`:''}</div>
      </div>
      ${sk.eff?`<div style="font-size:11px;color:var(--soft);margin-bottom:5px">${esc(sk.eff)}</div>`:''}
@@ -506,16 +567,26 @@ function tdToBuilder(i){const d=(window._tdList||[])[i];if(!d)return;
 
 /* 렌더 */
 const GKR={};Object.keys(GEN).forEach(cn=>{const k=nk((GEN[cn]||{}).kr);if(k&&!(k in GKR))GKR[k]=cn;});
-let tdState={kind:'tier',grp:'all',q:''};
-function tdGroups(){return (TD.groups||[]).filter(g=>g.kind===tdState.kind);}
+let tdState={sea:'',kind:'',grp:'all',q:''};
+function tdSeasons(){return TD.seasons||[];}
+function tdSea(){const ss=tdSeasons();return ss.find(s=>s.id===tdState.sea)||ss[0]||{groups:[]};}
+function tdKinds(){return [...new Set((tdSea().groups||[]).map(g=>g.kind))];}
+function tdGroups(){return (tdSea().groups||[]).filter(g=>!tdState.kind||g.kind===tdState.kind);}
 function renderTd(){
  const el=document.getElementById('tab-td');
- const gs=tdGroups(),nT=(TD.groups||[]).filter(g=>g.kind==='tier').reduce((a,g)=>a+g.decks.length,0),
-       nC=(TD.groups||[]).filter(g=>g.kind==='coex').reduce((a,g)=>a+g.decks.length,0);
- el.innerHTML=`<h2 class="head serif">S3 티어덱</h2>
- <p class="sub">중국 <b>铁血雕馋</b>의 S3 강덱 합집·출대 루트를 한글 번역 시트에서 그대로 옮긴 자료. 시즌별 편성(sgmdtx) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>편성 상세</b>를 누르면 전체 빌드 표가 열립니다.</p>
+ const ss=tdSeasons(),sea=tdSea();
+ if(!tdState.sea)tdState.sea=sea.id;
+ const kinds=tdKinds();
+ if(kinds.length&&kinds.indexOf(tdState.kind)<0)tdState.kind=kinds[0];
+ const nOf=k=>(sea.groups||[]).filter(g=>g.kind===k).reduce((a,g)=>a+g.decks.length,0);
+ const nT=nOf('tier'),nC=nOf('coex'),gs=tdGroups();
+ el.innerHTML=`<h2 class="head serif">티어덱 · 출대 루트</h2>
+ <p class="sub">중국 <b>铁血雕馋</b>의 시즌별 강덱 합집·출대 루트를 <b>한국 서버 시즌 기준</b>으로 정리한 자료. 「시즌별 편성」(sgmdtx 집계) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>덱 상세</b>를 누르면 전체 빌드가 열립니다.</p>
+ <div class="filters"><div class="spill" id="tdSea">${ss.map(x=>`<button data-s="${x.id}" class="${x.id===tdState.sea?'on':''}">한국 ${esc(x.label)} <span class="tn">${esc(x.cn_season)}</span></button>`).join('')}</div>
+  ${sea.tr?'<span class="bnew">임시 번역</span>':'<span class="bok">번역 시트</span>'}</div>
  <div class="note"><b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
-  <div style="margin-top:5px">출처 ${esc(TD.src||'')} · ${esc(TD.ver||'')}</div></div>
+  <div style="margin-top:5px">출처 ${esc(sea.src||'')} · ${esc(sea.ver||'')}</div>
+  <div style="margin-top:3px">${esc(sea.note||'')}</div></div>
  <details class="tdinfo"><summary><b>장서각(藏书阁) · 장품도략</b>이란? — 「장서각 조감초」처럼 장서각이 전제인 덱 읽는 법</summary>
   <div class="tdinfo-b">
    <p><b class="tdh2">도략(병서) 칸</b> 무장은 <b>25·30·35레벨</b>에 도략 칸이 1개씩 열려 <b>최대 3칸</b>(해금 동전 1만·3만·5만). 각 칸은 랜덤 3권 중 1권을 연구하며, 후보 9권 안에 <b>같은 계열은 중복 등장하지 않음</b>. 3권을 다 배우면 서간 4개로 재수리(리롤) 가능, <b>10회 이내 전용 금서 보장</b>. <b>전용(專屬) 도략은 무장당 동시 1개만 적용</b>.</p>
@@ -524,15 +595,17 @@ function renderTd(){
    <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. 지력 기반 발동으로 적에게 <b>혼란</b>을 걸고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
    <p class="mut"><b>미확정</b> · 장품도략을 끼면 남은 2칸(범용)까지 잠기는지는 공식 문구가 없습니다. 다만 이 표와 중섭 편성 DB(sgmdtx) 모두 장품·연의 도략 보유 장수는 <b>그 한 권만 표기</b>되고(같은 편성 동료는 3권 표기) 범용·금서와 섞인 사례가 없어, 실무에선 “장서각 도략 하나로 병서 세팅 끝”으로 취급합니다.</p>
   </div></details>
- <div class="ttabs" id="tdKind">
+ ${kinds.length>1?`<div class="ttabs" id="tdKind">
   <button data-k="tier" class="${tdState.kind==='tier'?'on':''}">티어 강덱 <span class="tn">${nT}</span></button>
-  <button data-k="coex" class="${tdState.kind==='coex'?'on':''}">5팀 공존 · 출대 루트 <span class="tn">${nC}</span></button></div>
+  <button data-k="coex" class="${tdState.kind==='coex'?'on':''}">5팀 공존 · 출대 루트 <span class="tn">${nC}</span></button></div>`:''}
  <div class="filters"><div class="spill" id="tdGrp">
   <button data-g="all" class="${tdState.grp==='all'?'on':''}">전체</button>
   ${gs.map(g=>`<button data-g="${g.id}" class="${tdState.grp===g.id?'on':''}">${esc(g.label)}</button>`).join('')}</div></div>
  <div class="filters"><input class="search" id="tdQ" placeholder="덱 이름·장수 검색 (예: 초원마, 주태)" value="${esc(tdState.q)}"><span class="mut" id="tdCnt"></span></div>
  <div id="tdBody"></div>`;
- document.getElementById('tdKind').onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.kind=b.dataset.k;tdState.grp='all';renderTd();};
+ document.getElementById('tdSea').onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.sea=b.dataset.s;tdState.kind='';tdState.grp='all';renderTd();};
+ const kt=document.getElementById('tdKind');
+ if(kt)kt.onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.kind=b.dataset.k;tdState.grp='all';renderTd();};
  document.getElementById('tdGrp').onclick=e=>{const b=e.target.closest('button');if(!b)return;tdState.grp=b.dataset.g;renderTd();};
  const q=document.getElementById('tdQ');q.oninput=()=>{tdState.q=q.value;tdBody();};
  tdBody();
