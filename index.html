@@ -291,7 +291,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=16"></script>
+<script src="data.js?v=17"></script>
 <script src="guides.js?v=26"></script>
 <script src="tierdecks.js?v=2"></script>
 <script src="future.js?v=1"></script>
@@ -431,6 +431,14 @@ function renderMeta(){
   <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
   <div class="kpi"><h4>📈 한국 S4 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S3 ${rise.r.by&&rise.r.by[1]||0}회 → S4 ${rise.r.by&&rise.r.by[2]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
  </div>
+ <details class="tdinfo"><summary><b>이 사이트의 시즌 기준</b> — 한국 ↔ 대만 ↔ 중국 환산 · 연의 시스템 · SP 표기</summary>
+  <div class="tdinfo-b">
+   <p><b class="tdh2">환산</b> 한국 <b>S2</b> = 대만 S3 = 中 S2~S3 · 한국 <b>S3</b> = 대만 S4(業鑄山河, 中 S9 대본) = 中 S4~S8 <span class="mut">신규 무장 16 · 전법 16</span> · 한국 <b>S4</b> = 대만 S5(南郡烽起, 中 S10 대본) = 中 S9~S11 <span class="mut">신규 무장 7 · 전법 9</span> · <span class="mut">(예상) 한국 S5 = 中 S12~S14</span>. 중국 열은 <b>무장·전법 풀 기준</b>이고 시나리오(맵·시즌 시스템)는 대만이 중국 최신 것을 그대로 씁니다.</p>
+   <p><b class="tdh2">배지</b> 장수·전법의 출시 시즌 배지는 <b>한국 기준으로 환산</b>해 표시합니다(툴팁에 중국 시즌). 헤더의 <b>시즌 韓/中</b> 버튼으로 원래 표기로 전환할 수 있고, 예상 구간은 <b>S5?</b>처럼 물음표가 붙습니다.</p>
+   <p><b class="tdh2">연의</b> 한국 S3(대만 S4)부터 들어오는 <b>시즌 시스템</b>입니다. 역사 사건이 해금될 때 <b>정군경무에서 2명 중 1명</b>의 무장 특성을 활성화하고, <b>방향 2택</b>에 따라 그 무장의 <b>고유 전법과 병종이 바뀌며</b> 특성별 <b>전용 연의 도략</b>이 붙습니다. 티어덱의 「연의 원소(장궁병)」 같은 표기가 이것입니다.</p>
+   <p><b class="tdh2">SP</b> 사이트의 <b>SP 제갈량</b>(고유 星罗棋布)은 中 S8 = <b>한국 S3</b> 신규입니다. 기본 제갈량(中 S1)과 별개 무장이라 스탯·고유·병종이 다릅니다.</p>
+   <p><button class="tbtn" onclick="show('ref')">환산표·카드팩 목록·근거 링크 보기 → 참고 탭</button></p>
+  </div></details>
  <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.</div>
  <div class="filters">
   <div class="seg" id="mTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===mState.tier?'on':''}">${l}</button>`).join('')}</div>
