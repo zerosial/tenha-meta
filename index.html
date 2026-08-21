@@ -72,6 +72,8 @@ h3.sub2::before{content:"";width:8px;height:8px;background:var(--seal);border-ra
 .seg{display:inline-flex;border:1px solid var(--line2);border-radius:100px;overflow:hidden;}
 .seg button{font-family:inherit;font-size:12px;font-weight:700;padding:4px 11px;border:none;background:var(--paper);color:var(--soft);cursor:pointer;}
 .seg button.on{background:var(--ink);color:var(--paper);}
+.seg button .tn{margin-left:4px;font-size:10px;font-weight:800;opacity:.75;}
+.seg button.on .tn{opacity:.9;}
 input.search{flex:1;min-width:150px;font-family:inherit;font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);}
 select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;border:1px solid var(--line2);background:var(--paper);color:var(--ink);cursor:pointer;}
 .ttabs{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap;border-bottom:2px solid var(--line2);padding-bottom:0;}
@@ -397,7 +399,7 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
 
 /* ---------------- META (한국 시즌 환산 · 한국 S1~S4 = 中 S1~S11) ---------------- */
 const KSEA=[['S2',[2,3]],['S3',[4,5,6,7,8]],['S4',[9,10,11]]];   // 한국 S2~S4 = 中 S2~S11
-let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt',only:''};   // only: '' | 열 번호
+let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt',born:''};   // born: '' | 'S1'~'S4' 출시 시즌 필터
 function metaAgg(tier){
  const G={},T={},forms=[];
  KSEA.forEach(([kr,list],i)=>{
@@ -416,12 +418,13 @@ function metaAgg(tier){
 }
 function krIdx(sj){const k=krSj(sj);if(!k)return null;
  const i=KSEA.findIndex(([kr])=>kr===k.kr);return i<0?null:i;}
-function metaRows(rows,isTac,max,forms,cols){
- const only=mState.only===''?null:+mState.only;
- const key=only!=null?only:mState.sort, val=r=>key==='tot'?r.tot:(r.by[key]||0);
+function metaRows(rows,isTac,max,forms){
+ const key=mState.sort, val=r=>key==='tot'?r.tot:(r.by[key]||0);
  const pct=(n,i)=>forms[i]?Math.round(n/forms[i]*100):0;
  const q=nk(mState.q);
- let list=rows.filter(r=>{const kr=(isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{})).kr||r.cn;
+ let list=rows.filter(r=>{const O=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
+   if(mState.born){const k=krSj(O.sj);if(!k||k.kr!==mState.born)return false;}   // 출시 시즌으로 걸러내기
+   const kr=O.kr||r.cn;
    return !q||nk(kr).indexOf(q)>=0||nk(r.cn).indexOf(q)>=0;});
  if(key!=='tot')list=list.slice().sort((a,b)=>val(b)-val(a)||b.tot-a.tot);
  list=list.filter(r=>val(r)>0).slice(0,max);
@@ -430,15 +433,14 @@ function metaRows(rows,isTac,max,forms,cols){
   const o=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
   const badge=isTac?(o.grade==='전설'?'style="color:var(--leg)"':o.grade==='영웅'?'style="color:var(--hero)"':''):'';
   const born=krIdx(o.sj);                                   // 출시 시즌(한국 환산) 열 번호
-  const cells=cols.map(i=>{const kr=KSEA[i][0], n=r.by[i]||0;
+  const cells=KSEA.map(([kr],i)=>{const n=r.by[i]||0;
     const pre=born!=null&&i<born;                            // 그 시즌엔 아직 미출시
     const tip=pre?`한국 ${kr} 시점 미출시 (출시 한국 ${KSEA[born][0]})`:`한국 ${kr} · ${n}회 / ${forms[i]}편성 = ${pct(n,i)}%`;
     const txt=!n?`<span class="mut">${pre?'–':'·'}</span>`:(mState.mode==='pct'?pct(n,i)+'<span class="mut">%</span>':n);
     return `<td class="num ${key==i?'on':''}" title="${tip}">${txt}</td>`;}).join('');
-  const totCell=only!=null?'':`<td class="num"><b>${r.tot}</b></td>`;
   return `<tr onclick="${isTac?`tacModal('${r.cn}')`:`genModal('${r.cn}')`}" style="cursor:pointer">
    <td><b ${badge}>${esc(o.kr||r.cn)}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
-   ${cells}${totCell}
+   ${cells}<td class="num"><b>${r.tot}</b></td>
    <td class="mbar"><span style="width:${val(r)/top*100}%"></span></td></tr>`;}).join('');
 }
 function renderMeta(){
@@ -447,8 +449,8 @@ function renderMeta(){
  const g0=A.gen[0]||{cn:'',tot:0,by:{}}, t0=A.tac[0]||{cn:'',tot:0,by:{}};
  const rise=A.gen.map(r=>({r,d:(r.by[2]||0)-(r.by[1]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
  const cnOf=i=>'中 '+(KSEA[i][1].length>1?'S'+KSEA[i][1][0]+'~S'+KSEA[i][1][KSEA[i][1].length-1]:'S'+KSEA[i][1][0]);
- const only=mState.only===''?null:+mState.only;
- const cols=only!=null?[only]:KSEA.map((_,i)=>i);
+ const BORN=['S1','S2','S3','S4'];
+ const bornCnt=b=>(mState.view==='gen'?A.gen:A.tac).filter(r=>{const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===b;}).length;
  const th=(k,l,sub,cls)=>`<th class="num sortable ${cls||''} ${mState.sort===k?'on':''}" data-k="${k}">${l}${sub?`<span class="cnr">${sub}</span>`:''}</th>`;
  const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
  el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S2~S4 기준</span></h2>
@@ -471,7 +473,7 @@ function renderMeta(){
   </div></details>
  <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.</div>
  <div class="filters">
-  <div class="seg" id="mOnly">${[['','전체 시즌']].concat(KSEA.map(([kr],i)=>[String(i),'한국 '+kr])).map(([k,l])=>`<button data-o="${k}" class="${String(mState.only)===k?'on':''}">${l}</button>`).join('')}</div>
+  <div class="seg" id="mBorn" title="출시 시즌(한국 환산)으로 걸러 봅니다">${[['','출시 전체']].concat(BORN.map(b=>[b,b])).map(([k,l])=>`<button data-b="${k}" class="${mState.born===k?'on':''}">${l}${k?` <span class="tn">${bornCnt(k)}</span>`:''}</button>`).join('')}</div>
   <div class="seg" id="mTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===mState.tier?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="mMode">${[['cnt','횟수'],['pct','채용률']].map(([k,l])=>`<button data-m="${k}" class="${k===mState.mode?'on':''}">${l}</button>`).join('')}</div>
   <div class="seg" id="mView">${[['gen','장수 사용량'],['tac','전법 사용량']].map(([k,l])=>`<button data-v="${k}" class="${k===mState.view?'on':''}">${l}</button>`).join('')}</div>
@@ -479,18 +481,19 @@ function renderMeta(){
   ${mState.sort!=='tot'?`<button class="tbtn" id="mReset">정렬 초기화(합계)</button>`:''}
  </div>
  <div class="scroll"><table class="mtb">
-  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${cols.map(i=>th(i,'한국 '+KSEA[i][0],cnOf(i),'k'+KSEA[i][0].slice(1))).join('')}${only!=null?'':th('tot','합계')}<th></th></tr>
-   <tr class="msum"><td>${mState.view==='gen'?'시즌 합계(장수 슬롯)':'시즌 합계(전법 채용)'}</td>
-    ${cols.map(i=>`<td class="num">${(mState.view==='gen'?A.gen:A.tac).reduce((a,r)=>a+(r.by[i]||0),0)}</td>`).join('')}
-    ${only!=null?'':`<td class="num">${(mState.view==='gen'?A.gen:A.tac).reduce((a,r)=>a+r.tot,0)}</td>`}
-    <td class="mut">${cols.map(i=>KSEA[i][0]+' '+A.forms[i]+'편성').join(' · ')}</td></tr></thead>
+  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${KSEA.map(([kr],i)=>th(i,'한국 '+kr,cnOf(i),'k'+kr.slice(1))).join('')}${th('tot','합계')}<th></th></tr>
+   <tr class="msum"><td>${mState.born?`출시 한국 ${mState.born} ${mState.view==='gen'?'장수':'전법'}만`:(mState.view==='gen'?'시즌 합계(장수 슬롯)':'시즌 합계(전법 채용)')}</td>
+    ${KSEA.map(([kr],i)=>`<td class="num">${(mState.view==='gen'?A.gen:A.tac).filter(r=>{if(!mState.born)return true;const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===mState.born;}).reduce((a,r)=>a+(r.by[i]||0),0)}</td>`).join('')}
+    <td class="num">${(mState.view==='gen'?A.gen:A.tac).filter(r=>{if(!mState.born)return true;const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===mState.born;}).reduce((a,r)=>a+r.tot,0)}</td>
+    <td class="mut">${KSEA.map(([kr],i)=>kr+' '+A.forms[i]+'편성').join(' · ')}</td></tr></thead>
   <tbody id="mBody"></tbody></table></div>
- <div class="mut" style="margin-top:6px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5+ <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
+ <div class="mut" style="margin-top:6px"><b>출시 S1~S4 버튼</b> = 그 시즌에 <b>새로 나온</b> 장수·전법만 골라 봅니다(칩 숫자 = 해당 시즌 출시 종수). 열은 항상 시즌별 사용량입니다.</div>
+ <div class="mut" style="margin-top:3px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5+ <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
  <div class="mut" style="margin-top:3px"><b>·</b> = 그 시즌에 있었지만 T0·T1 편성에 채용 0 · <b>–</b> = 그 시즌에는 아직 미출시(출시 시즌은 이름 옆 배지) · 칸에 마우스를 올리면 회수/편성수/비율이 나옵니다.</div>`;
  const fill=()=>{document.getElementById('mBody').innerHTML=
-   metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',60,A.forms,cols)
-   ||`<tr><td colspan="${cols.length+3}" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
- document.getElementById('mOnly').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.only=b.dataset.o;mState.sort='tot';renderMeta();};
+   metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',80,A.forms)
+   ||`<tr><td colspan="6" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
+ document.getElementById('mBorn').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.born=b.dataset.b;renderMeta();};
  document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
  document.getElementById('mMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.mode=b.dataset.m;renderMeta();};
  document.getElementById('mView').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.view=b.dataset.v;renderMeta();};
