@@ -216,6 +216,10 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .gkgi{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;font-size:11.5px;font-weight:800;cursor:pointer;}
 .gktb{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
 .gktb td{border-top:1px dashed var(--line);padding:5px 6px;vertical-align:top;word-break:keep-all;}
+.gkg-none{padding:7px 9px;border-bottom:1px solid var(--line);font-size:10.5px;color:var(--faint);font-weight:700;}
+.gktm{border-collapse:collapse;font-size:12px;}
+.gktm td{padding:3px 10px 3px 0;vertical-align:top;}
+.gktm td:first-child{font-weight:800;white-space:nowrap;color:var(--seal);}
 .gktb td.k{width:38px;color:var(--faint);font-size:9.5px;font-weight:800;text-align:center;background:var(--panel);}
 .gktb .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--ink);cursor:pointer;line-height:1.6;margin:1px 2px 1px 0;}
 .gktb .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
@@ -339,7 +343,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <script src="data.js?v=19"></script>
 <script src="guides.js?v=26"></script>
 <script src="tierdecks.js?v=2"></script>
-<script src="gaecheok.js?v=1"></script>
+<script src="gaecheok.js?v=2"></script>
 <script src="future.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
@@ -798,7 +802,8 @@ function gkTac(list){return (list||[]).map((cn,i)=>{const t=TAC[cn];
         :`<span class="tm nolink${i?' alt':''}">${esc(cn)}</span>`;}).join('');}
 function gkCard(d){
  const gens=(d.gens||[]).length?`<div class="gkg">${d.gens.map(cn=>{const g=GEN[cn]||{};
-   return `<div class="gkgi" ${g.kr?`onclick="genModal('${cn}')"`:''}>${avHtml(cn,'sm')}<span>${esc(g.kr||cn)}</span>${sjBadge(cn)}</div>`;}).join('')}</div>`:'';
+   return `<div class="gkgi" ${g.kr?`onclick="genModal('${cn}')"`:''}>${avHtml(cn,'sm')}<span>${esc(g.kr||cn)}</span>${sjBadge(cn)}</div>`;}).join('')}</div>`
+  :(d.nogens?`<div class="gkg-none">편성 3인 — ${gkEm(d.nogens)}</div>`:'');
  const rows=(d.rows||[]).map(([k,vs])=>`<tr><td class="k">${esc(k)}</td>${vs.map(v=>`<td>${k==='전법'?gkTac(v):gkEm(v)}</td>`).join('')}</tr>`).join('');
  return `<div class="fcard">
   <div class="fh">${d.rank?`<span class="sq">${d.rank}위</span>`:''}
@@ -815,8 +820,10 @@ function renderGk(){
  const el=document.getElementById('tab-gk'),vs=gkViews();
  if(!gkFind(gkState.v))gkState.v=vs.length?vs[0][0]:'';
  el.innerHTML=`<h2 class="head serif">개척 가이드</h2>
- <p class="sub">시즌 첫 나흘의 <b>개척(開荒)</b> 루트 — 铁血雕馋 개척 시트를 <b>한국 서버 시즌 기준</b>으로 옮겼습니다. 각 시즌은 <b>구간별 개척덱 · 1군 일차별 흐름 · 2군 체력 돌려막기</b> 세 축으로 되어 있고, 세 축을 같이 굴려야 표의 레벨이 나옵니다. 장수·전법·진형 이름을 누르면 도감 상세가 열립니다.</p>
+ <p class="sub">시즌 첫 나흘의 <b>개척</b> 루트 — 중국 <b>철혈조참</b>(铁血雕馋)의 개척 시트를 <b>한국 서버 시즌·용어 기준</b>으로 옮겼습니다. 각 시즌은 <b>구간별 개척덱 · 1군 일차별 흐름 · 2군 체력 돌려막기</b> 세 축으로 되어 있고, 세 축을 같이 굴려야 표의 레벨이 나옵니다. 장수 아이콘·전법·진형 이름을 누르면 도감 상세가 열립니다.</p>
  <div class="note">${GK.note||''}</div>
+ ${(GK.terms||[]).length?`<details class="tdinfo"><summary><b>용어</b> — 원문 시트 표현을 한국 서버에서 쓰는 말로 바꿨습니다</summary>
+  <div class="tdinfo-b"><table class="gktm">${GK.terms.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></details>`:''}
  <div class="filters"><div class="spill" id="gkNav">${vs.map(([k,l])=>`<button data-v="${k}" class="${k===gkState.v?'on':''}">${esc(l)}</button>`).join('')}</div></div>
  <div id="gkBody"></div>`;
  document.getElementById('gkNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;gkState.v=b.dataset.v;renderGk();scrollTo(0,0);};
