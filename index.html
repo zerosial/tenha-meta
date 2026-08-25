@@ -224,6 +224,8 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .gkld td.n{color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;}
 .gkld .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--soft);line-height:1.6;margin:1px 3px 1px 0;}
 .gkld .tm.hardm{border-color:var(--seal);color:var(--seal);}
+.gktb .tm.gnm{border-color:var(--jade);color:var(--jade);background:color-mix(in srgb,var(--jade) 10%,transparent);}
+.gkcp td{border-top:1px solid var(--line);padding:4px 10px 4px 0;vertical-align:top;}
 .gktb td.k{width:38px;color:var(--faint);font-size:9.5px;font-weight:800;text-align:center;background:var(--panel);}
 .gktb .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--ink);cursor:pointer;line-height:1.6;margin:1px 2px 1px 0;}
 .gktb .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
@@ -347,7 +349,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <script src="data.js?v=19"></script>
 <script src="guides.js?v=26"></script>
 <script src="tierdecks.js?v=2"></script>
-<script src="gaecheok.js?v=9"></script>
+<script src="gaecheok.js?v=10"></script>
 <script src="future.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
@@ -801,16 +803,17 @@ function gkEm(s){return esc(String(s==null?'':s)).replace(/\*([^*]+)\*/g,'<b>$1<
 function gkShape(cn){const kr=FMCN[cn]||cn;
  return FMBY[nk(kr)]?`<span class="shp" onclick="fmModalByName('${esc(kr)}')">${esc(kr)}</span>`:`<span class="mut" style="font-weight:700">${esc(kr)}</span>`;}
 /* [주전법, 대체1, 대체2…] → 칩. 도감에 없는 이름은 회색 비활성 */
-function gkTac(list){return (list||[]).map((cn,i)=>{const t=TAC[cn];
- return t?`<span class="tm ${gradeCls(cn)}${i?' alt':''}" onclick="tacModal('${cn}')">${esc(t.kr)}</span>`
-        :`<span class="tm nolink${i?' alt':''}">${esc(cn)}</span>`;}).join('');}
+function gkTac(list){return (list||[]).map((cn,i)=>{const t=TAC[cn],g=GEN[cn];
+ if(t)return `<span class="tm ${gradeCls(cn)}${i?' alt':''}" onclick="tacModal('${cn}')">${esc(t.kr)}</span>`;
+ if(g)return `<span class="tm gnm${i?' alt':''}" onclick="genModal('${cn}')">${esc(g.kr)}</span>`;
+ return `<span class="tm nolink${i?' alt':''}">${esc(cn)}</span>`;}).join('');}
 function gkCard(d){
  const gens=(d.gens||[]).length?`<div class="gkg">${d.gens.map(cn=>{const g=GEN[cn]||{};
    return `<div class="gkgi" ${g.kr?`onclick="genModal('${cn}')"`:''}>${avHtml(cn,'sm')}<span>${esc(g.kr||cn)}</span>${sjBadge(cn)}</div>`;}).join('')}</div>`
   :(d.nogens?`<div class="gkg-none">편성 3인 — ${gkEm(d.nogens)}</div>`:'');
- const rows=(d.rows||[]).map(([k,vs])=>`<tr><td class="k">${esc(k)}</td>${vs.map(v=>`<td>${k==='전법'?gkTac(v):gkEm(v)}</td>`).join('')}</tr>`).join('');
+ const rows=(d.rows||[]).map(([k,vs])=>`<tr><td class="k">${esc(k)}</td>${vs.map(v=>`<td>${(k==='전법'||k==='하위 대체')?gkTac(v):gkEm(v)}</td>`).join('')}</tr>`).join('');
  return `<div class="fcard">
-  <div class="fh">${d.rank?`<span class="sq">${d.rank}위</span>`:''}
+  <div class="fh">${d.rank?`<span class="sq">${d.rank}위</span>`:''}${d.tier?`<span class="tier ${tdTierCls(d.tier)}">${esc(d.tier)}</span>`:''}
    <span class="shape serif">${esc(d.name)}</span>
    ${d.sub?`<span class="mut" style="font-weight:700">${esc(d.sub)}</span>`:''}
    <span style="margin-left:auto">${d.shape?gkShape(d.shape):''}</span></div>
@@ -818,8 +821,9 @@ function gkCard(d){
   ${d.note?`<div class="tdd"><div>${gkEm(d.note)}</div></div>`:''}</div>`;}
 function gkSheet(gid){return `https://docs.google.com/spreadsheets/d/${GK.doc}/htmlview#gid=${gid}`;}
 let gkState={v:''};
-function gkViews(){return (GK.guides||[]).map(g=>[g.id,g.tab]).concat(GK.rank?[[GK.rank.id,GK.rank.tab]]:[]);}
-function gkFind(id){return (GK.guides||[]).find(g=>g.id===id)||(GK.rank&&GK.rank.id===id?GK.rank:null);}
+function gkExtra(){return [GK.collection,GK.rank].filter(Boolean);}
+function gkViews(){return (GK.guides||[]).map(g=>[g.id,g.tab]).concat(gkExtra().map(x=>[x.id,x.tab]));}
+function gkFind(id){return (GK.guides||[]).find(g=>g.id===id)||gkExtra().find(x=>x.id===id)||null;}
 function renderGk(){
  const el=document.getElementById('tab-gk'),vs=gkViews();
  if(!gkFind(gkState.v))gkState.v=vs.length?vs[0][0]:'';
@@ -843,8 +847,11 @@ function gkBody(){
  const head=`<h3 class="sub2">${esc(v.title)}${v.cn?` <span class="mut" style="font-weight:700">${esc(v.cn)}</span>`:''}</h3>
   <div class="note">${(v.lead||[]).map(x=>`<div style="padding:2px 0">${gkEm(x)}</div>`).join('')}
    <div class="mut" style="margin-top:6px">${esc(v.ver||'')} · <a href="${gkSheet(v.gid)}" target="_blank" rel="noopener">원본 시트 열기</a></div></div>`;
- if(v.bands){ /* 개척덱 랭킹 */
-  el.innerHTML=head+v.bands.map(b=>`<h3 class="sub2">${esc(b.band)} <span class="mut">${b.decks.length}덱</span></h3>
+ if(v.bands){ /* 밴드형 — 개척덱 합집 · 랭킹 */
+  const cp=v.compose?`<h3 class="sub2">${esc(v.compose.title)}</h3><div class="note">
+   <table class="gktm gkcp">${v.compose.rows.map(([a,b2,c2])=>`<tr><td>${esc(a)}</td><td>${esc(b2)}</td><td class="mut">${esc(c2)}</td></tr>`).join('')}</table>
+   ${v.compose.notes.map(x=>`<div style="margin-top:5px">${gkEm(x)}</div>`).join('')}</div>`:'';
+  el.innerHTML=head+cp+v.bands.map(b=>`<h3 class="sub2">${esc(b.band)} <span class="mut">${b.decks.length}덱</span></h3>
    <div class="grid g-forms g-gk">${b.decks.map(gkCard).join('')}</div>`).join('');
   return;}
  const prep=(v.prep||[]).length?`<div class="note">${v.prep.map(x=>`<div style="padding:2px 0">${gkEm(x)}</div>`).join('')}</div>`:'';
