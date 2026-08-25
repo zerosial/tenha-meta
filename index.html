@@ -88,6 +88,8 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 /* cards grid */
 .grid{display:grid;gap:10px;}
 .g-forms{grid-template-columns:repeat(auto-fill,minmax(310px,1fr));}
+.g-pair{grid-template-columns:repeat(2,minmax(0,1fr));}
+@media(max-width:700px){.g-pair{grid-template-columns:1fr;}}
 .g-tac{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
 .g-gen{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
 /* formation card */
@@ -198,6 +200,28 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .tdgh{display:flex;gap:7px;align-items:center;}
 .tdstat{font-size:11.5px;font-weight:700;color:var(--seal);}
 .tdsetlbl{font-size:11px;font-weight:800;color:var(--faint);margin:14px 0 6px;padding-left:2px;}
+/* 개척 가이드 */
+.g-gk{align-items:start;}
+.fcard .fh .shp{font-size:10.5px;font-weight:800;color:var(--bronze);border:1px solid var(--bronze);border-radius:100px;padding:0 7px;cursor:pointer;}
+.gk-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start;}
+@media(max-width:900px){.gk-wrap{grid-template-columns:1fr;}}
+.gkday{margin-bottom:11px;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--paper);}
+.gkdh{background:var(--panel2);border-bottom:1px solid var(--line);padding:6px 11px;font-weight:800;font-size:13px;font-family:"Nanum Myeongjo",serif;}
+.gksteps{margin:0;padding:8px 11px 9px 28px;font-size:12px;}
+.gksteps li{padding:3px 0;line-height:1.55;}
+.gksteps li::marker{color:var(--faint);font-weight:800;font-size:10.5px;}
+.gknote{border-left:2px solid var(--line2);padding:1px 0 1px 10px;margin-bottom:11px;font-size:12px;line-height:1.55;color:var(--soft);}
+.gknh{font-weight:800;font-size:11px;color:var(--seal);margin-bottom:2px;}
+.gkg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:8px 8px 7px;border-bottom:1px solid var(--line);}
+.gkgi{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;font-size:11.5px;font-weight:800;cursor:pointer;}
+.gktb{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;}
+.gktb td{border-top:1px dashed var(--line);padding:5px 6px;vertical-align:top;word-break:keep-all;}
+.gktb td.k{width:38px;color:var(--faint);font-size:9.5px;font-weight:800;text-align:center;background:var(--panel);}
+.gktb .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--ink);cursor:pointer;line-height:1.6;margin:1px 2px 1px 0;}
+.gktb .tm.leg{border-color:var(--leg);color:var(--leg);background:color-mix(in srgb,var(--leg) 12%,transparent);}
+.gktb .tm.hero{border-color:var(--hero);color:var(--hero);background:color-mix(in srgb,var(--hero) 12%,transparent);}
+.gktb .tm.alt{border-style:dashed;opacity:.72;}
+.gktb .tm.nolink{cursor:default;color:var(--soft);}
 .fcard .sq,.modal .sq{font-size:9.5px;font-weight:800;color:#fff;background:var(--jade);border-radius:4px;padding:1px 6px;}
 .fcard .tdd{padding:6px 11px;font-size:11px;color:var(--soft);border-bottom:1px solid var(--line);background:var(--panel);}
 .fcard .tdd div{padding-left:9px;position:relative;}
@@ -298,6 +322,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  <section id="tab-meta"></section>
  <section id="tab-season"></section>
  <section id="tab-td"></section>
+ <section id="tab-gk"></section>
  <section id="tab-srank"></section>
  <section id="tab-builder"></section>
  <section id="tab-tac"></section>
@@ -311,9 +336,10 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=18"></script>
+<script src="data.js?v=19"></script>
 <script src="guides.js?v=26"></script>
 <script src="tierdecks.js?v=2"></script>
+<script src="gaecheok.js?v=1"></script>
 <script src="future.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
@@ -350,12 +376,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['td','티어덱'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
+const TABS=[['meta','메타'],['td','티어덱'],['gk','개척 가이드'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,td:renderTd,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,td:renderTd,gk:renderGk,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 (function(){const b=document.getElementById('sjBtn');if(b)b.textContent=sjMode==='kr'?'시즌 韓':'시즌 中';})();
@@ -744,13 +770,78 @@ function tdBody(){
   const ds=g.decks.filter(d=>!q||nk(d.title+d.name+d.gens.map(x=>x.kr).join('')).indexOf(q)>=0);
   if(!ds.length)return;
   html.push(`<h3 class="sub2">${esc(g.label)}${g.sub&&g.sub!==g.label?` <span class="mut" style="font-weight:700">${esc(g.sub)}</span>`:''} <span class="mut">${ds.length}덱 · 原 ${esc(g.cn||'')}</span></h3>`);
-  let set=null,buf=[];
-  const flush=()=>{if(!buf.length)return;html.push((set?`<div class="tdsetlbl">${esc(set)}</div>`:'')+`<div class="grid g-forms">${buf.join('')}</div>`);buf=[];};
-  ds.forEach(d=>{if((d.set||'')!==(set||'')){flush();set=d.set||'';}
+  /* 원본 시트는 세트(선발 2팀 등)의 '첫 덱'에만 set 라벨을 넣는다 — 빈 set은 같은 세트의 연속이다.
+     세트 라벨이 없는 그룹은 출전 순서(1군)가 다시 나오는 지점을 세트 경계로 본다(대체안 A/B는 제외). */
+  let set='',buf=[],seen={};
+  const flush=()=>{if(!buf.length)return;
+   html.push((set?`<div class="tdsetlbl">${esc(set)}</div>`:'')+`<div class="grid g-forms${buf.length===2?' g-pair':''}">${buf.join('')}</div>`);
+   buf=[];seen={};};
+  ds.forEach(d=>{const o=d.order||'';
+   if(d.set||(o&&seen[o]&&!d.pre)){const ns=d.set||'';flush();set=ns;}
+   if(o)seen[o]=1;
    const i=list.push(d)-1;buf.push(tdCard(d,i));});
   flush();});
  document.getElementById('tdBody').innerHTML=html.join('')||'<p class="mut">해당 조건의 덱이 없습니다.</p>';
  document.getElementById('tdCnt').textContent=list.length+'개 덱';
+}
+
+/* ---------------- 개척(開荒) 가이드 ---------------- */
+const GK=window.GAECHEOK||{guides:[],rank:null};
+const FMCN={};(D.FORMS||[]).forEach(f=>{if(f.cn)FMCN[f.cn]=f.name;});
+/* *강조* 마크업만 허용 — 나머지는 이스케이프 */
+function gkEm(s){return esc(String(s==null?'':s)).replace(/\*([^*]+)\*/g,'<b>$1</b>');}
+function gkShape(cn){const kr=FMCN[cn]||cn;
+ return FMBY[nk(kr)]?`<span class="shp" onclick="fmModalByName('${esc(kr)}')">${esc(kr)}</span>`:`<span class="mut" style="font-weight:700">${esc(kr)}</span>`;}
+/* [주전법, 대체1, 대체2…] → 칩. 도감에 없는 이름은 회색 비활성 */
+function gkTac(list){return (list||[]).map((cn,i)=>{const t=TAC[cn];
+ return t?`<span class="tm ${gradeCls(cn)}${i?' alt':''}" onclick="tacModal('${cn}')">${esc(t.kr)}</span>`
+        :`<span class="tm nolink${i?' alt':''}">${esc(cn)}</span>`;}).join('');}
+function gkCard(d){
+ const gens=(d.gens||[]).length?`<div class="gkg">${d.gens.map(cn=>{const g=GEN[cn]||{};
+   return `<div class="gkgi" ${g.kr?`onclick="genModal('${cn}')"`:''}>${avHtml(cn,'sm')}<span>${esc(g.kr||cn)}</span>${sjBadge(cn)}</div>`;}).join('')}</div>`:'';
+ const rows=(d.rows||[]).map(([k,vs])=>`<tr><td class="k">${esc(k)}</td>${vs.map(v=>`<td>${k==='전법'?gkTac(v):gkEm(v)}</td>`).join('')}</tr>`).join('');
+ return `<div class="fcard">
+  <div class="fh">${d.rank?`<span class="sq">${d.rank}위</span>`:''}
+   <span class="shape serif">${esc(d.name)}</span>
+   ${d.sub?`<span class="mut" style="font-weight:700">${esc(d.sub)}</span>`:''}
+   <span style="margin-left:auto">${d.shape?gkShape(d.shape):''}</span></div>
+  ${gens}<table class="gktb">${rows}</table>
+  ${d.note?`<div class="tdd"><div>${gkEm(d.note)}</div></div>`:''}</div>`;}
+function gkSheet(gid){return `https://docs.google.com/spreadsheets/d/${GK.doc}/htmlview#gid=${gid}`;}
+let gkState={v:''};
+function gkViews(){return (GK.guides||[]).map(g=>[g.id,g.tab]).concat(GK.rank?[[GK.rank.id,GK.rank.tab]]:[]);}
+function gkFind(id){return (GK.guides||[]).find(g=>g.id===id)||(GK.rank&&GK.rank.id===id?GK.rank:null);}
+function renderGk(){
+ const el=document.getElementById('tab-gk'),vs=gkViews();
+ if(!gkFind(gkState.v))gkState.v=vs.length?vs[0][0]:'';
+ el.innerHTML=`<h2 class="head serif">개척 가이드</h2>
+ <p class="sub">시즌 첫 나흘의 <b>개척(開荒)</b> 루트 — 铁血雕馋 개척 시트를 <b>한국 서버 시즌 기준</b>으로 옮겼습니다. 각 시즌은 <b>구간별 개척덱 · 1군 일차별 흐름 · 2군 체력 돌려막기</b> 세 축으로 되어 있고, 세 축을 같이 굴려야 표의 레벨이 나옵니다. 장수·전법·진형 이름을 누르면 도감 상세가 열립니다.</p>
+ <div class="note">${GK.note||''}</div>
+ <div class="filters"><div class="spill" id="gkNav">${vs.map(([k,l])=>`<button data-v="${k}" class="${k===gkState.v?'on':''}">${esc(l)}</button>`).join('')}</div></div>
+ <div id="gkBody"></div>`;
+ document.getElementById('gkNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;gkState.v=b.dataset.v;renderGk();scrollTo(0,0);};
+ gkBody();
+}
+function gkBody(){
+ const v=gkFind(gkState.v),el=document.getElementById('gkBody');
+ if(!v){el.innerHTML='<p class="mut">자료가 없습니다.</p>';return;}
+ const head=`<h3 class="sub2">${esc(v.title)}${v.cn?` <span class="mut" style="font-weight:700">${esc(v.cn)}</span>`:''}</h3>
+  <div class="note">${(v.lead||[]).map(x=>`<div style="padding:2px 0">${gkEm(x)}</div>`).join('')}
+   <div class="mut" style="margin-top:6px">${esc(v.ver||'')} · <a href="${gkSheet(v.gid)}" target="_blank" rel="noopener">원본 시트 열기</a></div></div>`;
+ if(v.bands){ /* 개척덱 랭킹 */
+  el.innerHTML=head+v.bands.map(b=>`<h3 class="sub2">${esc(b.band)} <span class="mut">${b.decks.length}덱</span></h3>
+   <div class="grid g-forms g-gk">${b.decks.map(gkCard).join('')}</div>`).join('');
+  return;}
+ const prep=(v.prep||[]).length?`<div class="note">${v.prep.map(x=>`<div style="padding:2px 0">${gkEm(x)}</div>`).join('')}</div>`:'';
+ const decks=`<h3 class="sub2">구간별 개척덱 <span class="mut">${(v.decks||[]).length}덱</span></h3>
+  <div class="grid g-forms g-gk">${(v.decks||[]).map(gkCard).join('')}</div>`;
+ const days=(v.flow||[]).map(f=>`<div class="gkday"><div class="gkdh">${esc(f.d)}</div>
+   <ol class="gksteps">${f.steps.map(s=>`<li>${gkEm(s)}</li>`).join('')}</ol></div>`).join('');
+ const side=v.side?`<h3 class="sub2">${esc(v.side.title)}</h3>
+   ${v.side.notes.map(n=>`<div class="gknote"><div class="gknh">${esc(n.h)}</div>${gkEm(n.t)}</div>`).join('')}`:'';
+ el.innerHTML=head+prep+decks+`<div class="gk-wrap" style="margin-top:18px">
+  <div><h3 class="sub2" style="margin-top:0">1군 일차별 흐름</h3>${days}</div>
+  <div>${side}</div></div>`;
 }
 
 /* ---------------- SEASON RANKING (graph) ---------------- */
