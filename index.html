@@ -200,6 +200,12 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .tdgh{display:flex;gap:7px;align-items:center;}
 .tdstat{font-size:11.5px;font-weight:700;color:var(--seal);}
 .tdsetlbl{font-size:11px;font-weight:800;color:var(--faint);margin:14px 0 6px;padding-left:2px;}
+.fcg .tdsec{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);font-weight:800;margin:8px 0 1px;}
+.fcg .tdsec:first-child{margin-top:0;}
+.fcg .tdtr{padding:5px 0;border-bottom:1px solid var(--line);cursor:pointer;}
+.fcg .tdtr:last-child{border-bottom:none;}
+.fcg .tdtr.alt{opacity:.82;}
+.fcg .tdtr.nolink{cursor:default;opacity:.62;}
 /* 개척 가이드 */
 .g-gk{align-items:start;}
 .fcard .fh .shp{font-size:10.5px;font-weight:800;color:var(--bronze);border:1px solid var(--bronze);border-radius:100px;padding:0 7px;cursor:pointer;}
@@ -356,7 +362,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <script src="data.js?v=19"></script>
 <script src="guides.js?v=26"></script>
-<script src="tierdecks.js?v=2"></script>
+<script src="tierdecks.js?v=3"></script>
 <script src="gaecheok.js?v=11"></script>
 <script src="future.js?v=1"></script>
 <script>
@@ -627,27 +633,7 @@ function tdSk(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
   main.split(/[\/、,+]|→/).forEach(x=>{const c=tdChip(x,false);if(c)out.push(c);});
   alts.forEach(a=>a.split(/[\/、,]/).forEach(x=>{const c=tdChip(x,true);if(c)out.push(c);}));});
  return out.join('');}
-/* 공백 무시 인라인 매칭 — 대체 전법처럼 여러 전법이 공백으로 이어진 셀용 */
-function tdInline(txt){txt=String(txt||'');
- const idx=[],ch=[];for(let i=0;i<txt.length;i++)if(!/\s/.test(txt[i])){ch.push(txt[i]);idx.push(i);}
- const flat=ch.join(''),used=new Array(flat.length).fill(false),mk=[];
- TACNM.forEach(nm=>{let p=0;while((p=flat.indexOf(nm,p))!==-1){let free=true;
-   for(let k=p;k<p+nm.length;k++)if(used[k]){free=false;break;}
-   if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],idx[p+nm.length-1]+1,KRTAC[nm]]);}
-   p++;}});
- mk.sort((a,b)=>a[0]-b[0]);let out='',pos=0;
- mk.forEach(m=>{if(m[0]<pos)return;out+=esc(txt.slice(pos,m[0]));
-  out+=`<span class="tm ${gradeCls(m[2])}" onclick="event.stopPropagation();tacModal('${m[2]}')">${esc(txt.slice(m[0],m[1]))}</span>`;pos=m[1];});
- out+=esc(txt.slice(pos));return out;}
 /* 병서 · 특기 */
-function tdBook(lines){return (lines||[]).map(l=>{const g=/^[금金][·.]/.test(l);
-  let n=String(l).replace(/^[금金][·.]\s*/,'').trim();const key=nk(BFTYPO[nk(n)]||n);const i=BFIDX[key];
-  const lb=(g?'<b style="font-size:9px">금</b> ':'')+esc(n);
-  return i==null?`<span class="bfx nolink">${lb}</span>`:`<span class="bfx ${g?'g':''}" onclick="event.stopPropagation();bfModal(${i})">${lb}</span>`;}).join(' ');}
-function tdSpec(lines){return (lines||[]).map(l=>String(l).split(/[\/、,\s]+/).filter(Boolean).map(n=>{
-   const e=SPEC[nk(n).replace(/[\[\]]/g,'')];
-   return e?`<span class="tm" onclick="event.stopPropagation();spModal('${esc(nk(n))}')">${esc(n)}</span>`
-           :`<span class="tm nolink">${esc(n)}</span>`;}).join('')).join('');}
 function spModal(k){const e=SPEC[k];if(!e)return;
  openModal(`<div class="mh"><b style="font-size:16px">${esc(e.name)}</b><button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div style="font-size:13px;line-height:1.6">${esc(e.desc||'')}</div></div>`);}
@@ -697,17 +683,65 @@ function tdCard(d,i){
   ${(d.desc||[]).length?`<div class="tdd">${d.desc.map(x=>`<div>${esc(x)}</div>`).join('')}</div>`:''}
   ${gens}</div>`;}
 
+/* 전법 이름 → 도감 키 (칩 대신 효과행을 그리기 위한 것) */
+function tdKey(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');
+ return t?{cn:KRTAC[nk(t)]||null,kr:t,alt:!!alt}:null;}
+function tdSkKeys(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
+  let main=String(l).replace(/[（(]([^）)]*)[）)]/g,(m,x)=>{alts.push(x);return ' ';});
+  const op=main.search(/[（(]/);
+  if(op>=0){alts.push(main.slice(op+1));main=main.slice(0,op);}
+  main.split(/[\/、,+]|→/).forEach(x=>{const k=tdKey(x,false);if(k)out.push(k);});
+  alts.forEach(a=>a.split(/[\/、,]/).forEach(x=>{const k=tdKey(x,true);if(k)out.push(k);}));});
+ const seen={};return out.filter(k=>{const id=k.cn||k.kr;if(seen[id])return false;seen[id]=1;return true;});}
+/* 대체 전법 셀은 공백으로 이어붙인 자유 문장 — 이름 매칭으로 키만 뽑는다 */
+function tdInlineKeys(txt){txt=String(txt||'');
+ const idx=[],ch=[];for(let i=0;i<txt.length;i++)if(!/\s/.test(txt[i])){ch.push(txt[i]);idx.push(i);}
+ const flat=ch.join(''),used=new Array(flat.length).fill(false),mk=[];
+ TACNM.forEach(nm=>{let p=0;while((p=flat.indexOf(nm,p))!==-1){let free=true;
+   for(let k=p;k<p+nm.length;k++)if(used[k]){free=false;break;}
+   if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],KRTAC[nm]]);}
+   p++;}});
+ mk.sort((a,b)=>a[0]-b[0]);return mk.map(m=>({cn:m[1],kr:tName(m[1]),alt:true}));}
+/* 효과까지 펼친 한 줄 */
+function tdTacRow(k){
+ if(!k.cn)return `<div class="tdtr nolink"><b>${k.alt?'↔ ':''}${esc(k.kr)}</b>
+   <div class="mut" style="font-size:10.5px">도감에 없는 이름 · 원문 표기</div></div>`;
+ const x=TAC[k.cn]||{};
+ const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';
+ return `<div class="tdtr${k.alt?' alt':''}" onclick="event.stopPropagation();tacModal('${k.cn}')">
+  <b style="font-size:12px;${col}">${k.alt?'↔ ':''}${esc(tName(k.cn))}</b> ${x.ty?tyB(x.ty):''}${tsjB(k.cn)}${isNewTac(k.cn)?' <span class="bnew">번역</span>':''}
+  <div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}
+/* 병서도 같은 형식으로 */
+function tdBookKeys(g){const out=[];['book','nd1','nd2'].forEach(k=>(g[k]||[]).forEach(v=>{
+  const gold=/^[금金][·.]/.test(v);const n=String(v).replace(/^[금金][·.]\s*/,'').trim();
+  if(!n)return;const i=BFIDX[nk(BFTYPO[nk(n)]||n)];out.push({i:i==null?null:i,kr:n,gold:gold});}));
+ return out;}
+function tdBookRow(b){
+ if(b.i==null)return `<div class="tdtr nolink"><b class="bfp">병</b> <b style="font-size:12px">${esc(b.kr)}</b>
+   <div class="mut" style="font-size:10.5px">도감에 없는 이름 · 원문 표기</div></div>`;
+ const r=BF[b.i]||{};
+ return `<div class="tdtr" onclick="event.stopPropagation();bfModal(${b.i})">
+  <b class="bfp">병</b> <b style="font-size:12px;color:var(--jade)">${b.gold?'<span style="color:var(--leg)">금 </span>':''}${esc(r.kr)}</b>${r.kind?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(BFLBL[r.kind]||r.kind)}</span>`:''}
+  <div style="font-size:11px;color:var(--soft)">${esc(r.eff||(r.kind==='범용'?'수치 미공개 — 잔장 → 수초 → 선본 등급이 오를수록 커지는 구간형. 눌러서 상세.':'효과 미공개 — 눌러서 상세.'))}</div></div>`;}
+/* 장비·탈것 특기 효과 */
+function tdSpecRows(lines){return (lines||[]).map(l=>String(l).split(/[\/、,\s]+/).filter(Boolean).map(n=>{
+   const key=nk(n).replace(/[\[\]]/g,''),e=SPEC[key];
+   return e?`<div class="tdtr" onclick="event.stopPropagation();spModal('${esc(key)}')"><b style="font-size:12px">${esc(e.name)}</b>
+     <div style="font-size:11px;color:var(--soft)">${esc(e.desc||'—')}</div></div>`
+    :`<div class="tdtr nolink"><b style="font-size:12px">${esc(n)}</b></div>`;}).join('')).join('');}
+function tdSec(lb,html){return html?`<div class="tdsec">${esc(lb)}</div>${html}`:'';}
 function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
  const cns=d.gens.map(g=>tdCn(g.kr));
  const gens=d.gens.map((g,k)=>{const cn=cns[k],G=GEN[cn]||{},sk=TAC[G.skill]||{};
-   const picks=[].concat(g.sk1||[],g.sk2||[]).map(l=>tdSk([l])).join('');
-   const alt=(g.alt||[]).map(x=>tdInline(x)).join('<br>');
+   const picks=tdSkKeys([].concat(g.sk1||[],g.sk2||[])).map(tdTacRow).join('');
+   const altk=[];(g.alt||[]).forEach(x=>tdInlineKeys(x).forEach(k=>altk.push(k)));
+   const alt=altk.map(tdTacRow).join('');
+   const books=tdBookKeys(g).map(tdBookRow).join('');
+   const gear=tdSpecRows(g.eq)+tdSpecRows(g.mount);
    const kv=[['병종',(g.unit||[]).join(' / ')],['특화',(g.spec||[]).join(' / ')],
-             ['병서',tdBook(g.book)+' '+tdBook(g.nd1)+' '+tdBook(g.nd2)],
-             ['장비',tdAttr(g.eqattr)+' '+tdSpec(g.eq)],['탈것',tdSpec(g.mount)],
-             ['스탯',(g.stat||[]).map(esc).join(' · ')]]
+             ['장비 속성',tdAttr(g.eqattr)],['스탯',(g.stat||[]).map(esc).join(' · ')]]
      .filter(r=>String(r[1]).replace(/\s|<[^>]*>/g,''))
-     .map(r=>`<div class="k">${r[0]}</div><div>${r[0]==='병종'||r[0]==='특화'||r[0]==='스탯'?esc(String(r[1])):r[1]}</div>`).join('');
+     .map(r=>`<div class="k">${r[0]}</div><div>${r[0]==='장비 속성'?r[1]:esc(String(r[1]))}</div>`).join('');
    return `<div class="fcg">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${cn?avHtml(cn,'lg'):''}
        <div><div style="font-weight:800;font-size:14px">${cn?facChip(cn):''} ${esc(g.kr)} ${cn?sjBadge(cn):''} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
@@ -715,11 +749,11 @@ function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
        ${G.skill?`<div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer" onclick="tacModal('${G.skill}')">◈ 고유 · ${esc(tName(G.skill))}</div>`:''}</div>
      </div>
      ${sk.eff?`<div style="font-size:11px;color:var(--soft);margin-bottom:5px">${esc(sk.eff)}</div>`:''}
-     <div class="mut" style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">채용 전법</div>
-     <div class="tdcell" style="margin-bottom:5px">${picks}</div>
-     ${alt?`<div class="mut" style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">대체 전법</div><div style="font-size:11.5px;margin-bottom:5px">${alt}</div>`:''}
-     <div class="mut" style="font-size:10px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px">빌드</div>
-     <div class="tdkv">${kv}</div>
+     ${tdSec('채용 전법',picks)}
+     ${tdSec('대체 전법',alt)}
+     ${tdSec('병서',books)}
+     ${tdSec('장비 · 탈것 특기',gear)}
+     ${tdSec('빌드',`<div class="tdkv">${kv}</div>`)}
    </div>`;}).join('');
  const act=SYN.map(s=>({s,n:s.member.filter(m=>cns.includes(m)).length})).filter(x=>x.n>=2);
  const synHtml=act.length?`<div style="margin-top:4px"><div class="mut" style="font-size:10px;text-transform:uppercase;margin-bottom:3px">활성 연계</div>${act.map(({s,n})=>`<div style="font-size:11.5px;padding:3px 0"><b style="color:var(--jade)">${esc(s.name)}</b> <span class="mut">(${n}/${s.member.length})</span> — ${esc(s.desc||'')}</div>`).join('')}</div>`:'';
@@ -753,7 +787,7 @@ function renderTd(){
  const nOf=k=>(sea.groups||[]).filter(g=>g.kind===k).reduce((a,g)=>a+g.decks.length,0);
  const nT=nOf('tier'),nC=nOf('coex'),gs=tdGroups();
  el.innerHTML=`<h2 class="head serif">티어덱 · 출대 루트</h2>
- <p class="sub">중국 <b>铁血雕馋</b>의 시즌별 강덱 합집·출대 루트를 <b>한국 서버 시즌 기준</b>으로 정리한 자료. 「시즌별 편성」(sgmdtx 집계) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>덱 상세</b>를 누르면 전체 빌드가 열립니다.</p>
+ <p class="sub">중국 <b>铁血雕馋</b>의 시즌별 강덱 합집·출대 루트를 <b>한국 서버 시즌 기준</b>으로 정리한 자료. 「시즌별 편성」(sgmdtx 집계) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>덱 상세</b>를 누르면 전법·병서·특기 <b>효과 원문까지 한 번에</b> 펼쳐집니다.</p>
  <div class="filters"><div class="spill" id="tdSea">${ss.map(x=>`<button data-s="${x.id}" class="${x.id===tdState.sea?'on':''}">한국 ${esc(x.label)} <span class="tn">${esc(x.cn_season)}</span></button>`).join('')}</div>
   ${sea.tr?'<span class="bnew">임시 번역</span>':'<span class="bok">번역 시트</span>'}</div>
  <div class="note"><b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
