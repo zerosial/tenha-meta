@@ -62,8 +62,8 @@ h3.sub2::before{content:"";width:8px;height:8px;background:var(--seal);border-ra
 .bself{background:color-mix(in srgb,var(--jade) 15%,transparent);color:var(--jade);border:1px solid color-mix(in srgb,var(--jade) 45%,transparent);font-size:9.5px;font-weight:800;padding:0 5px;border-radius:100px;white-space:nowrap;}
 .bok{background:color-mix(in srgb,var(--jade) 14%,transparent);color:var(--jade);border:1px solid var(--jade);font-size:9.5px;font-weight:800;padding:0 5px;border-radius:100px;}
 /* avatar */
-.av{position:relative;width:38px;height:38px;border-radius:8px;overflow:hidden;background:var(--panel2);flex:none;display:inline-block;border:1px solid var(--line2);}
-.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.av{position:relative;width:38px;height:38px;border-radius:8px;overflow:hidden;background:var(--panel2);flex:none;display:inline-block;border:1px solid var(--line2);user-select:none;-webkit-user-select:none;}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;user-drag:none;}
 .av b{position:absolute;inset:0;display:grid;place-content:center;font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:15px;color:var(--soft);}
 .av.lg{width:54px;height:54px;}.av.lg b{font-size:20px;}
 .av.sm{width:30px;height:30px;border-radius:6px;}.av.sm b{font-size:12px;}
@@ -429,9 +429,10 @@ function bfModal(i){const r=BF[i];if(!r)return;
  const use=(r.use&&r.use.length)?`<div class="mut" style="margin-top:6px">편성 채용 · ${r.use.map(u=>esc(u[0])+'('+u[1]+')').join(', ')}</div>`:'';
  const rec=r.rec?`<div class="mut" style="margin-top:6px">韓 공식 추천 · <b>${esc(r.rec)}</b></div>`:'';
  const cn0=r.effcn?`<div class="mut cn" style="margin-top:8px;font-size:12px;line-height:1.5">原文 ${esc(r.effcn)}</div>`:'';
- openModal(`<div class="mh"><b style="font-size:16px">${esc(r.kr)}</b> <span class="cn">${esc(r.cn)}</span>${r.krOff?' <span class="bself">韓공식명</span>':''}${r.off?'':' <span class="bnew">효과 미공개</span>'}<button class="x" onclick="closeModal()">×</button></div>
+ const src0=r.src?`<div class="mut" style="margin-top:6px">출처 · ${esc(r.src)}</div>`:'';
+ openModal(`<div class="mh"><b style="font-size:16px">${esc(r.kr)}</b> <span class="cn">${esc(r.cn)}</span>${r.krOff?' <span class="bself">韓공식명</span>':''}${(r.off||r.eff)?'':' <span class="bnew">효과 미공개</span>'}<button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div style="margin-bottom:8px"><span class="chip" style="background:var(--panel2);color:var(--jade)">병법 · ${esc(BFLBL[r.kind])}</span>${r.sj?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(r.sj)}</span>`:''}</div>
- <div style="font-size:13px;line-height:1.6">${esc(r.eff||BFNOEFF[r.kind])}</div>${own}${rec}${use}${cn0}</div>`);}
+ <div style="font-size:13px;line-height:1.6">${esc(r.eff||BFNOEFF[r.kind])}</div>${own}${rec}${use}${cn0}${src0}</div>`);}
 function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  const mx=280;
  const bar=(lb,v)=>`<div class="stbar"><span>${lb}</span><div class="bar"><span style="width:${Math.min(100,(v||0)/mx*100)}%"></span></div><b class="num">${v||'-'}</b></div>`;
@@ -702,6 +703,9 @@ function tdInlineKeys(txt){txt=String(txt||'');
    if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],KRTAC[nm]]);}
    p++;}});
  mk.sort((a,b)=>a[0]-b[0]);return mk.map(m=>({cn:m[1],kr:tName(m[1]),alt:true}));}
+/* 덱상세에서는 '효과 미공개·수치 미공개' 안내문을 띄우지 않고 이름만 남긴다(눌러서 상세) */
+function tdEff(x){const e=x&&x.eff;if(!e)return '';
+ return (/미공개|공개돼 있지 않|공개되지 않은|추정됩니다|파편/.test(e))?'':e;}
 /* 효과까지 펼친 한 줄 */
 function tdTacRow(k){
  if(!k.cn)return `<div class="tdtr nolink"><b>${k.alt?'↔ ':''}${esc(k.kr)}</b>
@@ -710,7 +714,7 @@ function tdTacRow(k){
  const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';
  return `<div class="tdtr${k.alt?' alt':''}" onclick="event.stopPropagation();tacModal('${k.cn}')">
   <b style="font-size:12px;${col}">${k.alt?'↔ ':''}${esc(tName(k.cn))}</b> ${x.ty?tyB(x.ty):''}${tsjB(k.cn)}${isNewTac(k.cn)?' <span class="bnew">번역</span>':''}
-  <div style="font-size:11px;color:var(--soft)">${esc(x.eff||'—')}</div></div>`;}
+  ${tdEff(x)?`<div style="font-size:11px;color:var(--soft)">${esc(tdEff(x))}</div>`:''}</div>`;}
 /* 병서도 같은 형식으로 */
 function tdBookKeys(g){const out=[];['book','nd1','nd2'].forEach(k=>(g[k]||[]).forEach(v=>{
   const gold=/^[금金][·.]/.test(v);const n=String(v).replace(/^[금金][·.]\s*/,'').trim();
@@ -722,7 +726,7 @@ function tdBookRow(b){
  const r=BF[b.i]||{};
  return `<div class="tdtr" onclick="event.stopPropagation();bfModal(${b.i})">
   <b class="bfp">병</b> <b style="font-size:12px;color:var(--jade)">${b.gold?'<span style="color:var(--leg)">금 </span>':''}${esc(r.kr)}</b>${r.kind?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(BFLBL[r.kind]||r.kind)}</span>`:''}
-  <div style="font-size:11px;color:var(--soft)">${esc(r.eff||(r.kind==='범용'?'수치 미공개 — 잔장 → 수초 → 선본 등급이 오를수록 커지는 구간형. 눌러서 상세.':'효과 미공개 — 눌러서 상세.'))}</div></div>`;}
+  ${r.eff?`<div style="font-size:11px;color:var(--soft)">${esc(r.eff)}</div>`:''}</div>`;}
 /* 장비·탈것 특기 효과 */
 function tdSpecRows(lines){return (lines||[]).map(l=>String(l).split(/[\/、,\s]+/).filter(Boolean).map(n=>{
    const key=nk(n).replace(/[\[\]]/g,''),e=SPEC[key];
@@ -798,7 +802,7 @@ function renderTd(){
    <p><b class="tdh2">도략(병서) 칸</b> 무장은 <b>25·30·35레벨</b>에 도략 칸이 1개씩 열려 <b>최대 3칸</b>(해금 동전 1만·3만·5만). 각 칸은 랜덤 3권 중 1권을 연구하며, 후보 9권 안에 <b>같은 계열은 중복 등장하지 않음</b>. 3권을 다 배우면 서간 4개로 재수리(리롤) 가능, <b>10회 이내 전용 금서 보장</b>. <b>전용(專屬) 도략은 무장당 동시 1개만 적용</b>.</p>
    <p><b class="tdh2">장서각</b> 시즌 한정 컨텐츠. 패업 단계 도달(또는 시나리오 6~7일차)에 개방되고 <b>무훈 3만</b>으로 장품도략을 구매. <b>4권</b>이 배치되어 개방 시 2권 + 7일 후 2권 해금. <b>시즌 종료 시 소멸(이월 없음)</b>, 금색 등급은 랜덤 해금·재수리로 획득 불가.</p>
    <p><b class="tdh2">한 권에 3효과?</b> 장품도략 1권이 도략 3권의 효과를 합쳐주는 것은 <b>아님</b> — 칸은 그대로 3칸이고, 장품은 그 중 <b>한 칸</b>에 들어가는 다절 효과의 강력한 한 권(예 손책 《制霸》 후열 피해 500%+체력 100% 회복, 추격 시 1000%/200%, 발동 55%). 대신 <b>전용 금서와는 양립 불가</b>(전용 1개 제한)라는 것이 실제 트레이드오프.</p>
-   <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. 지력 기반 발동으로 적에게 <b>혼란</b>을 걸고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
+   <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. <b>「매 턴 종료 시 30% 확률(최고 속성 영향)로 적군 무력 최고 단일과 그 부대의 무작위 동료가 서로 일반공격 1회씩 하고, 둘 다 1턴 혼란」</b>이 효과 전문(原 每回合结束时有30%概率（受最高属性影响），使敌军武力最高单体与其随机队友互相普攻1次并陷入1回合混乱). 초선은 지력이 최고 속성이라 <b>지력 몰빵이 발동률</b>을 올리고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
    <p class="mut"><b>미확정</b> · 장품도략을 끼면 남은 2칸(범용)까지 잠기는지는 공식 문구가 없습니다. 다만 이 표와 중섭 편성 DB(sgmdtx) 모두 장품·연의 도략 보유 장수는 <b>그 한 권만 표기</b>되고(같은 편성 동료는 3권 표기) 범용·금서와 섞인 사례가 없어, 실무에선 “장서각 도략 하나로 병서 세팅 끝”으로 취급합니다.</p>
   </div></details>
  ${kinds.length>1?`<div class="ttabs" id="tdKind">
