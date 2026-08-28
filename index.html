@@ -367,6 +367,9 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <script src="future.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
+/* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
+   카드 타이틀 위에 겹쳐 보인다. 이 사이트엔 드래그로 옮길 UI가 없으므로 기본 드래그를 막는다. */
+document.addEventListener('dragstart',e=>e.preventDefault());
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
 const SEASONS=Object.keys(SEA).map(Number).sort((a,b)=>a-b);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -658,8 +661,15 @@ function tdCn(kr){const a=GALIAS[nk(kr)];if(a&&GKR[nk(a)])return GKR[nk(a)];
  for(let i=0;i<3&&!GKR[s2];i++)s2=s2.replace(/^(SP|연의|[위촉오군]·)/,'');
  return GKR[s2]||'';}
 function tdRole(g){return [(g.unit||[]).join('/'),(g.spec||[]).join('/')].filter(Boolean).join(' · ');}
+/* 편성 시트가 권명 없이 '장서각/장품도략'으로 적어둔 칸 — 무장별 확인된 장품도략으로 바꿔 읽는다 */
+const CANGBOOK={'초선':'이간'};
+const CANGGEN=/^(장서각|장서각도략|장품도략|s\d*장품도략)$/;
+function cangBook(n,krName){const k=nk(n);
+ if(!CANGGEN.test(k))return n;
+ const hit=CANGBOOK[nk(String(krName||'').replace(/[（(].*$/,''))];
+ return hit||n;}
 function tdBookChips(g){return ['book','nd1','nd2'].map(k=>(g[k]||[]).map(v=>{
-   const gold=/^[금金][·.]/.test(v);let n=String(v).replace(/^[금金][·.]\s*/,'').trim();
+   const gold=/^[금金][·.]/.test(v);let n=cangBook(String(v).replace(/^[금金][·.]\s*/,'').trim(),g.kr);
    const i=BFIDX[nk(BFTYPO[nk(n)]||n)];
    const lb=`<b class="bfp">병</b> ${gold?'<b style="font-size:9px;color:var(--leg)">금</b> ':''}${esc(n)}`;
    return i==null?`<span class="tm min">${lb}</span>`:`<span class="tm" onclick="event.stopPropagation();bfModal(${i})">${lb}</span>`;
@@ -717,7 +727,7 @@ function tdTacRow(k){
   ${tdEff(x)?`<div style="font-size:11px;color:var(--soft)">${esc(tdEff(x))}</div>`:''}</div>`;}
 /* 병서도 같은 형식으로 */
 function tdBookKeys(g){const out=[];['book','nd1','nd2'].forEach(k=>(g[k]||[]).forEach(v=>{
-  const gold=/^[금金][·.]/.test(v);const n=String(v).replace(/^[금金][·.]\s*/,'').trim();
+  const gold=/^[금金][·.]/.test(v);const n=cangBook(String(v).replace(/^[금金][·.]\s*/,'').trim(),g.kr);
   if(!n)return;const i=BFIDX[nk(BFTYPO[nk(n)]||n)];out.push({i:i==null?null:i,kr:n,gold:gold});}));
  return out;}
 function tdBookRow(b){
