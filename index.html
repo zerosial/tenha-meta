@@ -253,7 +253,7 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fcard .frow .tacmini .tm.min{opacity:.62;border-style:dashed;}
 .mtb{border-collapse:collapse;width:100%;font-size:12px;}
 .mtb th,.mtb td{border-bottom:1px solid var(--line);padding:5px 9px;text-align:left;white-space:nowrap;}
-.mtb thead th{background:var(--panel2);font-size:10.5px;font-weight:800;color:var(--soft);position:sticky;top:0;}
+.mtb thead th{background:var(--panel2);font-size:10.5px;font-weight:800;color:var(--soft);position:sticky;top:0;z-index:2;}
 .mtb th.sortable{cursor:pointer;}
 .mtb th.sortable:hover{color:var(--ink);}
 .mtb th.sortable.on{color:var(--seal);}
@@ -324,7 +324,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 .overlay{position:fixed;inset:0;background:rgba(20,15,10,.55);z-index:50;display:none;align-items:center;justify-content:center;padding:16px;}
 .overlay.on{display:flex;}
 .modal{background:var(--paper);border:1px solid var(--line2);border-radius:14px;max-width:560px;width:100%;max-height:86vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);}
-.modal .mh{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:10px;}
+.modal .mh{position:sticky;top:0;z-index:3;background:var(--paper);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:10px;}
 .modal .mb{padding:16px 18px;}
 .modal .x{margin-left:auto;font-size:18px;cursor:pointer;color:var(--faint);border:none;background:none;}
 .footer{max-width:1180px;margin:24px auto 0;padding:14px 16px;border-top:1px solid var(--line2);font-size:11px;color:var(--faint);}
@@ -813,6 +813,7 @@ function renderTd(){
    <p><b class="tdh2">장서각</b> 시즌 한정 컨텐츠. 패업 단계 도달(또는 시나리오 6~7일차)에 개방되고 <b>무훈 3만</b>으로 장품도략을 구매. <b>4권</b>이 배치되어 개방 시 2권 + 7일 후 2권 해금. <b>시즌 종료 시 소멸(이월 없음)</b>, 금색 등급은 랜덤 해금·재수리로 획득 불가.</p>
    <p><b class="tdh2">한 권에 3효과?</b> 장품도략 1권이 도략 3권의 효과를 합쳐주는 것은 <b>아님</b> — 칸은 그대로 3칸이고, 장품은 그 중 <b>한 칸</b>에 들어가는 다절 효과의 강력한 한 권(예 손책 《制霸》 후열 피해 500%+체력 100% 회복, 추격 시 1000%/200%, 발동 55%). 대신 <b>전용 금서와는 양립 불가</b>(전용 1개 제한)라는 것이 실제 트레이드오프.</p>
    <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. <b>「매 턴 종료 시 30% 확률(최고 속성 영향)로 적군 무력 최고 단일과 그 부대의 무작위 동료가 서로 일반공격 1회씩 하고, 둘 다 1턴 혼란」</b>이 효과 전문(原 每回合结束时有30%概率（受最高属性影响），使敌军武力最高单体与其随机队友互相普攻1次并陷入1回合混乱). 초선은 지력이 최고 속성이라 <b>지력 몰빵이 발동률</b>을 올리고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
+   <p><b class="tdh2">시즌별 장서각 4권</b> <b>中 S3(한국 S2)</b> 손책 《制霸(제패)》 · 원소 《举义(거의)》 · 서황 《借刀长驱(차도장구)》 · 관평 《竭忠(갈충)》 / <b>中 S4(한국 S3)</b> 초선 《離間(이간)》 · 황월영 · 서서 · 조인. 각 권 효과는 <b>병법 도감 → 연의·장품</b> 탭에서 볼 수 있습니다 — 다만 게임 내 이미지로만 공개돼 <b>원문이 확인된 것은 초선 《이간》뿐</b>이고, 나머지는 중섭 공략 서술을 옮긴 <b>요약</b>입니다(황월영·서서·조인은 이름 미확인).</p>
    <p class="mut"><b>미확정</b> · 장품도략을 끼면 남은 2칸(범용)까지 잠기는지는 공식 문구가 없습니다. 다만 이 표와 중섭 편성 DB(sgmdtx) 모두 장품·연의 도략 보유 장수는 <b>그 한 권만 표기</b>되고(같은 편성 동료는 3권 표기) 범용·금서와 섞인 사례가 없어, 실무에선 “장서각 도략 하나로 병서 세팅 끝”으로 취급합니다.</p>
   </div></details>
  ${kinds.length>1?`<div class="ttabs" id="tdKind">
