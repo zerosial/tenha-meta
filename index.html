@@ -143,6 +143,21 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fpk-c{font-size:10.5px;font-weight:700;color:var(--faint);margin-left:5px;}
 .fpk-l{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin:3px 0 1px;}
 .gcardx.pred{border-style:dashed;border-color:var(--new);}
+/* 참고 탭 카드팩 — 얼굴 붙은 무장 칩 */
+.fgw{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.fgc{display:flex;flex-direction:column;align-items:center;gap:2px;width:56px;cursor:pointer;}
+.fgc .av{width:44px;height:44px;}
+.fgc .nm{font-size:10.5px;font-weight:700;line-height:1.2;text-align:center;color:var(--ink);}
+.fgc .sub{font-size:9px;color:var(--faint);}
+/* 뽑기 탭 */
+.gcw{display:flex;align-items:center;gap:6px;}
+.gcn{font-weight:800;cursor:pointer;}
+.gct td,.gct th{white-space:nowrap;}
+.mtb tr.gcsum td{border-top:1px solid var(--line2);font-weight:800;color:var(--seal);}
+.seg.tiny button{font-size:10px;padding:1px 6px;}
+.exb{font-size:10px;padding:1px 7px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--soft);cursor:pointer;}
+.exb.on{border-color:var(--seal);color:var(--seal);background:color-mix(in srgb,var(--seal) 12%,transparent);font-weight:800;}
+.gcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
 .gtb{border-collapse:collapse;width:100%;font-size:12px;}
 .gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
 .gtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);white-space:nowrap;}
@@ -361,6 +376,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  <section id="tab-bf"></section>
  <section id="tab-gen"></section>
  <section id="tab-guide"></section>
+ <section id="tab-gacha"></section>
  <section id="tab-ref"></section>
 </main>
 <div class="footer">
@@ -368,11 +384,12 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=19"></script>
+<script src="data.js?v=20"></script>
 <script src="guides.js?v=26"></script>
 <script src="tierdecks.js?v=3"></script>
-<script src="gaecheok.js?v=11"></script>
-<script src="future.js?v=1"></script>
+<script src="gaecheok.js?v=12"></script>
+<script src="future.js?v=2"></script>
+<script src="gacha.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -411,12 +428,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['td','티어덱'],['gk','개척 가이드'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['guide','공략·팁'],['ref','참고']];
+const TABS=[['meta','메타'],['td','티어덱'],['gk','개척 가이드'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['gacha','뽑기'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,td:renderTd,gk:renderGk,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,td:renderTd,gk:renderGk,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,gacha:renderGacha,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 (function(){const b=document.getElementById('sjBtn');if(b)b.textContent=sjMode==='kr'?'시즌 韓':'시즌 中';})();
@@ -584,18 +601,20 @@ function futureHtml(){
    <td class="num">${m.gens?m.gens+'명':'<span class="mut">·</span>'}</td>
    <td class="num">${m.tacs?m.tacs+'종':'<span class="mut">·</span>'}</td>
    <td class="mut">${esc(m.note||'')}</td></tr>`).join('');
- /* future.js는 무장·전법을 중문 원문 키로 담는다 — 이름은 도감에서 찾아 쓴다 */
+ /* future.js는 무장·전법을 중문 원문 키로 담는다 — 이름은 도감에서 찾아 쓴다.
+    카드팩은 캡처해서 공략글에 쓰는 용도라 얼굴(아바타)까지 보여준다. */
  const gtag=n=>{const cn=GEN[n]?n:(tdCn(n)||GKR[nk(String(n).replace(/^SP/,''))]);
-   const nm=cn?GEN[cn].kr:n;const sj=cn?sjBadge(cn):'';
-   return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(nm)} ${sj}</span>`
-            :`<span class="tag">${esc(n)}</span>`;};
+   if(!cn)return `<span class="fgc" title="${esc(n)}"><span class="av"><b>${esc(String(n)[0])}</b></span><span class="nm">${esc(n)}</span></span>`;
+   const g=GEN[cn];
+   return `<span class="fgc" onclick="genModal('${cn}')" title="${esc(g.kr)}">${avHtml(cn)}
+     <span class="nm">${esc(g.kr)}</span><span class="sub">${FAC[g.faction]||''}${g.bing?' · '+esc(g.bing):''}</span></span>`;};
  const ttag=n=>{const cn=TAC[n]?n:KRTAC[nk(n)];
    return cn?`<span class="tm" onclick="tacModal('${cn}')">${esc(tName(cn))}${isNewTac(cn)&&!(TAC[cn]||{}).bf?' <span class="bnew">번역</span>':''}</span>`
             :`<span class="tm nolink">${esc(n)}</span>`;};
  const pack=(p,hl)=>`<div class="fpk${hl?' hl':''}">
    <span class="fpk-h">${esc(p.name)}</span>${p.cn?`<span class="fpk-c">${esc(p.cn)}</span>`:''}
    ${p.same?`<div class="mut" style="font-size:11px">${esc(p.same)}</div>`:''}
-   ${p.gens?`<div class="fpk-l">무장 ${p.gens.length}</div><div>${p.gens.map(gtag).join('')}</div>`:''}
+   ${p.gens?`<div class="fpk-l">무장 ${p.gens.length}</div><div class="fgw">${p.gens.map(gtag).join('')}</div>`:''}
    ${p.tacs?`<div class="fpk-l">전법 ${p.tacs.length}</div><div>${p.tacs.map(ttag).join('')}</div>`:''}</div>`;
  const lbl=t=>`<div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">${t}</div>`;
  const seas=F.seasons.map(s=>`<div class="gcardx wide${s.pred?' pred':''}">
@@ -1393,6 +1412,111 @@ function renderEV(){
  rEl.oninput=()=>{nEl.value=rEl.value;upd(+rEl.value);};
  upd(300);
 }
+/* ---------------- 뽑기 기댓값 ---------------- */
+const GC=window.GACHA||{packs:[]};
+let gcState={pack:'p1',n:300,mode:'full',ex:{}};
+const TIERW={a:8,b:15,c:18};
+/* 이항분포 P(X>=k) — n이 300 안팎이라 로그로 누적한다 */
+function pAtLeast(n,p,k){
+ if(p<=0)return 0; if(k<=0)return 1;
+ let lg=n*Math.log(1-p),cum=0;
+ for(let i=0;i<k;i++){ if(i>0) lg+=Math.log((n-i+1)/i)+Math.log(p/(1-p)); cum+=Math.exp(lg); }
+ return Math.max(0,Math.min(1,1-cum));
+}
+function gcPack(){return GC.packs.find(p=>p.id===gcState.pack)||GC.packs[0];}
+function gcName(x){return GEN[x]?GEN[x].kr:(TAC[x]?tName(x):x);}
+/* 제외를 반영해 등급 합계를 남은 항목에 재분배 */
+function gcRates(pk,mode){
+ const T=GC.total[mode],ex=gcState.ex[pk.id]||{};
+ const gens=pk.legGens.filter(([cn])=>cn!==ex.gen);
+ const tacs=pk.legTacs.filter(cn=>cn!==ex.tac);
+ const sw=gens.reduce((a,[,t])=>a+TIERW[t],0);
+ return {
+  gens:gens.map(([cn,t])=>[cn,T.legGen*TIERW[t]/sw,t]),
+  tacs:tacs.map(cn=>[cn,T.legTac/tacs.length]),
+  legGenTot:T.legGen, legTacTot:T.legTac, T
+ };
+}
+function gcRow(label,p,n,ks,link){
+ const e=n*p/100,c=k=>`<td class="n">${(pAtLeast(n,p/100,k)*100).toFixed(1)}%</td>`;
+ return `<tr>${label}<td class="n b">${p.toFixed(4)}%</td><td class="n b">${e.toFixed(2)}장</td>${ks.map(c).join('')}</tr>`;
+}
+function renderGacha(){
+ const el=document.getElementById('tab-gacha');
+ el.innerHTML=`<h2 class="head serif">뽑기 기댓값</h2>
+ <p class="sub">한국 공홈 <b>확률 공시</b>의 명장 카드팩 확률표를 그대로 옮기고, <b>N번 뽑았을 때 무장·전법이 평균 몇 장 나오는지</b>를 계산합니다. 원본 → <a href="${GC.doc}" target="_blank" rel="noopener">newslg-kr.biligames.com/probability</a> · 기준일 ${esc(GC.updated||'')}</p>
+ <div class="note">${(GC.how||[]).map(x=>`<div style="margin-bottom:5px">· ${x}</div>`).join('')}</div>
+ <div class="filters">
+  <div class="seg" id="gcPack">${GC.packs.map(p=>`<button data-p="${p.id}" class="${p.id===gcState.pack?'on':''}">${esc(p.name)}</button>`).join('')}</div>
+  <div class="seg" id="gcMode">${[['full','종합 확률 (천장 포함)'],['base','기본 확률 (천장 제외)']].map(([k,l])=>`<button data-m="${k}" class="${k===gcState.mode?'on':''}">${l}</button>`).join('')}</div>
+ </div>
+ <div class="filters"><label class="mut" style="font-weight:700">뽑기 수</label>
+  <input id="gcN" type="number" min="1" max="5000" step="10" value="${gcState.n}" style="width:88px">
+  <div class="seg" id="gcPre">${[100,200,300,500,1000].map(v=>`<button data-v="${v}" class="${v===gcState.n?'on':''}">${v}뽑</button>`).join('')}</div>
+ </div>
+ <div id="gcBody"></div>`;
+ document.getElementById('gcPack').onclick=e=>{const b=e.target.closest('button');if(!b)return;gcState.pack=b.dataset.p;renderGacha();};
+ document.getElementById('gcMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;gcState.mode=b.dataset.m;renderGacha();};
+ document.getElementById('gcPre').onclick=e=>{const b=e.target.closest('button');if(!b)return;gcState.n=+b.dataset.v;renderGacha();};
+ const nEl=document.getElementById('gcN');
+ nEl.onchange=()=>{gcState.n=Math.max(1,Math.min(5000,+nEl.value||1));renderGacha();};
+ gcBody();
+}
+function gcSetTier(id,cn,t){const p=GC.packs.find(x=>x.id===id);const g=p.legGens.find(x=>x[0]===cn);if(g){g[1]=t;gcBody();}}
+function gcSetEx(id,kind,cn){const e=gcState.ex[id]=gcState.ex[id]||{};e[kind]=(e[kind]===cn?null:cn);gcBody();}
+function gcBody(){
+ const pk=gcPack(),n=gcState.n,R=gcRates(pk,gcState.mode),ex=gcState.ex[pk.id]||{};
+ const pity=Math.floor(n/(GC.pityEvery||20));
+ const legTot=R.legGenTot+R.legTacTot;
+ const sum=(arr)=>arr.reduce((a,x)=>a+x[1],0);
+ const summary=[
+  ['전설 무장 (금색)', R.legGenTot, n*R.legGenTot/100],
+  ['전설 전법 (금색)', R.legTacTot, n*R.legTacTot/100],
+  ['금색 합계', legTot, n*legTot/100],
+  ['영웅 무장', R.T.heroGen, n*R.T.heroGen/100],
+  ['영웅 전법', R.T.heroTac, n*R.T.heroTac/100],
+  ['희귀 무장', R.T.rareGen, n*R.T.rareGen/100],
+  ['희귀 전법', R.T.rareTac, n*R.T.rareTac/100]
+ ];
+ const tierBtn=(cn,cur)=>pk.official?'':`<span class="seg tiny">${GC.tiers.map(([k,w,l])=>`<button class="${k===cur?'on':''}" onclick="gcSetTier('${pk.id}','${cn}','${k}')" title="가중치 ${w}">${l}</button>`).join('')}</span>`;
+ const genRows=R.gens.map(([cn,p,t])=>gcRow(
+   `<td><span class="gcw">${avHtml(cn,'sm')}<span class="gcn" onclick="genModal('${cn}')">${esc(gcName(cn))}</span>${facChip(cn)}</span></td>
+    <td>${tierBtn(cn,t)}</td>
+    <td><button class="exb ${ex.gen===cn?'on':''}" onclick="gcSetEx('${pk.id}','gen','${cn}')">${ex.gen===cn?'제외됨':'제외'}</button></td>`,
+   p,n,[1,3,6])).join('');
+ const tacRows=R.tacs.map(([cn,p])=>gcRow(
+   `<td><span class="tm" onclick="tacModal('${cn}')">${esc(gcName(cn))}</span></td><td></td>
+    <td><button class="exb ${ex.tac===cn?'on':''}" onclick="gcSetEx('${pk.id}','tac','${cn}')">${ex.tac===cn?'제외됨':'제외'}</button></td>`,
+   p,n,[1,3,6])).join('');
+ const flat=(list,p)=>list?`<div class="scroll"><table class="mtb"><thead><tr><th>이름</th><th class="num">확률</th><th class="num">${n}뽑 기대</th></tr></thead><tbody>
+   ${list.map(x=>`<tr><td>${esc(x)}</td><td class="num">${p.toFixed(4)}%</td><td class="num">${(n*p/100).toFixed(2)}장</td></tr>`).join('')}</tbody></table></div>`:'';
+ const v=(GC.verify||{})[pk.id];
+ document.getElementById('gcBody').innerHTML=`
+ <div class="note" style="margin:0 0 10px">
+   <b>${esc(pk.name)}</b> <span class="mut">${esc(pk.cn||'')}</span> ·
+   ${pk.official?'<span class="tag ok">한국 공식 확률표</span>':'<span class="bnew">계산값 · 공시 전</span>'}
+   <div style="margin-top:6px"><b>${n}뽑</b>이면 천장(20뽑당 1개)만으로 <b>금색 ${pity}개 보장</b>, 종합 확률 기준 <b>평균 ${(n*legTot/100).toFixed(1)}개</b>입니다.</div>
+   ${(ex.gen||ex.tac)?`<div style="margin-top:5px">제외 적용 — ${ex.gen?`무장 <b>${esc(gcName(ex.gen))}</b>`:''}${(ex.gen&&ex.tac)?' · ':''}${ex.tac?`전법 <b>${esc(gcName(ex.tac))}</b>`:''}. 등급 합계 4%는 그대로라 나머지 확률이 올라갔습니다.</div>`:''}
+ </div>
+ <h3 class="sub2">등급별 요약</h3>
+ <div class="scroll"><table class="mtb"><thead><tr><th>등급</th><th class="num">1뽑 확률</th><th class="num">${n}뽑 기대</th></tr></thead><tbody>
+  ${summary.map(([l,p,e])=>`<tr class="${l==='금색 합계'?'gcsum':''}"><td>${l}</td><td class="num">${p.toFixed(4)}%</td><td class="num b">${e.toFixed(2)}장</td></tr>`).join('')}
+ </tbody></table></div>
+ <h3 class="sub2">전설 무장 <span class="mut" style="font-weight:400">${R.gens.length}종 · 합계 ${R.legGenTot.toFixed(4)}%</span></h3>
+ <div class="scroll"><table class="mtb gct"><thead><tr><th>무장</th><th>구간</th><th>제외</th><th class="num">확률</th><th class="num">${n}뽑 기대</th><th class="num">1장+</th><th class="num">3장+</th><th class="num">6장+</th></tr></thead><tbody>${genRows}</tbody></table></div>
+ <h3 class="sub2">전설 전법 <span class="mut" style="font-weight:400">${R.tacs.length}종 · 합계 ${R.legTacTot.toFixed(4)}% · 등급 안에서 균등</span></h3>
+ <div class="scroll"><table class="mtb gct"><thead><tr><th>전법</th><th></th><th>제외</th><th class="num">확률</th><th class="num">${n}뽑 기대</th><th class="num">1장+</th><th class="num">3장+</th><th class="num">6장+</th></tr></thead><tbody>${tacRows}</tbody></table></div>
+ ${pk.heroGens?`<h3 class="sub2">영웅 · 희귀 등급</h3>
+  <div class="gcgrid">
+   <div><div class="mut" style="font-weight:700;margin-bottom:4px">영웅 무장 ${pk.heroGens.length}종</div>${flat(pk.heroGens,R.T.heroGen/pk.heroGens.length)}</div>
+   <div><div class="mut" style="font-weight:700;margin-bottom:4px">영웅 전법 ${pk.heroTacs.length}종</div>${flat(pk.heroTacs,R.T.heroTac/pk.heroTacs.length)}</div>
+   <div><div class="mut" style="font-weight:700;margin-bottom:4px">희귀 무장 ${pk.rareGens.length}종</div>${flat(pk.rareGens,R.T.rareGen/pk.rareGens.length)}</div>
+   <div><div class="mut" style="font-weight:700;margin-bottom:4px">희귀 전법 ${pk.rareTacs.length}종</div>${flat(pk.rareTacs,R.T.rareTac/pk.rareTacs.length)}</div>
+  </div>`:`<div class="mut" style="margin-top:8px">영웅·희귀 등급은 이 카드팩의 구성이 공개되지 않아 <b>등급 합계만</b> 위 요약에 넣었습니다.</div>`}
+ ${v?`<div class="mut" style="margin-top:10px">공시 원문 대조 — 전설 무장 <b>${v.legGen.a}% / ${v.legGen.b}% / ${v.legGen.c}%</b>, 전설 전법 <b>${v.legTac}%</b> (천장 포함). 위 표의 계산값과 같은지 확인용입니다.</div>`:''}
+ <div class="note" style="margin-top:10px">${(GC.caveat||[]).map(x=>`<div style="margin-bottom:4px">· ${x}</div>`).join('')}</div>`;
+}
+
 /* ---------------- REFERENCE ---------------- */
 function renderRef(){
  const el=document.getElementById('tab-ref');
