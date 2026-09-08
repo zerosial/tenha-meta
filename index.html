@@ -384,11 +384,11 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=20"></script>
-<script src="guides.js?v=26"></script>
+<script src="data.js?v=21"></script>
+<script src="guides.js?v=27"></script>
 <script src="tierdecks.js?v=3"></script>
-<script src="gaecheok.js?v=12"></script>
-<script src="future.js?v=2"></script>
+<script src="gaecheok.js?v=13"></script>
+<script src="future.js?v=3"></script>
 <script src="gacha.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
@@ -608,7 +608,7 @@ function futureHtml(){
    const g=GEN[cn];
    return `<span class="fgc" onclick="genModal('${cn}')" title="${esc(g.kr)}">${avHtml(cn)}
      <span class="nm">${esc(g.kr)}</span><span class="sub">${FAC[g.faction]||''}${g.bing?' · '+esc(g.bing):''}</span></span>`;};
- const ttag=n=>{const cn=TAC[n]?n:KRTAC[nk(n)];
+ const ttag=n=>{const cn=TAC[n]?n:tacCn(n);
    return cn?`<span class="tm" onclick="tacModal('${cn}')">${esc(tName(cn))}${isNewTac(cn)&&!(TAC[cn]||{}).bf?' <span class="bnew">번역</span>':''}</span>`
             :`<span class="tm nolink">${esc(n)}</span>`;};
  const pack=(p,hl)=>`<div class="fpk${hl?' hl':''}">
@@ -653,7 +653,15 @@ function futureHtml(){
 const TD=window.TIERDECKS||{seasons:[]};
 const nk=s=>String(s==null?'':s).replace(/\s+/g,'');
 const KRTAC={};Object.keys(TAC).forEach(cn=>{const k=nk((TAC[cn]||{}).kr);if(k&&!(k in KRTAC))KRTAC[k]=cn;});
-const TACNM=Object.keys(KRTAC).filter(k=>k.length>1).sort((a,b)=>b.length-a.length);
+/* 옛 표기 별칭 — 티어덱 시트·가이드 본문이 예전 이름을 써도 도감과 연결되고, 화면에는 현재 이름이 나온다 */
+const ALIAS=(D.ALIAS||{tac:{},gen:{}});
+function tacCn(t){const k=nk(t);if(KRTAC[k])return KRTAC[k];if(ALIAS.tac[k])return ALIAS.tac[k];
+ /* 시트가 '영본·○○'처럼 변형 접두어를 붙여 적은 경우 — 본체를 찾아 변형 키로 되돌린다 */
+ const m=/^(?:영본|경|전|연|금)[·・](.+)$/.exec(k);
+ if(m){const b=KRTAC[m[1]]||ALIAS.tac[m[1]];
+  if(b)for(const p of ['镜','镜·','专·','衍·','金·'])if(TAC[p+b])return p+b;}
+ return null;}
+const TACNM=[...new Set(Object.keys(KRTAC).concat(Object.keys(ALIAS.tac)))].filter(k=>k.length>1).sort((a,b)=>b.length-a.length);
 const BFTYPO={'기림':'기임','치국론론':'치국론','출사펴':'출사표','한녀':'한녀전','풍속':'풍속통의','논무':'논무','장서각도략':'장서각도략'};
 const BFIDX={};BF.forEach((b,i)=>{const k=nk(b.kr);if(!(k in BFIDX))BFIDX[k]=i;});
 const SPEC={};['forge','horse','troop','mastery','almm','scroll'].forEach(k=>(D.EQUIP[k]||[]).forEach(e=>{const n=nk(e.name).replace(/[\[\]]/g,'');if(n&&!(n in SPEC))SPEC[n]=e;}));
@@ -665,7 +673,7 @@ const TDF=[['sk1','전법 1'],['sk2','전법 2'],['alt','대체 전법'],['unit'
 function tdTierCls(t){return /^T0/.test(t)?'T0':/^T1(\.|$|-)/.test(t)&&!/^T1\.[2-9]/.test(t)?'T1':'T2';}
 /* 전법 칩 */
 function tdChip(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');if(!t)return '';
- const cn=KRTAC[nk(t)];
+ const cn=tacCn(t);
  if(!cn)return `<span class="tm nolink ${alt?'alt':''}">${alt?'↔':''}${esc(t)}</span>`;
  return `<span class="tm ${gradeCls(cn)} ${alt?'alt':''}" onclick="event.stopPropagation();tacModal('${cn}')">${alt?'↔':''}${esc(tName(cn))}</span>`;}
 function tdSk(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
@@ -695,6 +703,7 @@ function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
 const GALIAS={'황보숭':'SP 황보숭','손견2':'SP 손견','주유2':'SP 주유'};   // 시트·카드팩 표기 → 실명
 function tdCn(kr){const a=GALIAS[nk(kr)];if(a&&GKR[nk(a)])return GKR[nk(a)];
  const k=nk(kr);if(GKR[k])return GKR[k];
+ if(ALIAS.gen[k])return ALIAS.gen[k];
  let s2=nk(String(kr||'').replace(/\(.*?\)/g,''));
  for(let i=0;i<3&&!GKR[s2];i++)s2=s2.replace(/^(SP|연의|[위촉오군]·)/,'');
  return GKR[s2]||'';}
@@ -736,7 +745,7 @@ function tdCard(d,i){
 
 /* 전법 이름 → 도감 키 (칩 대신 효과행을 그리기 위한 것) */
 function tdKey(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');
- return t?{cn:KRTAC[nk(t)]||null,kr:t,alt:!!alt}:null;}
+ if(!t)return null;const cn=tacCn(t);return {cn,kr:cn?tName(cn):t,alt:!!alt};}
 function tdSkKeys(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
   let main=String(l).replace(/[（(]([^）)]*)[）)]/g,(m,x)=>{alts.push(x);return ' ';});
   const op=main.search(/[（(]/);
@@ -750,7 +759,7 @@ function tdInlineKeys(txt){txt=String(txt||'');
  const flat=ch.join(''),used=new Array(flat.length).fill(false),mk=[];
  TACNM.forEach(nm=>{let p=0;while((p=flat.indexOf(nm,p))!==-1){let free=true;
    for(let k=p;k<p+nm.length;k++)if(used[k]){free=false;break;}
-   if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],KRTAC[nm]]);}
+   if(free){for(let k=p;k<p+nm.length;k++)used[k]=true;mk.push([idx[p],tacCn(nm)]);}
    p++;}});
  mk.sort((a,b)=>a[0]-b[0]);return mk.map(m=>({cn:m[1],kr:tName(m[1]),alt:true}));}
 /* 덱상세에서는 '효과 미공개·수치 미공개' 안내문을 띄우지 않고 이름만 남긴다(눌러서 상세) */
@@ -852,11 +861,11 @@ function renderTd(){
    <p><b class="tdh2">도략(병서) 칸</b> 무장은 <b>25·30·35레벨</b>에 도략 칸이 1개씩 열려 <b>최대 3칸</b>(해금 동전 1만·3만·5만). 각 칸은 랜덤 3권 중 1권을 연구하며, 후보 9권 안에 <b>같은 계열은 중복 등장하지 않음</b>. 3권을 다 배우면 서간 4개로 재수리(리롤) 가능, <b>10회 이내 전용 금서 보장</b>. <b>전용(專屬) 도략은 무장당 동시 1개만 적용</b>.</p>
    <p><b class="tdh2">장서각</b> 시즌 한정 컨텐츠. 패업 단계 도달(또는 시나리오 6~7일차)에 개방되고 <b>무훈 3만</b>으로 장품도략을 구매. <b>4권</b>이 배치되어 개방 시 2권 + 7일 후 2권 해금. <b>시즌 종료 시 소멸(이월 없음)</b>, 금색 등급은 랜덤 해금·재수리로 획득 불가.</p>
    <p><b class="tdh2">한 권에 3효과?</b> 장품도략 1권이 도략 3권의 효과를 합쳐주는 것은 <b>아님</b> — 칸은 그대로 3칸이고, 장품은 <b>25레벨 칸에 들어가는 금서 1권</b>입니다. 30·35레벨 칸은 <b>범용 선본(善本)</b>으로 채웁니다(게임 내 도략 화면 확인). 예 초선 = 《離間》 + 《先勇》선본(아군 무력 최고 주는 피해 5%↑) + 《威帥》선본(아군 통솔 최고 받는 피해 3.5%↓). 대신 <b>전용 금서와는 양립 불가</b>(전용 1개 제한)라는 것이 실제 트레이드오프.</p>
-   <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. <b>「매 턴 종료 시 30% 확률(최고 속성 영향)로 적군 무력 최고 단일과 그 부대의 무작위 동료가 서로 일반공격 1회씩 하고, 둘 다 1턴 혼란」</b>이 효과 전문(原 每回合结束时有30%概率（受最高属性影响），使敌军武力最高单体与其随机队友互相普攻1次并陷入1回合混乱). 초선은 지력이 최고 속성이라 <b>지력 몰빵이 발동률</b>을 올리고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
+   <p><b class="tdh2">초선의 변화</b> 장서각을 쓰면 전용 금서 《祸水》(폐월수화 실뎀 −50%, 매 턴 종료 시 무력 최고 아군 연격률 +30%) / 《相怜》(무력 최고 아군 파갑 +9%)을 <b>포기</b>하고 장품 《離間(이간)》을 장착. <b>「매 턴 종료 시 30% 확률(최고 속성 영향)로 적군 무력 최고 단일과 그 부대의 무작위 동료가 서로 일반공격 1회씩 하고, 둘 다 1턴 혼란」</b>이 효과 전문(原 每回合结束时有30%概率（受最高属性影响），使敌军武力最高单体与其随机队友互相普攻1次并陷入1回合混乱). 초선은 지력이 최고 속성이라 <b>지력 몰빵이 발동률</b>을 올리고, 혼란 걸린 적은 아군을 때리므로 <b>병인(무력) 체계·주동덱 카운터</b>가 됨. 역할이 「무력 딜러 버프기 → 혼란 살포 컨트롤러」로 바뀜. 그래서 이 표의 초선 스탯이 통솔·선공 조절형이고, 덱 설명이 “장서각이 있어야만 사용 가능”.</p>
    <p><b class="tdh2">시즌별 장서각 4권</b> 아래 13권 <b>전부 효과 원문을 확보</b>했습니다(게임 내 도략 화면 판독) — <b>병법 도감 → 연의·장품</b> 탭에서 확인.
-    <br><b>中 S3(한국 S2)</b> 손책 《制霸》 제패강동이 추격형으로 변경(발동 −10%) · 원소 《举义》 자신 받는 피해 −5%, 무력 최고 아군 주는 피해 +5% · 서황 《长驱》 장구직입의 기궁 2턴 지속 · 관평 《竭忠》 용음사해의 '용음' 2회 추가 발동
-    <br><b>中 S4(한국 S3)</b> 초선 《離間》 매 턴 종료 35% 혼란·상호 공격 · 황월영 《良缘》 인연 발동 무장 최고 속성 +10%, 받는 피해 −10% · 서서 《侠略》 절절학문 지향성 + 회심·기모 35% · 조인 《解围》 받는 피해 −5%, 고진양번 홀·짝 턴 효과 교환
-    <br><b>中 S6</b> 동탁 《恣睢》 권경조야 피해 +20%, 최고 속성 탈취 · 등애 《如磐》 치유 받은 아군 40%로 받는 피해 −5%(4중첩) · 주유 《智焰》 책략 피해 5회마다 이상상태 살포 · 장비 《冲霄》 첫 턴 외포 + 만인지적 진섭 +30% · (곽가 《天妒》 산무유책 추가 재발동 18%)</p>
+    <br><b>中 S3(한국 S2)</b> 손책 《制霸》 강동 제패이 추격형으로 변경(발동 −10%) · 원소 《举义》 자신 받는 피해 −5%, 무력 최고 아군 주는 피해 +5% · 서황 《长驱》 장구직입의 기궁 2턴 지속 · 관평 《竭忠》 용의 포효의 '용음' 2회 추가 발동
+    <br><b>中 S4(한국 S3)</b> 초선 《離間》 매 턴 종료 35% 혼란·상호 공격 · 황월영 《良缘》 인연 발동 무장 최고 속성 +10%, 받는 피해 −10% · 서서 《侠略》 괄목상대 지향성 + 회심·기모 35% · 조인 《解围》 받는 피해 −5%, 양번 사수 홀·짝 턴 효과 교환
+    <br><b>中 S6</b> 동탁 《恣睢》 조정을 쥔 권세 피해 +20%, 최고 속성 탈취 · 등애 《如磐》 치유 받은 아군 40%로 받는 피해 −5%(4중첩) · 주유 《智焰》 책략 피해 5회마다 이상상태 살포 · 장비 《冲霄》 첫 턴 외포 + 만인지적 진섭 +30% · (곽가 《天妒》 빈틈없는 계책 추가 재발동 18%)</p>
    <p class="mut"><b>확인</b> · 장품도략을 껴도 남은 2칸은 잠기지 않고 <b>범용 선본(善本)</b>으로 채워집니다(25=장품 금서 / 30·35=선본). 이 표와 중섭 편성 DB(sgmdtx)가 장품 보유 장수를 <b>그 한 권만 표기</b>하는 것은 나머지 2칸이 범용이라 생략된 것입니다. 덤으로 그 화면에서 <b>범용 병법 17종의 선본 수치</b>(선용·위수·합모·피험·작전·왕도·귀모·시리·탈계·요적 등)를 확보해 병법 도감에 반영했습니다.</p>
   </div></details>
  ${kinds.length>1?`<div class="ttabs" id="tdKind">

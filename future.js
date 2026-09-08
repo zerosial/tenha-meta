@@ -153,7 +153,7 @@ window.FUTURE = {
       { t: 'TapTap 業鑄山河 강세 편성(연의 원소 사세삼공)', u: 'https://www.taptap.cn/moment/701476322144157828' }
     ]
   },
-  unlinked: '대만 공지의 「皇甫嵩」은 <b>영웅급 황보숭과 다른 전설급 카드</b>(中 S7 · 고유 병동약신)라 도감에서 <b>SP 황보숭</b>으로 표기합니다. 「諸葛亮」도 대만 S5 공지에 <b>神韜馭勢·諸葛亮</b>으로 적혀 SP 제갈량이 맞습니다.',
+  unlinked: '대만 공지의 「皇甫嵩」은 <b>영웅급 황보숭과 다른 전설급 카드</b>(中 S7 · 고유 신들린 용병)라 도감에서 <b>SP 황보숭</b>으로 표기합니다. 「諸葛亮」도 대만 S5 공지에 <b>神韜馭勢·諸葛亮</b>으로 적혀 SP 제갈량이 맞습니다.',
   sheet: {
     u: 'https://docs.google.com/spreadsheets/d/16U-O0PMGxtQjbZ7W4I5j4PbkiLguqBNRa-HR4Dw5PCQ/htmlview',
     groups: ['시즌별 개척 정리', '시즌별 공존덱 정리', '시즌별 티어덱 정리'],
