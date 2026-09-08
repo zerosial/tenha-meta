@@ -398,7 +398,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <script src="tierdecks.js?v=3"></script>
 <script src="gaecheok.js?v=13"></script>
 <script src="future.js?v=3"></script>
-<script src="gacha.js?v=3"></script>
+<script src="gacha.js?v=4"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -1435,7 +1435,7 @@ function renderEV(){
 }
 /* ---------------- 뽑기 기댓값 ---------------- */
 const GC=window.GACHA||{packs:[]};
-let gcState={pack:'p1',n:300,mode:'pity',pity:20,ex:{}};
+let gcState={pack:'p1',n:300,mode:'full',pity:20,ex:{}};
 const TIERW={a:8,b:15,c:18};
 /* 이항분포 P(X>=k) */
 function pAtLeast(n,p,k){
@@ -1493,13 +1493,17 @@ function renderGacha(){
  el.innerHTML=`<h2 class="head serif">뽑기 기댓값</h2>
  <p class="sub">한국 공홈 <b>확률 공시</b>의 명장 카드팩 확률표에 <b>20뽑 확정(천장)</b>을 얹어, <b>N번 뽑으면 무장·전법이 평균 몇 장 나오는지</b>를 계산합니다. 원본 → <a href="${GC.doc}" target="_blank" rel="noopener">newslg-kr.biligames.com/probability</a> · 기준일 ${esc(GC.updated||'')}</p>
  <div class="note">${(GC.how||[]).map(x=>`<div style="margin-bottom:5px">· ${x}</div>`).join('')}</div>
+ ${GC.xval?`<details class="tdinfo"><summary><b>${GC.xval.title}</b></summary><div class="tdinfo-b">
+  <div class="scroll"><table class="mtb"><thead><tr>${GC.xval.head.map((h,i)=>`<th class="${i?'num':''}">${h}</th>`).join('')}</tr></thead>
+   <tbody>${GC.xval.rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?'num':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+  <p class="mut" style="margin:6px 0 0">${GC.xval.note}</p></div></details>`:''}
  <div class="filters">
   <div class="seg" id="gcPack">${GC.packs.map(p=>`<button data-p="${p.id}" class="${p.id===gcState.pack?'on':''}">${esc(p.name)}</button>`).join('')}</div>
  </div>
  <div class="filters">
-  <div class="seg" id="gcMode">${[['pity','천장 반영 계산'],['full','공시 종합 확률'],['base','천장 없다고 가정']].map(([k,l])=>`<button data-m="${k}" class="${k===gcState.mode?'on':''}">${l}</button>`).join('')}</div>
-  <label class="mut" style="font-weight:700">확정까지</label>
-  <input id="gcP" type="number" min="2" max="200" step="1" value="${gcState.pity}" style="width:64px"><span class="mut">뽑</span>
+  <div class="seg" id="gcMode">${[['full','공시 종합 확률 · 권장'],['pity','천장 직접 계산 · 상한'],['base','천장 없음 · 하한']].map(([k,l])=>`<button data-m="${k}" class="${k===gcState.mode?'on':''}">${l}</button>`).join('')}</div>
+  <label class="mut" style="font-weight:700" title="'천장 직접 계산' 모드에서만 씁니다">확정까지</label>
+  <input id="gcP" type="number" min="2" max="200" step="1" value="${gcState.pity}" style="width:64px" ${gcState.mode==='pity'?'':'disabled'}><span class="mut">뽑${gcState.mode==='pity'?' · 38로 두면 공시값이 재현됩니다':''}</span>
  </div>
  <div class="filters"><label class="mut" style="font-weight:700">뽑기 수</label>
   <input id="gcN" type="number" min="1" max="3000" step="10" value="${gcState.n}" style="width:88px">
@@ -1560,10 +1564,10 @@ function gcBody(){
  const v=(GC.verify||{})[pk.id];
  const noGold=Math.pow(1-pgPct/100,pity-1);
  const modeNote=mode==='pity'
-  ? `<b>천장 반영 계산</b> — 1뽑당 금색 <b>${pgPct.toFixed(4)}%</b>(공시의 <b>기본 획득 확률</b>, 천장 미포함)로 굴리다가 <b>${pity}뽑째까지 금색이 없으면 확정</b>. ${pity}뽑을 내리 놓칠 확률이 <b>${(noGold*100).toFixed(1)}%</b>라 천장이 꽤 자주 걸립니다. ${n}뽑 기준 <b>금색 ${EG.toFixed(2)}개</b> (그중 <b>${nPity.toFixed(2)}개</b>가 천장으로 받은 것), 실효 금색 확률 <b>${(EG/n*100).toFixed(4)}%</b>.`
+  ? `<b>천장 직접 계산 · 상한</b> — 1뽑당 금색 <b>${pgPct.toFixed(4)}%</b>(공시의 <b>기본 획득 확률</b>)로 굴리다가 <b>${pity}뽑째까지 금색이 없으면 확정</b>이라고 가정했습니다. ${pity}뽑을 내리 놓칠 확률이 <b>${(noGold*100).toFixed(1)}%</b>. ${n}뽑 기준 <b>금색 ${EG.toFixed(2)}개</b> (그중 <b>${nPity.toFixed(2)}개</b>가 천장 몫), 실효 금색 <b>${(EG/n*100).toFixed(4)}%</b>.<br><span class="mut">공시가 실제로 반영한 천장은 이보다 훨씬 약합니다(230뽑당 1회 = 간격 37.8뽑). 이 모드는 <b>가장 후하게 잡은 상한</b>으로 보세요 — 위 교차 검증 표 참고.</span>`
   : mode==='full'
-  ? `<b>공시 종합 확률</b> — 확률표의 「종합 획득 확률」(천장 포함이라고 적힌 값)을 그대로 곱했습니다. 금색 <b>${pgPct.toFixed(4)}%</b> × ${n}뽑 = <b>${EG.toFixed(2)}개</b>.`
-  : `<b>천장 없다고 가정</b> — 확률표의 「기본 획득 확률」만 씁니다. 금색 <b>${pgPct.toFixed(4)}%</b> × ${n}뽑 = <b>${EG.toFixed(2)}개</b>. 실제보다 적게 나오는 하한선입니다.`;
+  ? `<b>공시 종합 확률 · 권장</b> — 확률표의 「종합 획득 확률」(천장 포함)을 그대로 곱했습니다. 금색 <b>${pgPct.toFixed(4)}%</b> × ${n}뽑 = <b>${EG.toFixed(2)}개</b>. 공시가 표 20개에서 일관되게 쓰는 값이라 <b>기준값으로 삼기에 가장 안전</b>합니다.`
+  : `<b>천장 없음 · 하한</b> — 확률표의 「기본 획득 확률」만 씁니다. 금색 <b>${pgPct.toFixed(4)}%</b> × ${n}뽑 = <b>${EG.toFixed(2)}개</b>. 천장을 아예 뺀 하한선입니다.`;
  document.getElementById('gcBody').innerHTML=`
  <div class="note" style="margin:0 0 10px">
    <b>${esc(pk.name)}</b> <span class="mut">${esc(pk.cn||'')}</span> ·
