@@ -135,6 +135,13 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .evtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);}
 .evtb td.num{text-align:right;font-variant-numeric:tabular-nums;}
 .gcardx.wide{grid-column:1/-1;}
+.gcardx .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--ink);cursor:pointer;line-height:1.6;margin:1px 3px 1px 0;}
+.gcardx .tm.nolink{cursor:default;color:var(--soft);}
+.fpk{margin-bottom:9px;padding-left:9px;border-left:2px solid var(--line2);}
+.fpk.hl{border-left-color:var(--seal);}
+.fpk-h{font-size:12px;font-weight:800;color:var(--seal);}
+.fpk-c{font-size:10.5px;font-weight:700;color:var(--faint);margin-left:5px;}
+.fpk-l{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin:3px 0 1px;}
 .gtb{border-collapse:collapse;width:100%;font-size:12px;}
 .gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
 .gtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);white-space:nowrap;}
@@ -580,15 +587,24 @@ function futureHtml(){
    const g=GEN[cn]||{};const sj=cn?sjBadge(cn):'';
    return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(n)} ${sj}</span>`
             :`<span class="tag">${esc(n)}</span>`;};
+ const ttag=n=>{const cn=KRTAC[nk(n)];
+   return cn?`<span class="tm" onclick="tacModal('${cn}')">${esc(n)}</span>`
+            :`<span class="tm nolink">${esc(n)}</span>`;};
+ const pack=(p,hl)=>`<div class="fpk${hl?' hl':''}">
+   <span class="fpk-h">${esc(p.name)}</span>${p.cn?`<span class="fpk-c">${esc(p.cn)}</span>`:''}
+   ${p.same?`<div class="mut" style="font-size:11px">${esc(p.same)}</div>`:''}
+   ${p.gens?`<div class="fpk-l">무장 ${p.gens.length}</div><div>${p.gens.map(gtag).join('')}</div>`:''}
+   ${p.tacs?`<div class="fpk-l">전법 ${p.tacs.length}</div><div>${p.tacs.map(ttag).join('')}</div>`:''}</div>`;
  const seas=F.seasons.map(s=>`<div class="gcardx wide">
-   <h4>한국 ${esc(s.kr)} <span class="mut" style="font-weight:700">${esc(s.tw)} · ${esc(s.cn)}</span>
+   <h4>한국 ${esc(s.kr)} <span class="mut" style="font-weight:700">${esc(s.tw)} · ${esc(s.cn)}${s.script?' · '+esc(s.script):''}</span>
      <span class="mut" style="font-weight:700;margin-left:6px">신규 무장 ${s.newGens}명 · 신규 전법 ${s.newTacs}종</span></h4>
-   <div class="note" style="margin:0 0 8px">${s.rule}</div>
-   ${s.packs.map(p=>`<div style="margin-bottom:7px"><b class="mut" style="color:var(--seal)">${esc(p.name)}</b>
-     ${p.same?`<span class="mut"> — ${esc(p.same)}</span>`:''}
-     ${p.gens?`<div style="margin-top:3px">${p.gens.map(gtag).join('')}${p.tacs?` <span class="mut">+ 전법 ${p.tacs}종</span>`:''}</div>`:''}</div>`).join('')}
-   <div class="mut" style="margin:8px 0 3px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업 카드팩 목록 (열릴 때마다 등장)</div>
-   ${s.pae.map(row=>`<div style="margin:2px 0">${row.map(gtag).join('')}</div>`).join('')}
+   <div class="note" style="margin:0 0 8px">${s.rule}${s.packNote?`<div style="margin-top:5px">${s.packNote}</div>`:''}</div>
+   <div class="mut" style="margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">명장 카드팩 · 전설급 무장/전법</div>
+   ${s.packs.map(p=>pack(p,1)).join('')}
+   ${(s.minor||[]).length?`<div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업 · 축록 카드팩</div>
+   ${s.minor.map(p=>pack(p)).join('')}`:''}
+   <div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업단계 카드팩 (열릴 때마다 등장)</div>
+   ${s.pae.map(p=>pack(p)).join('')}
    <div class="mut" style="margin-top:8px">근거 · ${s.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div>
   </div>`).join('');
  return `<h3 class="sub2">시즌 환산표 <span class="mut" style="font-weight:400">한국 ↔ 대만 ↔ 중국</span></h3>
@@ -605,6 +621,7 @@ function futureHtml(){
   <div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>
   <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>`:''}
  <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
+ <div class="note" style="margin:0 0 9px">${F.packHead||''}${F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''}</div>
  <div style="display:grid;gap:11px">${seas}</div>
  <h3 class="sub2">티어덱 원본 시트 보는 법</h3>
  <div class="note">원본(<a href="${F.sheet.u}" target="_blank" rel="noopener">대만 티어덱 시트</a>)은 크게 <b>${F.sheet.groups.join(' / ')}</b> 로 나뉩니다.
@@ -897,10 +914,13 @@ function renderGk(){
  <div class="note">${GK.note||''}</div>
  ${(GK.terms||[]).length?`<details class="tdinfo"><summary><b>용어</b> — 원문 시트 표현을 한국 서버에서 쓰는 말로 바꿨습니다</summary>
   <div class="tdinfo-b"><table class="gktm">${GK.terms.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></details>`:''}
- ${(GK.lands||[]).length?`<details class="tdinfo"><summary><b>토지 수비군</b> — 레벨별로 어떤 무장이 지키는지, 왼쪽일수록 만만합니다</summary>
-  <div class="tdinfo-b"><table class="gktm gkld"><tr><td>토지</td><td>표준 경험치</td><td>쉬움 →</td><td>어려움</td></tr>
-   ${GK.lands.map(([lv,xp,easy,hard])=>`<tr><td>${esc(lv)}</td><td class="n">${esc(xp)}</td><td>${easy.map(x=>`<span class="tm nolink">${esc(x)}</span>`).join('')}</td><td>${hard.map(x=>`<span class="tm nolink hardm">${esc(x)}</span>`).join('')}</td></tr>`).join('')}</table>
-   <p class="mut" style="margin:6px 0 0">한국어 번역 시트 기준. 유저 덱에 따라 체감 난이도는 달라집니다.</p></div></details>`:''}
+ ${(GK.lands||[]).length?`<details class="tdinfo" open><summary><b>토지별 약함 ↔ 강함</b> — 레벨별 수비 무장과 들어갈 때의 권장 레벨·병력</summary>
+  <div class="tdinfo-b"><div class="scroll"><table class="gktm gkld"><tr><td>토지</td><td>표준 경험치</td><td>약함 →</td><td>강함</td><td>안전 레벨</td><td>안전 병력</td><td>공격 레벨</td><td>공격 병력</td></tr>
+   ${GK.lands.map(([lv,xp,easy,hard,sl,st,bl,bt])=>`<tr><td>${esc(lv)}</td><td class="n">${esc(xp)}</td><td>${easy.map(x=>`<span class="tm nolink">${esc(x)}</span>`).join('')}</td><td>${hard.map(x=>`<span class="tm nolink hardm">${esc(x)}</span>`).join('')}</td><td class="n">${esc(sl||'-')}</td><td class="n">${esc(st||'-')}</td><td class="n">${esc(bl||'-')}</td><td class="n">${esc(bt||'-')}</td></tr>`).join('')}</table></div>
+   <p class="mut" style="margin:6px 0 0">수비 무장은 <b>왼쪽일수록 만만합니다</b>. <b>안전</b>은 원문 시트의 「에겐남 유저 기준」, <b>공격</b>은 「테토남 유저 기준」 — 공격 쪽이 더 낮은 레벨·적은 병력으로 밀고 들어가는 값입니다.</p>
+   <p class="mut" style="margin:3px 0 0">※ 11·12레벨의 병력 칸은 원본 시트에 <b>20병영 / 25병영</b>으로, 공격 칸은 <b>1 / 3</b>으로 적혀 있어 그대로 옮겼습니다. 원문 주석에도 <b>“유저들의 덱에 따라 상이할 수 있습니다”</b>라고 붙어 있습니다.</p>
+   ${(GK.landOrder||[]).length?`<table class="gktm" style="margin-top:8px"><tr><td>토지</td><td>쉬움 → 어려움</td></tr>
+    ${GK.landOrder.map(([lv,ord])=>`<tr><td>${esc(lv)}</td><td>${esc(ord)}</td></tr>`).join('')}</table>`:''}</div></details>`:''}
  <div class="filters"><div class="spill" id="gkNav">${vs.map(([k,l])=>`<button data-v="${k}" class="${k===gkState.v?'on':''}">${esc(l)}</button>`).join('')}</div></div>
  <div id="gkBody"></div>`;
  document.getElementById('gkNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;gkState.v=b.dataset.v;renderGk();scrollTo(0,0);};
