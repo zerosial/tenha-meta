@@ -142,6 +142,7 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .fpk-h{font-size:12px;font-weight:800;color:var(--seal);}
 .fpk-c{font-size:10.5px;font-weight:700;color:var(--faint);margin-left:5px;}
 .fpk-l{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin:3px 0 1px;}
+.gcardx.pred{border-style:dashed;border-color:var(--new);}
 .gtb{border-collapse:collapse;width:100%;font-size:12px;}
 .gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
 .gtb th{background:var(--panel2);font-weight:800;font-size:11px;color:var(--soft);white-space:nowrap;}
@@ -583,28 +584,28 @@ function futureHtml(){
    <td class="num">${m.gens?m.gens+'명':'<span class="mut">·</span>'}</td>
    <td class="num">${m.tacs?m.tacs+'종':'<span class="mut">·</span>'}</td>
    <td class="mut">${esc(m.note||'')}</td></tr>`).join('');
- const gtag=n=>{const cn=tdCn(n)||GKR[nk(String(n).replace(/^SP/,''))];
-   const g=GEN[cn]||{};const sj=cn?sjBadge(cn):'';
-   return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(n)} ${sj}</span>`
+ /* future.js는 무장·전법을 중문 원문 키로 담는다 — 이름은 도감에서 찾아 쓴다 */
+ const gtag=n=>{const cn=GEN[n]?n:(tdCn(n)||GKR[nk(String(n).replace(/^SP/,''))]);
+   const nm=cn?GEN[cn].kr:n;const sj=cn?sjBadge(cn):'';
+   return cn?`<span class="tag" onclick="genModal('${cn}')" style="cursor:pointer">${facChip(cn)} ${esc(nm)} ${sj}</span>`
             :`<span class="tag">${esc(n)}</span>`;};
- const ttag=n=>{const cn=KRTAC[nk(n)];
-   return cn?`<span class="tm" onclick="tacModal('${cn}')">${esc(n)}</span>`
+ const ttag=n=>{const cn=TAC[n]?n:KRTAC[nk(n)];
+   return cn?`<span class="tm" onclick="tacModal('${cn}')">${esc(tName(cn))}${isNewTac(cn)&&!(TAC[cn]||{}).bf?' <span class="bnew">번역</span>':''}</span>`
             :`<span class="tm nolink">${esc(n)}</span>`;};
  const pack=(p,hl)=>`<div class="fpk${hl?' hl':''}">
    <span class="fpk-h">${esc(p.name)}</span>${p.cn?`<span class="fpk-c">${esc(p.cn)}</span>`:''}
    ${p.same?`<div class="mut" style="font-size:11px">${esc(p.same)}</div>`:''}
    ${p.gens?`<div class="fpk-l">무장 ${p.gens.length}</div><div>${p.gens.map(gtag).join('')}</div>`:''}
    ${p.tacs?`<div class="fpk-l">전법 ${p.tacs.length}</div><div>${p.tacs.map(ttag).join('')}</div>`:''}</div>`;
- const seas=F.seasons.map(s=>`<div class="gcardx wide">
-   <h4>한국 ${esc(s.kr)} <span class="mut" style="font-weight:700">${esc(s.tw)} · ${esc(s.cn)}${s.script?' · '+esc(s.script):''}</span>
+ const lbl=t=>`<div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">${t}</div>`;
+ const seas=F.seasons.map(s=>`<div class="gcardx wide${s.pred?' pred':''}">
+   <h4>한국 ${esc(s.kr)}${s.pred?' <span class="bnew">예상</span>':''} <span class="mut" style="font-weight:700">${esc(s.tw)} · ${esc(s.cn)}${s.script?' · '+esc(s.script):''}</span>
      <span class="mut" style="font-weight:700;margin-left:6px">신규 무장 ${s.newGens}명 · 신규 전법 ${s.newTacs}종</span></h4>
    <div class="note" style="margin:0 0 8px">${s.rule}${s.packNote?`<div style="margin-top:5px">${s.packNote}</div>`:''}</div>
-   <div class="mut" style="margin:0 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">명장 카드팩 · 전설급 무장/전법</div>
+   ${lbl('명장 카드팩 · 전설급 무장/전법')}
    ${s.packs.map(p=>pack(p,1)).join('')}
-   ${(s.minor||[]).length?`<div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업 · 축록 카드팩</div>
-   ${s.minor.map(p=>pack(p)).join('')}`:''}
-   <div class="mut" style="margin:8px 0 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em">패업단계 카드팩 (열릴 때마다 등장)</div>
-   ${s.pae.map(p=>pack(p)).join('')}
+   ${(s.minor||[]).length?lbl(s.kr==='S5'?'카드팩 밖':'패업 · 축록 카드팩')+s.minor.map(p=>pack(p)).join(''):''}
+   ${(s.pae||[]).length?lbl('패업단계 카드팩 (열릴 때마다 등장)')+s.pae.map(p=>pack(p)).join(''):''}
    <div class="mut" style="margin-top:8px">근거 · ${s.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div>
   </div>`).join('');
  return `<h3 class="sub2">시즌 환산표 <span class="mut" style="font-weight:400">한국 ↔ 대만 ↔ 중국</span></h3>
@@ -614,14 +615,14 @@ function futureHtml(){
   <tbody>${mapRows}</tbody></table></div>
  <div class="note" style="margin:8px 0 0">${F.cnNote||''}</div>
  <div class="mut" style="margin:8px 0 0">${F.tail}</div>
- <div class="mut" style="margin:4px 0 0">${esc(F.unlinked||'')}</div>
+ <div class="mut" style="margin:4px 0 0">${F.unlinked||''}</div>
  ${F.yeoni?`<h3 class="sub2">연의(演義) 시스템 <span class="mut" style="font-weight:400">한국 S3부터</span></h3>
  <div class="note">${F.yeoni.what}
   ${F.yeoni.how.map(x=>`<div style="margin-top:5px">· ${x}</div>`).join('')}
   <div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>
   <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>`:''}
  <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
- <div class="note" style="margin:0 0 9px">${F.packHead||''}${F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''}</div>
+ <div class="note" style="margin:0 0 9px">${F.packHead||''}${F.packRule?`<div style="margin-top:5px">${F.packRule}</div>`:''}${F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''}</div>
  <div style="display:grid;gap:11px">${seas}</div>
  <h3 class="sub2">티어덱 원본 시트 보는 법</h3>
  <div class="note">원본(<a href="${F.sheet.u}" target="_blank" rel="noopener">대만 티어덱 시트</a>)은 크게 <b>${F.sheet.groups.join(' / ')}</b> 로 나뉩니다.
