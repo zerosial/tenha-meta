@@ -163,6 +163,9 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .seg.tiny button{font-size:10px;padding:1px 6px;}
 .exb{font-size:10px;padding:1px 7px;border-radius:100px;border:1px solid var(--line2);background:var(--paper);color:var(--soft);cursor:pointer;}
 .exb.on{border-color:var(--seal);color:var(--seal);background:color-mix(in srgb,var(--seal) 12%,transparent);font-weight:800;}
+.mtb tr.gcex td{opacity:.4;}
+.mtb tr.gcex td:first-child,.mtb tr.gcex td:nth-child(2),.mtb tr.gcex td:nth-child(3){opacity:1;}
+.mtb tr.gcex .gcn,.mtb tr.gcex .tm{text-decoration:line-through;text-decoration-thickness:1px;}
 .gcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
 .gtb{border-collapse:collapse;width:100%;font-size:12px;}
 .gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
@@ -395,7 +398,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 <script src="tierdecks.js?v=3"></script>
 <script src="gaecheok.js?v=13"></script>
 <script src="future.js?v=3"></script>
-<script src="gacha.js?v=1"></script>
+<script src="gacha.js?v=2"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -1443,19 +1446,22 @@ function pAtLeast(n,p,k){
 }
 function gcPack(){return GC.packs.find(p=>p.id===gcState.pack)||GC.packs[0];}
 function gcName(x){return GEN[x]?GEN[x].kr:(TAC[x]?tName(x):x);}
-/* 제외를 반영해 등급 합계를 남은 항목에 재분배 */
+/* 제외를 반영해 등급 합계를 남은 항목에 재분배.
+   제외한 항목도 목록에는 남긴다(확률 null) — 안 그러면 되돌릴 방법이 없다. */
 function gcRates(pk,mode){
  const T=GC.total[mode],ex=gcState.ex[pk.id]||{};
- const gens=pk.legGens.filter(([cn])=>cn!==ex.gen);
- const tacs=pk.legTacs.filter(cn=>cn!==ex.tac);
- const sw=gens.reduce((a,[,t])=>a+TIERW[t],0);
+ const left=pk.legGens.filter(([cn])=>cn!==ex.gen);
+ const sw=left.reduce((a,[,t])=>a+TIERW[t],0);
+ const nTac=pk.legTacs.filter(cn=>cn!==ex.tac).length;
  return {
-  gens:gens.map(([cn,t])=>[cn,T.legGen*TIERW[t]/sw,t]),
-  tacs:tacs.map(cn=>[cn,T.legTac/tacs.length]),
+  gens:pk.legGens.map(([cn,t])=>[cn, cn===ex.gen?null:T.legGen*TIERW[t]/sw, t]),
+  tacs:pk.legTacs.map(cn=>[cn, cn===ex.tac?null:T.legTac/nTac]),
   legGenTot:T.legGen, legTacTot:T.legTac, T
  };
 }
-function gcRow(label,p,n,ks,link){
+/* 제외한 줄도 자리를 지킨다 — 표가 흔들리지 않아야 다른 항목과 비교하며 제외를 바꿔볼 수 있다 */
+function gcRow(label,p,n,ks){
+ if(p==null)return `<tr class="gcex">${label}<td class="n b">0.0000%</td><td class="n b">0.00장</td>${ks.map(()=>'<td class="n">0.0%</td>').join('')}</tr>`;
  const e=n*p/100,c=k=>`<td class="n">${(pAtLeast(n,p/100,k)*100).toFixed(1)}%</td>`;
  return `<tr>${label}<td class="n b">${p.toFixed(4)}%</td><td class="n b">${e.toFixed(2)}장</td>${ks.map(c).join('')}</tr>`;
 }
@@ -1500,11 +1506,11 @@ function gcBody(){
  const genRows=R.gens.map(([cn,p,t])=>gcRow(
    `<td><span class="gcw">${avHtml(cn,'sm',1)}<span class="gcn" onclick="genModal('${cn}')">${esc(gcName(cn))}</span>${facChip(cn)}</span></td>
     <td>${tierBtn(cn,t)}</td>
-    <td><button class="exb ${ex.gen===cn?'on':''}" onclick="gcSetEx('${pk.id}','gen','${cn}')">${ex.gen===cn?'제외됨':'제외'}</button></td>`,
+    <td><button class="exb ${ex.gen===cn?'on':''}" onclick="gcSetEx('${pk.id}','gen','${cn}')">${ex.gen===cn?'제외 해제':'제외'}</button></td>`,
    p,n,[1,3,6])).join('');
  const tacRows=R.tacs.map(([cn,p])=>gcRow(
    `<td><span class="tm" onclick="tacModal('${cn}')">${esc(gcName(cn))}${TAC[cn]?tsjB(cn):''}</span></td><td></td>
-    <td><button class="exb ${ex.tac===cn?'on':''}" onclick="gcSetEx('${pk.id}','tac','${cn}')">${ex.tac===cn?'제외됨':'제외'}</button></td>`,
+    <td><button class="exb ${ex.tac===cn?'on':''}" onclick="gcSetEx('${pk.id}','tac','${cn}')">${ex.tac===cn?'제외 해제':'제외'}</button></td>`,
    p,n,[1,3,6])).join('');
  const flat=(list,p)=>list?`<div class="scroll"><table class="mtb"><thead><tr><th>이름</th><th class="num">확률</th><th class="num">${n}뽑 기대</th></tr></thead><tbody>
    ${list.map(x=>`<tr><td>${esc(x)}</td><td class="num">${p.toFixed(4)}%</td><td class="num">${(n*p/100).toFixed(2)}장</td></tr>`).join('')}</tbody></table></div>`:'';
@@ -1514,15 +1520,15 @@ function gcBody(){
    <b>${esc(pk.name)}</b> <span class="mut">${esc(pk.cn||'')}</span> ·
    ${pk.official?'<span class="tag ok">한국 공식 확률표</span>':'<span class="bnew">계산값 · 공시 전</span>'}
    <div style="margin-top:6px"><b>${n}뽑</b>이면 천장(20뽑당 1개)만으로 <b>금색 ${pity}개 보장</b>, 종합 확률 기준 <b>평균 ${(n*legTot/100).toFixed(1)}개</b>입니다.</div>
-   ${(ex.gen||ex.tac)?`<div style="margin-top:5px">제외 적용 — ${ex.gen?`무장 <b>${esc(gcName(ex.gen))}</b>`:''}${(ex.gen&&ex.tac)?' · ':''}${ex.tac?`전법 <b>${esc(gcName(ex.tac))}</b>`:''}. 등급 합계 4%는 그대로라 나머지 확률이 올라갔습니다.</div>`:''}
+   ${(ex.gen||ex.tac)?`<div style="margin-top:5px">제외 적용 — ${ex.gen?`무장 <b>${esc(gcName(ex.gen))}</b>`:''}${(ex.gen&&ex.tac)?' · ':''}${ex.tac?`전법 <b>${esc(gcName(ex.tac))}</b>`:''}. 등급 합계 4%는 그대로라 나머지 확률이 올라갔습니다. 표에서 <b>제외 해제</b>를 누르면 되돌아갑니다.</div>`:''}
  </div>
  <h3 class="sub2">등급별 요약</h3>
  <div class="scroll"><table class="mtb"><thead><tr><th>등급</th><th class="num">1뽑 확률</th><th class="num">${n}뽑 기대</th></tr></thead><tbody>
   ${summary.map(([l,p,e])=>`<tr class="${l==='금색 합계'?'gcsum':''}"><td>${l}</td><td class="num">${p.toFixed(4)}%</td><td class="num b">${e.toFixed(2)}장</td></tr>`).join('')}
  </tbody></table></div>
- <h3 class="sub2">전설 무장 <span class="mut" style="font-weight:400">${R.gens.length}종 · 합계 ${R.legGenTot.toFixed(4)}%</span></h3>
+ <h3 class="sub2">전설 무장 <span class="mut" style="font-weight:400">${R.gens.filter(g=>g[1]!=null).length}종 · 합계 ${R.legGenTot.toFixed(4)}%</span></h3>
  <div class="scroll"><table class="mtb gct"><thead><tr><th>무장</th><th>구간</th><th>제외</th><th class="num">확률</th><th class="num">${n}뽑 기대</th><th class="num">1장+</th><th class="num">3장+</th><th class="num">6장+</th></tr></thead><tbody>${genRows}</tbody></table></div>
- <h3 class="sub2">전설 전법 <span class="mut" style="font-weight:400">${R.tacs.length}종 · 합계 ${R.legTacTot.toFixed(4)}% · 등급 안에서 균등</span></h3>
+ <h3 class="sub2">전설 전법 <span class="mut" style="font-weight:400">${R.tacs.filter(t=>t[1]!=null).length}종 · 합계 ${R.legTacTot.toFixed(4)}% · 등급 안에서 균등</span></h3>
  <div class="scroll"><table class="mtb gct"><thead><tr><th>전법</th><th></th><th>제외</th><th class="num">확률</th><th class="num">${n}뽑 기대</th><th class="num">1장+</th><th class="num">3장+</th><th class="num">6장+</th></tr></thead><tbody>${tacRows}</tbody></table></div>
  ${pk.heroGens?`<h3 class="sub2">영웅 · 희귀 등급</h3>
   <div class="gcgrid">
