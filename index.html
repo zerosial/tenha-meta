@@ -166,6 +166,10 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .mtb tr.gcex td{opacity:.4;}
 .mtb tr.gcex td:first-child,.mtb tr.gcex td:nth-child(2),.mtb tr.gcex td:nth-child(3){opacity:1;}
 .mtb tr.gcex .gcn,.mtb tr.gcex .tm{text-decoration:line-through;text-decoration-thickness:1px;}
+.glgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.glbox h5{margin:0 0 4px;font-size:12px;font-weight:800;color:var(--seal);}
+.glbox .gktm td:first-child{white-space:nowrap;}
+.glbox .cn{font-size:10px;color:var(--faint);font-weight:400;}
 .gcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;}
 .gtb{border-collapse:collapse;width:100%;font-size:12px;}
 .gtb th,.gtb td{border:1px solid var(--line2);padding:5px 9px;text-align:left;vertical-align:top;}
@@ -174,7 +178,11 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .gtb td:first-child{font-weight:700;white-space:nowrap;}
 /* tactic card */
 .tcard{border:1px solid var(--line2);border-radius:9px;background:var(--paper);padding:11px 13px;}
-.tcard .th{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px;}
+.tcard .th{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:5px;}
+.tic{display:inline-block;flex:none;border-radius:6px;overflow:hidden;line-height:0;background:var(--panel2);border:1px solid var(--line2);}
+.tic img{display:block;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;}
+.tic.sm{width:34px;height:34px;}.tic.lg{width:52px;height:52px;margin-right:8px;vertical-align:middle;}
+.mh .tic.lg{float:left;}
 .tcard .kn{font-weight:800;font-size:14px;}.tcard .wo{font-size:10.5px;}
 .tcard .sj{margin-left:auto;font-size:9.5px;font-weight:800;color:#fff;background:var(--seal2);padding:1px 7px;border-radius:100px;}
 .tcard .meta{font-size:10px;color:var(--faint);margin-bottom:5px;}
@@ -390,15 +398,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </main>
 <div class="footer">
  <div style="margin-bottom:6px">정적 문서(인쇄용): <a href="overview.html">S1 종합자료</a> · <a href="roster.html">S1~15 로스터</a> · <a href="new-tactics.html">신규전법 상세</a> · <a href="s2s3-guide.html">S2·S3 가이드</a> · <a href="s2s3-system.html"><b>S2·S3 직업스킬·진형 시스템 변화</b></a></div>
- 데이터: sgmdtx.com(中 편성·전법·장수) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
+ 데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=22"></script>
+<script src="data.js?v=24"></script>
 <script src="guides.js?v=27"></script>
 <script src="tierdecks.js?v=3"></script>
 <script src="gaecheok.js?v=13"></script>
 <script src="future.js?v=3"></script>
 <script src="gacha.js?v=4"></script>
+<script src="glossary.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -413,6 +422,10 @@ const AVBASE='https://cdn.sgmdtx.com/img/avatar/';
 function avHtml(cn,cls,sjb){const g=GEN[cn]||{};const kr=g.kr||cn;const av=g.av;const ini=esc((kr||cn)[0]);
  const mark=(sjb&&g.sj)?`<i class="avsj ${krCls(g.sj)}" title="${sjLabel(g.sj).tip}">${sjLabel(g.sj).txt}</i>`:'';
  return `<span class="av ${cls||''}">${av?`<img loading="lazy" src="${AVBASE}${esc(av)}" onerror="this.remove()">`:''}<b>${ini}</b>${mark}</span>`;}
+const TICBASE='img/tac/';
+/* 전법 카드 아이콘 — sanmou-wiki(三謀資料庫)에서 받아 저장소에 담아 둔 것 */
+function ticHtml(cn,cls){const ic=(TAC[cn]||{}).icon;
+ return ic?`<span class="tic ${cls||''}"><img loading="lazy" src="${TICBASE}${esc(ic)}" alt="" onerror="this.parentNode.remove()"></span>`:'';}
 function facChip(cn){const f=(GEN[cn]||{}).faction;return f?`<span class="chip f-${f}">${FAC[f]}</span>`:'';}
 /* ---------- 시즌 환산 (중국 → 한국) ---------- */
 const CN2KR=[[1,1,'S1'],[2,3,'S2'],[4,8,'S3'],[9,11,'S4'],[12,14,'S5'],[15,17,'S6']];
@@ -461,7 +474,7 @@ function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효
  const own=((t.bfown&&t.bfown.length)?`<div class="mut" style="margin-top:8px">전용 무장 · <b>${t.bfown.map(esc).join(' / ')}</b></div>`:'')
   +(t.rec?`<div class="mut" style="margin-top:6px">韓 공식 추천 · <b>${esc(t.rec)}</b></div>`:'');
  const cn0=t.effcn?`<div class="mut cn" style="margin-top:8px;font-size:12px;line-height:1.5">原文 ${esc(t.effcn)}</div>`:'';
- openModal(`<div class="mh"><b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.self?` <span class="bself">본명·${esc(t.self)}</span>`:(t.krOff?' <span class="bself">韓공식명</span>':(t.official===false&&!t.bf?' <span class="bnew">번역</span>':''))}<button class="x" onclick="closeModal()">×</button></div>
+ openModal(`<div class="mh">${ticHtml(cn,'lg')}<b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.self?` <span class="bself">본명·${esc(t.self)}</span>`:(t.krOff?' <span class="bself">韓공식명</span>':(t.official===false&&!t.bf?' <span class="bnew">번역</span>':''))}<button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div style="margin-bottom:8px">${bfTag} ${tyB(t.ty)} ${t.tx?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.tx)}</span>`:''} ${t.grade?`<span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.sj?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.sj)}</span>`:''} ${t.gl?`<span class="mut">발동 ${esc(t.gl)}</span>`:''}</div>
  <div style="font-size:13px;line-height:1.6">${eff}</div>${own}${cn0}</div>`);}
 function bfModal(i){const r=BF[i];if(!r)return;
@@ -1270,6 +1283,11 @@ function renderTac(){
  const allT=Object.values(TAC).filter(t=>!t.minimal);
  const nLearn=allT.filter(t=>!t.self).length, nSelf=allT.filter(t=>t.self).length;
  el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub"><b>장착 전법</b>(무장이 배워 장착하는 전법) 과 <b>장수 전법</b>(각 장수 고유 본명 전법)을 탭으로 구분. 아래 등급·시즌·유형 필터와 조합.</p>
+ ${window.GLOSSARY?`<details class="tdinfo"><summary><b>상태 용어집</b> — 효과문에 나오는 회심·기모·파갑 같은 말이 무슨 뜻인지</summary>
+  <div class="tdinfo-b"><p class="mut" style="margin:0 0 8px">${GLOSSARY.note} 출처 · <a href="${GLOSSARY.src}" target="_blank" rel="noopener">${esc(GLOSSARY.srcName)}</a></p>
+  <div class="glgrid">${GLOSSARY.groups.map(g=>`<div class="glbox"><h5>${esc(g.name)}</h5>
+    <table class="gktm">${g.rows.map(r=>`<tr><td>${esc(r.kr)}<span class="cn"> ${esc(r.cn)}</span></td><td>${esc(r.eff)}</td></tr>`).join('')}</table></div>`).join('')}</div>
+  </div></details>`:''}
  <div class="ttabs" id="kindseg">${[['all','전체',allT.length],['learn','⚔️ 장착 전법',nLearn],['self','👤 장수 전법(본명)',nSelf]].map(([k,l,n])=>`<button data-o="${k}" class="${k===tacState.off?'on':''}">${l} <span class="tn">${n}</span></button>`).join('')}</div>
  <div class="filters">
   <div class="seg" id="gradeseg">${[['all','전등급'],['전설','전설'],['영웅','영웅'],['희귀','희귀']].map(([k,l])=>`<button data-g="${k}" class="${k===tacState.grade?'on':''}">${l}</button>`).join('')}</div>
@@ -1302,7 +1320,7 @@ function fillTac(){
  else list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
  document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
-   <div class="th"><span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
+   <div class="th">${ticHtml(t.cn,'sm')}<span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
