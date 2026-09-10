@@ -166,6 +166,13 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .mtb tr.gcex td{opacity:.4;}
 .mtb tr.gcex td:first-child,.mtb tr.gcex td:nth-child(2),.mtb tr.gcex td:nth-child(3){opacity:1;}
 .mtb tr.gcex .gcn,.mtb tr.gcex .tm{text-decoration:line-through;text-decoration-thickness:1px;}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:11px;margin-top:9px;}
+.ytr{border-top:1px solid var(--line);padding:7px 0;}
+.ytr:first-of-type{border-top:0;}
+.ynm{font-size:12.5px;font-weight:800;color:var(--seal);margin-bottom:3px;}
+.ynm .cn{font-size:10px;color:var(--faint);font-weight:400;}
+.ykv{font-size:11.5px;line-height:1.5;margin-bottom:2px;}
+.ykv b{color:var(--soft);font-size:10px;margin-right:4px;}
 .glgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
 .glbox h5{margin:0 0 4px;font-size:12px;font-weight:800;color:var(--seal);}
 .glbox .gktm td:first-child{white-space:nowrap;}
@@ -401,13 +408,14 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=25"></script>
+<script src="data.js?v=26"></script>
 <script src="guides.js?v=27"></script>
 <script src="tierdecks.js?v=3"></script>
 <script src="gaecheok.js?v=13"></script>
 <script src="future.js?v=3"></script>
 <script src="gacha.js?v=4"></script>
 <script src="glossary.js?v=1"></script>
+<script src="yeoni.js?v=1"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -664,7 +672,16 @@ function futureHtml(){
  <div class="note">${F.yeoni.what}
   ${F.yeoni.how.map(x=>`<div style="margin-top:5px">· ${x}</div>`).join('')}
   <div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>
-  <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>`:''}
+  <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>
+ ${window.YEONI?`<div class="note" style="margin-top:8px"><b>무장별 특성 — ${esc(YEONI.season)}</b>
+   <div style="margin-top:4px">${YEONI.intro}</div>
+   <div class="mut" style="margin-top:4px">출처 · <a href="${YEONI.src}" target="_blank" rel="noopener">${esc(YEONI.srcName)}</a></div></div>
+  <div class="ygrid">${YEONI.gens.map(g=>`<div class="gcardx"><h4>${esc(g.kr)} <span class="mut" style="font-weight:700">${esc(g.cn)}</span></h4>
+    ${g.traits.map(t=>`<div class="ytr"><div class="ynm">${esc(t.name)}<span class="cn"> ${esc(t.cn)}</span></div>
+      <div class="ykv"><b>병종</b> ${esc(t.bing)}</div>
+      <div class="ykv"><b>고유</b> ${esc(t.skill)}</div>
+      <div class="ykv"><b>도략</b> ${esc(t.taolue)}</div>
+      <div class="ykv mut"><b>편성</b> ${esc(t.build)}</div></div>`).join('')}</div>`).join('')}</div>`:''}`:''}
  <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
  <div class="note" style="margin:0 0 9px">${F.packHead||''}${F.packRule?`<div style="margin-top:5px">${F.packRule}</div>`:''}${F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''}</div>
  <div style="display:grid;gap:11px">${seas}</div>
