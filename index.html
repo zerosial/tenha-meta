@@ -1002,7 +1002,7 @@ function gkLand(nm,cls){const cn=tdCn(nm);
 function gkSheet(gid){return `https://docs.google.com/spreadsheets/d/${GK.doc}/htmlview#gid=${gid}`;}
 let gkState={v:''};
 /* 공식 개척 루트 — 운영사 공략站 문서. 기존 철혈조참 시트 자료와 별개로 뷰만 추가한다. */
-function gkOff(){return (window.GK_OFFICIAL||[]).map(o=>({...o,id:'of-'+o.id,tab:'공식 · '+o.kr}));}
+function gkOff(){return (window.GK_OFFICIAL||[]).map(o=>({...o,id:'of-'+o.id,tab:'대만 공략站 · '+o.kr}));}
 function gkExtra(){return [GK.alt,GK.collection,GK.rank].filter(Boolean).concat(gkOff());}
 function gkViews(){return (GK.guides||[]).map(g=>[g.id,g.tab]).concat(gkExtra().map(x=>[x.id,x.tab]));}
 function gkFind(id){return (GK.guides||[]).find(g=>g.id===id)||gkExtra().find(x=>x.id===id)||null;}
@@ -1010,7 +1010,7 @@ function renderGk(){
  const el=document.getElementById('tab-gk'),vs=gkViews();
  if(!gkFind(gkState.v))gkState.v=vs.length?vs[0][0]:'';
  el.innerHTML=`<h2 class="head serif">개척 가이드</h2>
- <p class="sub">시즌 첫 나흘 <b>개척 루트</b>. 중국 <b>철혈조참</b> 시트를 한국 기준으로 옮긴 것과, 대만 공략站 <b>공식 루트</b>를 나란히 둡니다.</p>
+ <p class="sub">시즌 첫 나흘 <b>개척 루트</b>. <b>주 자료는 중국 철혈조참 시트</b>(앞쪽 버튼)이고, 뒤쪽 <b>대만 공략站</b> 뷰는 세부 확인용 참고입니다.</p>
  ${fold('개척이 무엇인가', GK.note||'')}
  ${(GK.terms||[]).length?`<details class="tdinfo"><summary><b>용어</b> — 원문 시트 표현을 한국 서버에서 쓰는 말로 바꿨습니다</summary>
   <div class="tdinfo-b"><table class="gktm">${GK.terms.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></details>`:''}
@@ -1046,7 +1046,7 @@ function gkBody(){
  if(v.sections){ /* 공식 문서형 — 운영사 공략站 개척 루트 */
   el.innerHTML=`<h3 class="sub2">${esc(v.title||v.kr)} <span class="mut" style="font-weight:700">${esc(v.cn||'')}</span> ${v.official?'<span class="tag ok">공식 문서</span>':'<span class="bnew">공략站 게재 · 유저 투고</span>'}</h3>
    <div class="note">${(v.lead||[]).map(x=>`<div style="padding:2px 0">${gkEm(x)}</div>`).join('')}
-    <div class="mut" style="margin-top:6px">출처 · <a href="${v.src}" target="_blank" rel="noopener">대만 공략站</a>${v.official?'':' — 원문에 「유저 투고를 정리한 것으로 공식 입장이 아님」이라고 적혀 있습니다.'} 사이트의 기존 개척 가이드(중국 유저 시트 <b>철혈조참</b>)와는 <b>출처가 다른 별개 자료</b>입니다.</div></div>
+    <div class="mut" style="margin-top:6px">출처 · <a href="${v.src}" target="_blank" rel="noopener">대만 공략站</a>${v.official?'':' — 원문에 「유저 투고를 정리한 것으로 공식 입장이 아님」이라고 적혀 있습니다.'}<br><b>대만 서버 기준</b> 문서를 한국 시즌으로 환산해 실었습니다. <b>개척 주 루트는 위쪽 「한국 S2·S3·S4」(철혈조참 시트) 뷰</b>이고, 이 문서는 <b>세부 확인용 참고</b>입니다.</div></div>
    ${v.sections.map(sec=>`<h3 class="sub2">${esc(sec.h)}</h3>
      <div class="note"><ol class="gkol">${sec.steps.map(x=>`<li>${gkEm(x)}</li>`).join('')}</ol></div>`).join('')}`;
   return;}
