@@ -25,7 +25,7 @@
 :root[data-theme=light]{--paper:#fff;--bg:#e7e2d6;--ink:#1b1712;--soft:#5f574a;--faint:#8b8375;--line:#e2d9c6;--line2:#c8bda3;--panel:#faf7f0;--panel2:#f1eadb;--seal:#b23a2e;--seal2:#8e2c22;--jade:#3f7a5e;--bronze:#9c7a33;--new:#7a58a3;--newbg:#efe7f6;--wei:#2f6091;--shu:#3f7a5e;--wu:#b24a34;--qun:#8f6e22;--cmd:#2f6091;--act:#b23a2e;--pas:#3f7a5e;--chase:#8f6e22;--leg:#a8842f;--hero:#7a58a3;--rare:#6b7075;--t0:#8e2c22;--t1:#9c7a33;--t2:#6b7075;}
 :root[data-theme=dark]{--paper:#17140f;--bg:#0e0c09;--ink:#ece4d3;--soft:#b1a68d;--faint:#8a806f;--line:#2c2619;--line2:#463f2d;--panel:#1d190f;--panel2:#241f13;--seal:#df6555;--seal2:#c0553b;--jade:#5fa37e;--bronze:#c7a250;--new:#b394de;--newbg:#2a2233;--wei:#5a93c9;--shu:#6fb48c;--wu:#e07458;--qun:#c7a250;--cmd:#5a93c9;--act:#df6555;--pas:#5fa37e;--chase:#c7a250;--leg:#c7a250;--hero:#b394de;--rare:#9aa0a6;--t0:#df6555;--t1:#c7a250;--t2:#9aa0a6;}
 *{box-sizing:border-box;}html,body{margin:0;}
-body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.55;font-size:14px;-webkit-text-size-adjust:100%;}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.55;font-size:14px;-webkit-text-size-adjust:100%;word-break:keep-all;overflow-wrap:break-word;}
 .serif{font-family:"Nanum Myeongjo","Apple SD Gothic Neo",Batang,Georgia,serif;}
 .cn{font-family:"Nanum Myeongjo",Batang,serif;color:var(--faint);}
 .num{font-variant-numeric:tabular-nums;}
@@ -286,7 +286,8 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .gktm td:first-child{font-weight:800;white-space:nowrap;color:var(--seal);}
 .gkld td{border-top:1px solid var(--line);padding:5px 10px 5px 0;}
 .gkld td.n{color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;}
-.gkld .tm{display:inline-block;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--soft);line-height:1.6;margin:1px 3px 1px 0;cursor:pointer;}
+.gkld tr:first-child td{white-space:nowrap;}
+.gkld .tm{display:inline-block;white-space:nowrap;font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;color:var(--soft);line-height:1.6;margin:1px 3px 1px 0;cursor:pointer;}
 .gkld .tm.nolink{cursor:default;}
 .gkld .tm.hardm{border-color:var(--seal);color:var(--seal);}
 .gktb .tm.gnm{border-color:var(--jade);color:var(--jade);background:color-mix(in srgb,var(--jade) 10%,transparent);}
@@ -470,6 +471,9 @@ function toggleSj(){sjMode=sjMode==='kr'?'cn':'kr';
 function krCls(sj){const k=krSj(sj);return k?'k'+k.kr.slice(1)+(k.pred?' est':''):'';}
 function sjBadge(cn){const g=GEN[cn]||{};if(!g.sj)return '';const l=sjLabel(g.sj);
  return `<span class="sjb ${krCls(g.sj)} ${g.official===false?'tr':''}" title="${l.tip}${g.official===false?' · 한국 미수록(임시 번역)':''}">${l.txt}</span>`;}
+/* 시즌 표기는 한 곳에서 — 한/중 토글을 모든 카드·모달이 함께 따른다 */
+function sjTag(sj,cls){if(!sj)return '';const l=sjLabel(sj);
+ return `<span class="${cls||'sj'}" title="${l.tip}">${l.txt}</span>`;}
 function tsjB(cn){const s=(TAC[cn]||{}).sj;if(!s)return '';const l=sjLabel(s);
  return `<span class="tsj ${krCls(s)}" title="${l.tip}">${l.txt}</span>`;}
 function tyB(t){return t?`<span class="ty ty-${t}">${t}</span>`:'';}
@@ -500,7 +504,7 @@ function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효
   +(t.rec?`<div class="mut" style="margin-top:6px">韓 공식 추천 · <b>${esc(t.rec)}</b></div>`:'');
  const cn0=t.effcn?`<div class="mut cn" style="margin-top:8px;font-size:12px;line-height:1.5">原文 ${esc(t.effcn)}</div>`:'';
  openModal(`<div class="mh">${ticHtml(cn,'lg')}<b style="font-size:16px">${esc(t.kr||cn)}</b> <span class="cn">${esc(cn)}</span>${t.self?` <span class="bself">본명·${esc(t.self)}</span>`:(t.krOff?' <span class="bself">韓공식명</span>':(t.official===false&&!t.bf?' <span class="bnew">번역</span>':''))}<button class="x" onclick="closeModal()">×</button></div>
- <div class="mb"><div style="margin-bottom:8px">${bfTag} ${tyB(t.ty)} ${t.tx?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.tx)}</span>`:''} ${t.grade?`<span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.sj?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.sj)}</span>`:''} ${t.gl?`<span class="mut">발동 ${esc(t.gl)}</span>`:''}${t.target?` <span class="chip" style="background:var(--panel2);color:var(--soft)">대상 ${esc(t.target)}</span>`:''}${t.arm?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.arm)}</span>`:''}</div>
+ <div class="mb"><div style="margin-bottom:8px">${bfTag} ${tyB(t.ty)} ${t.tx?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.tx)}</span>`:''} ${t.grade?`<span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${sjTag(t.sj,'chip')} ${t.gl?`<span class="mut">발동 ${esc(t.gl)}</span>`:''}${t.target?` <span class="chip" style="background:var(--panel2);color:var(--soft)">대상 ${esc(t.target)}</span>`:''}${t.arm?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(t.arm)}</span>`:''}</div>
  <div style="font-size:13px;line-height:1.6">${eff}</div>${own}${cn0}</div>`);}
 function bfModal(i){const r=BF[i];if(!r)return;
  const own=(r.own&&r.own.length)?`<div class="mut" style="margin-top:8px">전용 무장 · <b>${r.own.map(esc).join(' / ')}</b></div>`:'';
@@ -510,7 +514,7 @@ function bfModal(i){const r=BF[i];if(!r)return;
  const note0=r.note?`<div class="mut" style="margin-top:6px">${esc(r.note)}</div>`:'';
  const src0=r.src?`<div class="mut" style="margin-top:6px">출처 · ${esc(r.src)}</div>`:'';
  openModal(`<div class="mh"><b style="font-size:16px">${esc(r.kr)}</b> <span class="cn">${esc(r.cn)}</span>${r.krOff?' <span class="bself">韓공식명</span>':''}${(r.off||r.eff)?'':' <span class="bnew">효과 미공개</span>'}<button class="x" onclick="closeModal()">×</button></div>
- <div class="mb"><div style="margin-bottom:8px"><span class="chip" style="background:var(--panel2);color:var(--jade)">병법 · ${esc(BFLBL[r.kind])}</span>${r.sj?` <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(r.sj)}</span>`:''}</div>
+ <div class="mb"><div style="margin-bottom:8px"><span class="chip" style="background:var(--panel2);color:var(--jade)">병법 · ${esc(BFLBL[r.kind])}</span> ${sjTag(r.sj,'chip')}</div>
  <div style="font-size:13px;line-height:1.6">${esc(r.eff||BFNOEFF[r.kind])}</div>${own}${rec}${use}${cn0}${note0}${src0}</div>`);}
 function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  const mx=280;
@@ -518,7 +522,7 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  const syns=(g.jb||[]).map(j=>`<div style="padding:5px 0;border-bottom:1px solid var(--line)"><b>${esc(j.name)}</b> <span class="cn">${esc(j.cn)}</span><div class="mut">${(j.member||[]).map(m=>esc((GEN[m]||{}).kr||m)).join(' · ')}</div><div style="font-size:11.5px;color:var(--soft)">${esc(j.desc||'')}</div></div>`).join('')||'<span class="mut">연계 정보 없음</span>';
  // appears in
  const apps=[];SEASONS.forEach(s=>{(SEA[s]||[]).forEach(f=>{if(f.gens.some(x=>x.cn===cn))apps.push('S'+s+' '+f.tier);});});
- openModal(`<div class="mh">${avHtml(cn,'lg')}<div><div style="font-size:16px;font-weight:800">${esc(g.kr||cn)} <span class="cn">${esc(cn)}</span></div><div style="margin-top:3px">${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}${g.bingEst?'<span style="opacity:.6">·추정</span>':''}</span>`:''} ${g.grade?`<span class="gr gr-${g.grade}">${g.grade}</span>`:''} ${g.sj?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.sj)}</span>`:''} ${g.official===false?'<span class="bnew">번역</span>':''}</div></div><button class="x" onclick="closeModal()">×</button></div>
+ openModal(`<div class="mh">${avHtml(cn,'lg')}<div><div style="font-size:16px;font-weight:800">${esc(g.kr||cn)} <span class="cn">${esc(cn)}</span></div><div style="margin-top:3px">${facChip(cn)} ${g.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(g.bing)}${g.bingEst?'<span style="opacity:.6">·추정</span>':''}</span>`:''} ${g.grade?`<span class="gr gr-${g.grade}">${g.grade}</span>`:''} ${sjTag(g.sj,'chip')} ${g.official===false?'<span class="bnew">번역</span>':''}</div></div><button class="x" onclick="closeModal()">×</button></div>
  <div class="mb">
  <h4 style="margin:0 0 4px">스탯 <span class="mut">(50렙 환산)</span></h4>${bar('무',g.wl)}${bar('지',g.zl)}${bar('통',g.ts)}${bar('선',g.xg)}
  <h4 style="margin:14px 0 4px">고유 전법 · ${esc(g.skill?tName(g.skill):'-')}</h4>
@@ -956,7 +960,7 @@ function tdBody(){
  tdGroups().filter(g=>tdState.grp==='all'||g.id===tdState.grp).forEach(g=>{
   const ds=g.decks.filter(d=>!q||nk(d.title+d.name+d.gens.map(x=>x.kr).join('')).indexOf(q)>=0);
   if(!ds.length)return;
-  html.push(`<h3 class="sub2">${esc(g.label)}${g.sub&&g.sub!==g.label?` <span class="mut" style="font-weight:700">${esc(g.sub)}</span>`:''} <span class="mut">${ds.length}덱 · 原 ${esc(g.cn||'')}</span></h3>`);
+  html.push(`<h3 class="sub2">${esc(g.label)}${g.sub&&g.sub!==g.label?` <span class="mut" style="font-weight:700">${esc(g.sub)}</span>`:''} <span class="mut" title="原 ${esc(g.cn||'')}">${ds.length}덱</span></h3>`);
   /* 원본 시트는 세트(선발 2팀 등)의 '첫 덱'에만 set 라벨을 넣는다 — 빈 set은 같은 세트의 연속이다.
      세트 라벨이 없는 그룹은 출전 순서(1군)가 다시 나오는 지점을 세트 경계로 본다(대체안 A/B는 제외). */
   let set='',buf=[],seen={};
@@ -1020,10 +1024,9 @@ function renderGk(){
  ${(GK.lands||[]).length?`<details class="tdinfo" open><summary><b>토지별 약함 ↔ 강함</b> — 레벨별 수비 무장과 들어갈 때의 권장 레벨·병력</summary>
   <div class="tdinfo-b"><div class="scroll"><table class="gktm gkld"><tr><td>토지</td><td>표준 경험치</td><td>약함 →</td><td>강함</td><td>안전 레벨</td><td>안전 병력</td><td>공격 레벨</td><td>공격 병력</td></tr>
    ${GK.lands.map(([lv,xp,easy,hard,sl,st,bl,bt])=>`<tr><td>${esc(lv)}</td><td class="n">${esc(xp)}</td><td>${easy.map(x=>gkLand(x)).join('')}</td><td>${hard.map(x=>gkLand(x,'hardm')).join('')}</td><td class="n">${esc(sl||'-')}</td><td class="n">${esc(st||'-')}</td><td class="n">${esc(bl||'-')}</td><td class="n">${esc(bt||'-')}</td></tr>`).join('')}</table></div>
-   <p class="mut" style="margin:6px 0 0">수비 무장은 <b>왼쪽일수록 만만합니다</b>. <b>안전</b>은 원문 시트의 「에겐남 유저 기준」, <b>공격</b>은 「테토남 유저 기준」 — 공격 쪽이 더 낮은 레벨·적은 병력으로 밀고 들어가는 값입니다.</p>
+   <p class="mut" style="margin:6px 0 0">수비 무장은 <b>왼쪽일수록 만만합니다</b>. <b>안전</b>은 여유 있게 들어가는 기준, <b>공격</b>은 최소한으로 밀고 들어가는 기준입니다(원문 시트의 두 기준).</p>
    <p class="mut" style="margin:3px 0 0">※ 11·12레벨의 병력 칸은 원본 시트에 <b>20병영 / 25병영</b>으로, 공격 칸은 <b>1 / 3</b>으로 적혀 있어 그대로 옮겼습니다. 원문 주석에도 <b>“유저들의 덱에 따라 상이할 수 있습니다”</b>라고 붙어 있습니다.</p>
-   ${(GK.landOrder||[]).length?`<table class="gktm" style="margin-top:8px"><tr><td>토지</td><td>쉬움 → 어려움</td></tr>
-    ${GK.landOrder.map(([lv,ord])=>`<tr><td>${esc(lv)}</td><td>${esc(ord)}</td></tr>`).join('')}</table>`:''}</div></details>`:''}
+   </div></details>`:''}
  <div class="filters"><div class="spill" id="gkNav">${vs.map(([k,l])=>`<button data-v="${k}" class="${k===gkState.v?'on':''}">${esc(l)}</button>`).join('')}</div></div>
  <div id="gkBody"></div>`;
  document.getElementById('gkNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;gkState.v=b.dataset.v;renderGk();scrollTo(0,0);};
@@ -1202,12 +1205,12 @@ function openTacPicker(i,j){
 function setTac(i,j,t){deckTacs[i][j]=t||null;closeModal();drawDeck();syncURL();}
 function setShapeIdx(v){deckShapeIdx=+v;drawDeck();syncURL();}
 function resetDeck(){deck=[null,null,null];deckTacs=[[],[],[]];deckShapeIdx=4;renderBuilder();syncURL();}
-function loadFormationToDeck(sj,idx){
- const f=(SEA[sj]||[])[idx]; if(!f)return;
+function loadFormationToDeck(idx){
+ const f=(window._loadForms||[])[idx]; if(!f)return;
  // 진형 매칭
  const si=SHAPES.findIndex(s=>f.shape.includes(s.name)); if(si>=0)deckShapeIdx=si;
  // 역할 기반 위치: 武/统 → 전열, 智 → 후열
- const ordered=[...f.gens].sort((a,b)=>{const av=/智/.test(a.role)?1:0,bv=/智/.test(b.role)?1:0;return av-bv;});
+ const ordered=[...f.gens].sort((a,b)=>{const av=/지력/.test(a.role)?1:0,bv=/지력/.test(b.role)?1:0;return av-bv;});
  deck=[null,null,null];deckTacs=[[],[],[]];
  ordered.slice(0,3).forEach((g,k)=>{deck[k]=g.cn;deckTacs[k]=g.tacs.slice(1).filter(t=>!(TAC[t]||{}).minimal).slice(0,2);});
  renderBuilder();syncURL();
@@ -1238,7 +1241,7 @@ function renderBuilder(){
   <select id="shapeSel" class="search" style="flex:0 0 auto;min-width:150px">${SHAPES.map((s,i)=>`<option value="${i}" ${i===deckShapeIdx?'selected':''}>${esc(s.name)}${s.sj?` — ${s.sj} 신규`:''}</option>`).join('')}</select>
   <span class="mut" id="shapeInfo"></span>
   <span style="flex:1"></span>
-  <select id="loadSj" class="search" style="flex:0 0 auto;min-width:70px"><option value="">시즌</option>${SEASONS.map(s=>`<option value="${s}">S${s}</option>`).join('')}</select>
+  <select id="loadSj" class="search" style="flex:0 0 auto;min-width:96px"><option value="">한국 시즌</option>${KRSEA.map(([kr])=>`<option value="${kr}">한국 ${kr}</option>`).join('')}</select>
   <select id="loadForm" class="search" style="flex:0 0 auto;min-width:120px"><option value="">티어덱 불러오기</option></select>
   <button class="tbtn" onclick="shareDeck()">🔗 공유</button>
   <button class="tbtn" onclick="resetDeck()">↺ 초기화</button>
@@ -1254,8 +1257,9 @@ function renderBuilder(){
  document.getElementById('bsearch').oninput=renderPool;
  document.getElementById('bfac').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');renderPool();};
  const lsj=document.getElementById('loadSj'), lf=document.getElementById('loadForm');
- lsj.onchange=()=>{const s=lsj.value;lf.innerHTML='<option value="">티어덱 불러오기</option>'+(s?(SEA[s]||[]).map((f,i)=>`<option value="${i}">[${f.tier}] ${esc(f.shape)} ${esc(f.nick||'')} — ${f.gens.map(g=>g.kr).join('·')}</option>`).join(''):'');};
- lf.onchange=()=>{if(lsj.value&&lf.value!=='')loadFormationToDeck(lsj.value,+lf.value);};
+ lsj.onchange=()=>{const list=lsj.value?krFormsOf(lsj.value):[];window._loadForms=list;
+  lf.innerHTML='<option value="">편성 불러오기</option>'+list.map((f,i)=>`<option value="${i}">[${f.tier}] ${esc(f.shape)} ${esc(f.nick||'')} — ${f.gens.map(g=>g.kr).join('·')} (中 S${f._cn})</option>`).join('');};
+ lf.onchange=()=>{if(lf.value!=='')loadFormationToDeck(+lf.value);};
  drawDeck();renderPool();
 }
 function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
@@ -1376,16 +1380,16 @@ function fillTac(){
  else list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
  document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
-   <div class="th">${ticHtml(t.cn,'sm')}<span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${t.sj?`<span class="sj">${esc(t.sj)}</span>`:''}</div>
+   <div class="th">${ticHtml(t.cn,'sm')}<span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${sjTag(t.sj)}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}${t.target?' · '+esc(t.target):''}${t.arm&&t.arm!=='전 병종'?' · '+esc(t.arm):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
 
 /* ---------------- BINGFA (병법/韬略) DICTIONARY ---------------- */
 const BFLBL={'전용':'무장 전용 병법(금서)','전용?':'무장 전용 병법(추정)','범용':'범용 병법','연의':'연의·장품 병법'};
-const BFNOEFF={'범용':'범용 병법 — 같은 이름이 잔장(残章) → 수초(手抄) → 선본(善本) 3등급으로 돌며, 효과는 「3%–6%」처럼 등급이 오를수록 커지는 구간형입니다. 수치 원문은 中·臺·韓 공식 DB와 공략 어디에도 공개돼 있지 않아 미수록입니다.',
- '전용?':'공식 DB에 미등록된 후기 시즌 무장 전용 병법(금서)으로 추정됩니다.',
- '연의':'剧本演义(연의)·장품 전용 병법으로 추정됩니다. 일반 시즌 병법과 별도 계통입니다.',
+const BFNOEFF={'범용':'수치 미공개 · 등급별 구간형',
+ '전용?':'효과 원문 미공개 · 후기 시즌 전용 금서 추정.',
+ '연의':'효과 원문 미공개 · 연의·장품 전용 추정.',
  '전용':'효과 정보 없음.'};
 let bfState={kind:'all',own:'all',q:''};
 function renderBf(){
@@ -1415,7 +1419,7 @@ function fillBf(){
  document.getElementById('bfcount').textContent=list.length+'종';
  document.getElementById('bfgrid').innerHTML=list.map(([r,i])=>{const eff=r.eff||BFNOEFF[r.kind];
   return `<div class="tcard" onclick="bfModal(${i})">
-   <div class="th"><span class="kn" style="${r.kind==='전용'?'color:var(--leg)':r.kind==='전용?'?'color:var(--hero)':''}">${esc(r.kr)}</span><span class="cn">${esc(r.cn)}</span>${r.krOff?'<span class="bself">韓공식명</span>':''}${r.sj?`<span class="sj">${esc(r.sj)}</span>`:''}</div>
+   <div class="th"><span class="kn" style="${r.kind==='전용'?'color:var(--leg)':r.kind==='전용?'?'color:var(--hero)':''}">${esc(r.kr)}</span><span class="cn">${esc(r.cn)}</span>${r.krOff?'<span class="bself">韓공식명</span>':''}${sjTag(r.sj)}</div>
    <div class="meta">${esc(BFLBL[r.kind])}${r.own&&r.own.length?' · '+esc(r.own.join('/')):''}${r.rec?' · 韓추천 '+esc(r.rec):''}</div>
    <div class="eff ${r.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
@@ -1424,7 +1428,7 @@ function fillBf(){
 let genState={fac:'all',bz:'all',q:''};
 function renderGen(){
  const el=document.getElementById('tab-gen');
- el.innerHTML=`<h2 class="head serif">장수 도감</h2><p class="sub">S1~S15 편성 등장 장수 ${Object.keys(GEN).length}명. 스탯은 50렙 환산. 클릭 시 상세.</p>
+ el.innerHTML=`<h2 class="head serif">장수 도감</h2><p class="sub">편성 등장 장수 ${Object.keys(GEN).length}명. 스탯은 50렙 환산. 클릭 시 상세.</p>
  <div class="filters">
   <div class="seg" id="gfac">${[['all','전진영'],['wei','위'],['shu','촉'],['wu','오'],['qun','군']].map(([k,l])=>`<button data-f="${k}" class="${k===genState.fac?'on':''}">${l}</button>`).join('')}</div>
   <input class="search" id="gsearch" placeholder="장수 검색…" value="${esc(genState.q)}">
@@ -1439,7 +1443,7 @@ function fillGen(){
  let list=Object.keys(GEN).filter(cn=>{const g=GEN[cn];return (genState.fac==='all'||g.faction===genState.fac)&&(!q||(g.kr||'').includes(q)||cn.includes(q));});
  list.sort((a,b)=>((GEN[b].official?1:0)-(GEN[a].official?1:0))||((GEN[b].wl+GEN[b].zl+GEN[b].ts||0)-(GEN[a].wl+GEN[a].zl+GEN[a].ts||0)));
  document.getElementById('gcount').textContent=list.length+'명';
- document.getElementById('ggrid').innerHTML=list.map(cn=>{const g=GEN[cn];return `<div class="gcard" onclick="genModal('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)} ${g.official===false?'<span class="bnew">번</span>':''}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}${g.sj||''}</div><div class="st">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}</div></div>`;}).join('');
+ document.getElementById('ggrid').innerHTML=list.map(cn=>{const g=GEN[cn];return `<div class="gcard" onclick="genModal('${cn}')">${avHtml(cn,'lg')}<div class="gn">${facChip(cn)} ${esc(g.kr)} ${g.official===false?'<span class="bnew">번</span>':''}</div><div class="st">${g.bing?esc(g.bing)+' · ':''}${sjTag(g.sj,'')}</div><div class="st">무${g.wl||'-'}·지${g.zl||'-'}·통${g.ts||'-'}</div></div>`;}).join('');
 }
 
 /* ---------------- GUIDE (공략·팁) ---------------- */
@@ -1457,7 +1461,7 @@ function renderGuide(){
   <div class="gnav" id="gcat">${navHtml}</div>
   <div class="filters" style="margin:6px 0 2px"><span class="mut" style="font-size:11px"><span class="gtag g-off">공식</span> <span class="gtag g-obs">관측</span> <span class="gtag g-trap">함정</span> <span class="gtag g-tip">팁</span></span></div>
   <div id="gbody"></div>
-  <div class="foot" style="margin-top:16px"><b>출처(해외 서버 공략)</b> · ${G.sources.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · ')}</div>`;
+  ${fold(`출처 ${G.sources.length}건 (해외 서버 공략·공식 공지)`, G.sources.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(' · '))}`;
  document.getElementById('gcat').onclick=e=>{const b=e.target.closest('button');if(!b)return;guideCat=b.dataset.k;renderGuide();};
  const cat=G.cats.find(c=>c.key===guideCat)||G.cats[0];
  // *강조* 마커만 허용하는 안전 렌더 (그 외 태그는 이스케이프)
