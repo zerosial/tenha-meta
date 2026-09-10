@@ -438,6 +438,8 @@ const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META
 document.addEventListener('dragstart',e=>e.preventDefault());
 const FAC={wei:'위',shu:'촉',wu:'오',qun:'군'};
 const SEASONS=Object.keys(SEA).map(Number).sort((a,b)=>a-b);
+/* 긴 설명은 접어 둔다 — 화면엔 표·목록만 남기고, 읽는 법은 눌러서 본다 */
+function fold(title,html){return html?`<details class="tdinfo fold"><summary>${title}</summary><div class="tdinfo-b">${html}</div></details>`:'';}
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const AVBASE='https://cdn.sgmdtx.com/img/avatar/';
 /* sjb=true 면 초상 왼쪽 위에 시즌 마크를 얹는다(캡처용). 가운데 이니셜은 이미지가
@@ -596,7 +598,7 @@ function renderMeta(){
  const th=(k,l,sub,cls)=>`<th class="num sortable ${cls||''} ${mState.sort===k?'on':''}" data-k="${k}">${l}${sub?`<span class="cnr">${sub}</span>`:''}</th>`;
  const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
  el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S2~S4 기준</span></h2>
- <p class="sub">중국 서버 편성(T0·T1)을 <b>한국 시즌으로 환산</b>해 집계했습니다 — <b>한국 S2=中 S2~S3 · S3=中 S4~S8 · S4=中 S9~S11</b> (中 S2~S11). <b>티어덱 탭이 다루는 한국 S2·S3·S4와 같은 범위</b>이며, 지나간 한국 S1(中 S1)과 아직 오지 않은 中 S12~는 제외했습니다. 숫자는 <b>편성 등장 횟수</b>(승률 아님)이며, 시즌 열 머리글을 누르면 그 시즌 기준으로 정렬됩니다. 행을 누르면 상세가 열립니다. 환산 근거는 <b>참고</b> 탭의 시즌 환산표에 있습니다.</p>
+ <p class="sub">중국 편성(T0·T1) <b>등장 횟수</b>를 한국 시즌으로 환산해 집계. 시즌 머리글로 정렬, 행 클릭으로 상세.</p>
  <div class="kpis">
   <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>통산 <b>${g0.tot}회</b> · ${byTxt(g0)}</p></div>
   <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
@@ -683,18 +685,17 @@ function futureHtml(){
    <div class="mut" style="margin-top:8px">근거 · ${s.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div>
   </div>`).join('');
  return `<h3 class="sub2">시즌 환산표 <span class="mut" style="font-weight:400">한국 ↔ 대만 ↔ 중국</span></h3>
- <div class="note">${F.premise.map(p=>`<div style="margin-bottom:4px">· ${p}</div>`).join('')}</div>
+ ${fold('환산 전제 — 왜 한국 S2 = 대만 S3인가', F.premise.map(p=>`<div style="margin-bottom:4px">· ${p}</div>`).join(''))}
  <div class="scroll"><table class="mtb">
   <thead><tr><th>한국</th><th>대만</th><th>중국(무장 풀)</th><th>시나리오</th><th class="num">신규 무장</th><th class="num">신규 전법</th><th>비고</th></tr></thead>
   <tbody>${mapRows}</tbody></table></div>
- <div class="note" style="margin:8px 0 0">${F.cnNote||''}</div>
- <div class="mut" style="margin:8px 0 0">${F.tail}</div>
+ ${fold('중국 열을 읽는 법', (F.cnNote||'')+`<div style="margin-top:6px">${F.tail}</div>`)}
  <div class="mut" style="margin:4px 0 0">${F.unlinked||''}</div>
  ${F.yeoni?`<h3 class="sub2">연의(演義) 시스템 <span class="mut" style="font-weight:400">한국 S3부터</span></h3>
- <div class="note">${F.yeoni.what}
-  ${F.yeoni.how.map(x=>`<div style="margin-top:5px">· ${x}</div>`).join('')}
-  <div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>
-  <div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div></div>
+ ${fold('연의가 무엇인가 — 자세히', F.yeoni.what
+  +F.yeoni.how.map(x=>`<div style="margin-top:5px">· ${x}</div>`).join('')
+  +`<div style="margin-top:6px" class="mut">${F.yeoni.caution}</div>`
+  +`<div style="margin-top:5px" class="mut">근거 · ${F.yeoni.src.map(x=>`<a href="${x.u}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join(' · ')}</div>`)}
  ${window.YEONI?`<div class="note" style="margin-top:8px"><b>무장별 특성 — ${esc(YEONI.season)}</b>
    <div style="margin-top:4px">${YEONI.intro}</div>
    <div class="mut" style="margin-top:4px">출처 · <a href="${YEONI.src}" target="_blank" rel="noopener">${esc(YEONI.srcName)}</a></div></div>
@@ -705,12 +706,12 @@ function futureHtml(){
       <div class="ykv"><b>도략</b> ${esc(t.taolue)}</div>
       <div class="ykv mut"><b>편성</b> ${esc(t.build)}</div></div>`).join('')}</div>`).join('')}</div>`:''}`:''}
  <h3 class="sub2">미래시 · 카드팩 구성 <span class="mut" style="font-weight:400">확정 = 대만 S5(한국 S4)까지</span></h3>
- <div class="note" style="margin:0 0 9px">${F.packHead||''}${F.packRule?`<div style="margin-top:5px">${F.packRule}</div>`:''}${F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''}</div>
+ ${fold('카드팩 목록을 읽는 법', (F.packHead||'')+(F.packRule?`<div style="margin-top:5px">${F.packRule}</div>`:'')+(F.tacNote?`<div style="margin-top:5px">${F.tacNote}</div>`:''))}
  <div style="display:grid;gap:11px">${seas}</div>
  <h3 class="sub2">티어덱 원본 시트 보는 법</h3>
- <div class="note">원본(<a href="${F.sheet.u}" target="_blank" rel="noopener">대만 티어덱 시트</a>)은 크게 <b>${F.sheet.groups.join(' / ')}</b> 로 나뉩니다.
+ ${fold('원본 시트 보는 법', `원본(<a href="${F.sheet.u}" target="_blank" rel="noopener">대만 티어덱 시트</a>)은 크게 <b>${F.sheet.groups.join(' / ')}</b> 로 나뉩니다.
   시즌별 티어덱 시트 안의 기준표는 앞에서부터 <b>${F.sheet.tables.map((t,i)=>(i+1)+') '+t).join(' · ')}</b> 순서입니다.
-  이 사이트 <b>티어덱</b> 탭의 그룹 이름이 이 기준표와 1:1로 대응합니다.</div>`;
+  이 사이트 <b>티어덱</b> 탭의 그룹 이름이 이 기준표와 1:1로 대응합니다.`)}`;
 }
 
 /* ---------------- 티어덱 (강덱 합집 · 출대 루트) ---------------- */
@@ -914,11 +915,11 @@ function renderTd(){
  const nOf=k=>(sea.groups||[]).filter(g=>g.kind===k).reduce((a,g)=>a+g.decks.length,0);
  const nT=nOf('tier'),nC=nOf('coex'),gs=tdGroups();
  el.innerHTML=`<h2 class="head serif">티어덱 · 출대 루트</h2>
- <p class="sub">중국 <b>铁血雕馋</b>의 시즌별 강덱 합집·출대 루트를 <b>한국 서버 시즌 기준</b>으로 정리한 자료. 「시즌별 편성」(sgmdtx 집계) 탭과 <b>출처·집계 방식이 다른 별도 자료</b>로, 티어(T0.3 → T1.2)와 3장수 풀빌드(전법·병종·병서·장비·탈것·스탯)를 함께 제시합니다. 카드의 <b>덱 상세</b>를 누르면 전법·병서·특기 <b>효과 원문까지 한 번에</b> 펼쳐집니다.</p>
+ <p class="sub">중국 <b>철혈조참</b> 시즌별 강덱 합집·출대 루트(한국 시즌 기준). 카드의 <b>덱 상세</b>에서 전법·병서·특기 효과까지 펼쳐집니다.</p>
  <div class="filters"><div class="spill" id="tdSea">${ss.map(x=>`<button data-s="${x.id}" class="${x.id===tdState.sea?'on':''}">한국 ${esc(x.label)} <span class="tn">${esc(x.cn_season)}</span></button>`).join('')}</div>
   ${sea.tr?'<span class="bnew">임시 번역</span>':'<span class="bok">번역 시트</span>'}</div>
- <div class="note"><b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
-  <div style="margin-top:5px">출처 ${esc(sea.src||'')} · ${esc(sea.ver||'')}</div>
+ ${fold('티어 표기 읽는 법', `<b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
+  <div style="margin-top:5px">출처 ${esc(sea.src||'')} · ${esc(sea.ver||'')}`)}
   <div style="margin-top:3px">${esc(sea.note||'')}</div></div>
  <details class="tdinfo"><summary><b>장서각(藏书阁) · 장품도략</b>이란? — 「장서각 조감초」처럼 장서각이 전제인 덱 읽는 법</summary>
   <div class="tdinfo-b">
@@ -1009,8 +1010,8 @@ function renderGk(){
  const el=document.getElementById('tab-gk'),vs=gkViews();
  if(!gkFind(gkState.v))gkState.v=vs.length?vs[0][0]:'';
  el.innerHTML=`<h2 class="head serif">개척 가이드</h2>
- <p class="sub">시즌 첫 나흘의 <b>개척</b> 루트 — 중국 <b>철혈조참</b>(铁血雕馋)의 개척 시트를 <b>한국 서버 시즌·용어 기준</b>으로 옮겼습니다. 각 시즌은 <b>구간별 개척덱 · 1군 일차별 흐름 · 2군 체력 돌려막기</b> 세 축으로 되어 있고, 세 축을 같이 굴려야 표의 레벨이 나옵니다. 장수 아이콘·전법·진형 이름을 누르면 도감 상세가 열립니다.</p>
- <div class="note">${GK.note||''}</div>
+ <p class="sub">시즌 첫 나흘 <b>개척 루트</b>. 중국 <b>철혈조참</b> 시트를 한국 기준으로 옮긴 것과, 대만 공략站 <b>공식 루트</b>를 나란히 둡니다.</p>
+ ${fold('개척이 무엇인가', GK.note||'')}
  ${(GK.terms||[]).length?`<details class="tdinfo"><summary><b>용어</b> — 원문 시트 표현을 한국 서버에서 쓰는 말로 바꿨습니다</summary>
   <div class="tdinfo-b"><table class="gktm">${GK.terms.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join('')}</table></div></details>`:''}
  ${(GK.lands||[]).length?`<details class="tdinfo" open><summary><b>토지별 약함 ↔ 강함</b> — 레벨별 수비 무장과 들어갈 때의 권장 레벨·병력</summary>
@@ -1072,7 +1073,7 @@ function gkBody(){
 let srState={sj:'S3',tier:'all'};
 function renderSrank(){
  const el=document.getElementById('tab-srank');
- el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">각 시즌 편성에서 장수·전법 등장 빈도를 막대그래프로. 티어(전체/T0)로 좁혀 볼 수 있습니다. <b>시즌은 한국 서버 기준</b>입니다 — 해당 한국 시즌에 묶이는 중국 시즌 편성을 합쳐 집계합니다(환산표는 <b>참고</b> 탭).</p>
+ el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub"><b>한국 시즌</b>별 장수·전법 등장 빈도.</p>
  <div class="filters"><div class="spill" id="srSj">${KRSEA.map(([kr,cns])=>`<button data-s="${kr}" class="${kr===srState.sj?'on':''}" title="${krCnLabel(kr)}">한국 ${kr}</button>`).join('')}</div></div>
  <div class="filters"><div class="seg" id="srTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="srGrid"></div>`;
@@ -1094,7 +1095,7 @@ function renderSrank(){
 let seaState={sj:'S3',tier:'all',fac:'all'};
 function renderSeason(){
  const el=document.getElementById('tab-season');
- el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx 기준 각 시즌 T0·T1 편성(T2 제외). <b>시즌은 한국 서버 기준</b>입니다 — 각 한국 시즌에 해당하는 중국 시즌 편성을 모아 보여주고, 편성마다 원래 중국 시즌을 배지로 답니다(환산표는 <b>참고</b> 탭). 편성(덱 상세→) 클릭=3장수·전법 통합, 장수 클릭=상세, 전법 클릭=효과. <b>◈</b>=고유전법 · 전법 색 <span style="color:var(--leg);font-weight:800">노랑=전설급</span> <span style="color:var(--hero);font-weight:800">보라=영웅급</span> · 장수 뒤 배지=출시 시즌.</p>
+ el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub"><b>한국 시즌</b>별 T0·T1 편성. <b>◈</b>=고유전법 · <span style="color:var(--leg);font-weight:800">노랑</span>=전설 <span style="color:var(--hero);font-weight:800">보라</span>=영웅 · <span class="cnsj">中 S○</span>=원래 중국 시즌.</p>
  <div class="filters"><div class="spill" id="sjpill">${KRSEA.map(([kr,cns])=>`<button data-sj="${kr}" class="${kr===seaState.sj?'on':''}" title="${krCnLabel(kr)}">한국 ${kr} <span class="tn">${cns.reduce((a,n)=>a+(SEA[n]||[]).length,0)}</span></button>`).join('')}</div></div>
  <div class="filters">
   <div class="seg" id="tierseg">${['all','T0','T1'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'T0·T1':t}</button>`).join('')}</div>
@@ -1334,7 +1335,7 @@ function renderTac(){
  const seasons=[...new Set(Object.values(TAC).filter(t=>!t.minimal&&t.sj).map(t=>t.sj))].sort((a,b)=>(+a.slice(1))-(+b.slice(1)));
  const allT=Object.values(TAC).filter(t=>!t.minimal);
  const nLearn=allT.filter(t=>!t.self).length, nSelf=allT.filter(t=>t.self).length;
- el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub"><b>장착 전법</b>(카드팩·탐방에서 <b>뽑아</b> 학습하는 것) 과 <b>장수 전법</b>(무장에 붙어 있어 <b>못 뽑는</b> 본명 전법)을 탭으로 구분. 장서각에서 서책으로 돌리는 <b>병법</b>은 별도 탭입니다. 아래 등급·시즌·유형 필터와 조합.</p>
+ el.innerHTML=`<h2 class="head serif">전법 도감</h2><p class="sub"><b>장착</b>=뽑아서 배우는 것 · <b>장수</b>=무장에 붙어 못 뽑는 본명 전법. 장서각 <b>병법</b>은 별도 탭.</p>
  ${window.GLOSSARY?`<details class="tdinfo"><summary><b>상태 용어집</b> — 효과문에 나오는 회심·기모·파갑 같은 말이 무슨 뜻인지</summary>
   <div class="tdinfo-b"><p class="mut" style="margin:0 0 8px">${GLOSSARY.note} 출처 · <a href="${GLOSSARY.src}" target="_blank" rel="noopener">${esc(GLOSSARY.srcName)}</a></p>
   <div class="glgrid">${GLOSSARY.groups.map(g=>`<div class="glbox"><h5>${esc(g.name)}</h5>
@@ -1387,7 +1388,7 @@ let bfState={kind:'all',own:'all',q:''};
 function renderBf(){
  const el=document.getElementById('tab-bf');
  const n=k=>BF.filter(r=>r.kind===k).length;
- el.innerHTML=`<h2 class="head serif">병법 도감</h2><p class="sub">병법(韬略)은 전법과 별개 계통입니다. 무장 <b>25·30·35레벨</b>에 슬롯이 1칸씩 열려 <b>최대 3권</b>을 장착하며, 슬롯마다 후보 3권이 무작위로 제시되고 이후 자유 교체됩니다. 동일 서명(書名)은 <b>잔장(残章)·수초(手抄)·선본(善本)</b> 3등급으로 존재하고 같은 종류는 중복 장착이 불가합니다. 전설(오렌지) 무장은 <b>전용 병법(금서)</b>이 추가로 등장하며 무장당 1권만 적용됩니다. 아래 <b>${BF.length}종</b> 중 <b>${n('전용')}종</b>(무장 전용 금서)은 中 공식 攻略站 DB 효과 원문을 한글화했고, <b>${BF.filter(r=>r.krOff).length}종</b>은 韓 공식 攻略站 기사에 등재된 <b>한국 서버 정식 명칭</b>으로 확정했습니다. 범용 병법의 수치는 中·臺·韓 어느 공식 DB에도 공개돼 있지 않아 미수록이며, 대신 韓 공식 추천 조합과 실제 편성 채용 무장을 함께 표시합니다.</p>
+ el.innerHTML=`<h2 class="head serif">병법 도감</h2><p class="sub"><b>장서각</b>에서 서책으로 돌리는 별개 계통. 무장 <b>25·30·35레벨</b>에 1칸씩 열려 최대 3권.</p>${fold('병법 규칙과 수록 범위', `슬롯마다 후보 3권이 무작위로 제시되고 이후 자유 교체됩니다. 동일 서명(書名)은 <b>잔장·수초·선본</b> 3등급으로 존재하며 같은 종류는 중복 장착이 불가합니다. 전설 무장은 <b>전용 병법(금서)</b>이 추가로 등장하고 무장당 1권만 적용됩니다. 수록 ${BF.length}종 중 ${n('전용')}종은 中 공식 DB 효과 원문을 한글화했고, ${BF.filter(r=>r.krOff).length}종은 <b>한국 서버 정식 명칭</b>으로 확정했습니다. 범용 병법의 수치는 어느 공식 DB에도 공개돼 있지 않아 미수록이며, 대신 한국 공식 추천 조합과 실제 편성 채용 무장을 함께 표시합니다.`)}
  <div class="ttabs" id="bfkind">${[['all','전체',BF.length],['전용','전용(금서)·효과 확인',n('전용')],['전용?','전용(추정)',n('전용?')],['범용','범용',n('범용')],['연의','연의·장품',n('연의')]].map(([k,l,c])=>`<button data-k="${k}" class="${k===bfState.kind?'on':''}">${l} <span class="tn">${c}</span></button>`).join('')}</div>
  <div class="filters">
   <div class="seg" id="bfown">${[['all','전체'],['own','전용 무장 확인'],['eff','효과 원문 있음'],['kro','韓 공식명 확인'],['rec','韓 공식 추천']].map(([k,l])=>`<button data-o="${k}" class="${k===bfState.own?'on':''}">${l}</button>`).join('')}</div>
@@ -1561,8 +1562,8 @@ function gcRow(label,p,exp,ats){
 function renderGacha(){
  const el=document.getElementById('tab-gacha');
  el.innerHTML=`<h2 class="head serif">뽑기 기댓값</h2>
- <p class="sub">한국 공홈 <b>확률 공시</b>의 명장 카드팩 확률표에 <b>20뽑 확정(천장)</b>을 얹어, <b>N번 뽑으면 무장·전법이 평균 몇 장 나오는지</b>를 계산합니다. 원본 → <a href="${GC.doc}" target="_blank" rel="noopener">newslg-kr.biligames.com/probability</a> · 기준일 ${esc(GC.updated||'')}</p>
- <div class="note">${(GC.how||[]).map(x=>`<div style="margin-bottom:5px">· ${x}</div>`).join('')}</div>
+ <p class="sub">명장 카드팩을 <b>N번 뽑으면 평균 몇 장</b> 나오는지. 출처 <a href="${GC.doc}" target="_blank" rel="noopener">한국 공홈 확률 공시</a> · ${esc(GC.updated||'')}</p>
+ ${fold('계산 방식과 천장 — 자세히', (GC.how||[]).map(x=>`<div style="margin-bottom:5px">· ${x}</div>`).join(''))}
  ${GC.xval?`<details class="tdinfo"><summary><b>${GC.xval.title}</b></summary><div class="tdinfo-b">
   <div class="scroll"><table class="mtb"><thead><tr>${GC.xval.head.map((h,i)=>`<th class="${i?'num':''}">${h}</th>`).join('')}</tr></thead>
    <tbody>${GC.xval.rows.map(r=>`<tr>${r.map((c,i)=>`<td class="${i?'num':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
@@ -1663,7 +1664,7 @@ function gcBody(){
    <div><div class="mut" style="font-weight:700;margin-bottom:4px">희귀 전법 ${pk.rareTacs.length}종</div>${flat(pk.rareTacs,R.T.rareTac/pk.rareTacs.length)}</div>
   </div>`:`<div class="mut" style="margin-top:8px">영웅·희귀 등급은 이 카드팩의 구성이 공개되지 않아 <b>등급 합계만</b> 위 요약에 넣었습니다.</div>`}
  ${v?`<div class="mut" style="margin-top:10px">공시 원문 대조 — 전설 무장 천장 포함 <b>${v.legGen.a}% / ${v.legGen.b}% / ${v.legGen.c}%</b> · 기본 <b>${v.baseGen.a}% / ${v.baseGen.b}% / ${v.baseGen.c}%</b>, 전설 전법 천장 포함 <b>${v.legTac}%</b> · 기본 <b>${v.baseTac}%</b>. 위 표의 계산값과 같은지 확인용입니다.</div>`:''}
- <div class="note" style="margin-top:10px">${(GC.caveat||[]).map(x=>`<div style="margin-bottom:4px">· ${x}</div>`).join('')}</div>`;
+ ${fold('이 카드팩 자료의 한계', (GC.caveat||[]).map(x=>`<div style="margin-bottom:4px">· ${x}</div>`).join(''))}`;
 }
 
 /* ---------------- 시스템 (전법 연의 · 장품도략) ---------------- */
@@ -1676,7 +1677,7 @@ function renderSys(){
  const cGrade=g=>TV.filter(t=>!t.minimal&&!t.bf&&!t.self&&t.grade===g).length;
  const bfk=k=>BF.filter(b=>b.kind===k).length;
  el.innerHTML=`<h2 class="head serif">시스템</h2>
- <p class="sub">게임이 어떻게 굴러가는지 — <b>자료 분류</b>와 운영사 공략站 문서를 옮긴 <b>시스템 설명</b>을 모았습니다.</p>
+ <p class="sub">자료가 각각 어디서 나오는지, 그리고 연의·장품도략 같은 특수 시스템.</p>
  <h3 class="sub2">자료 분류 <span class="mut" style="font-weight:400">무엇을 어디서 얻나</span></h3>
  <div class="scroll"><table class="mtb clsx"><thead><tr><th>분류</th><th>얻는 곳</th><th class="num">수록</th><th>사이트 위치</th></tr></thead><tbody>
   <tr><td><b>무장</b> <span class="cn">武將</span></td><td>카드팩·탐방에서 <b>뽑는다</b></td><td class="num b">${Object.keys(GEN).length}명</td><td>장수 도감 · 뽑기</td></tr>
@@ -1725,8 +1726,8 @@ function renderRef(){
  ${futureHtml()}
 
  <h3 class="sub2">진형 배치 <span class="mut" style="font-weight:400">전 8종 (S1 6종 + S3 신규 2종)</span></h3>
- <div class="note"><b>배치 읽는 법</b> — 편성은 무장 3명이며, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 어느 칸을 쓰는지</b>를 정합니다. 아래 도식의 채워진 칸이 실제 배치 자리이고, 칸 안 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. <b>좌·중·우 위치는 진형마다 다르며</b>(예: 어린진은 전열 좌측 1칸 + 후열 중앙·우측 2칸) 도식은 실제 배치 모양을 그대로 옮긴 것입니다. 다만 <b>전투 계산에 반영되는 것은 전열/후열 구분과 슬롯별 피격률</b>이며 좌·우 자체에는 별도 보정이 없습니다.<br>
-  <b>S3 신규 2종</b>은 <b>연구소 연구 없이 시즌 진입 즉시 사용</b> 가능합니다. 효과 수치는 확정이나 <b>위치별 피격률·배치 모양은 공식 미공개</b>여서, 효과 구조가 같은 기존 진형에서 유추한 <span class="mut">추정</span>값입니다(구행진↔기형진 계열 1전열 / 언월진↔안형진 계열 2전열).</div>
+ ${fold('배치 도식 읽는 법', `<b>배치 읽는 법</b> — 편성은 무장 3명이며, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 어느 칸을 쓰는지</b>를 정합니다. 아래 도식의 채워진 칸이 실제 배치 자리이고, 칸 안 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. <b>좌·중·우 위치는 진형마다 다르며</b>(예: 어린진은 전열 좌측 1칸 + 후열 중앙·우측 2칸) 도식은 실제 배치 모양을 그대로 옮긴 것입니다. 다만 <b>전투 계산에 반영되는 것은 전열/후열 구분과 슬롯별 피격률</b>이며 좌·우 자체에는 별도 보정이 없습니다.<br>
+  <b>S3 신규 2종</b>은 <b>연구소 연구 없이 시즌 진입 즉시 사용</b> 가능합니다. 효과 수치는 확정이나 <b>위치별 피격률·배치 모양은 공식 미공개</b>여서, 효과 구조가 같은 기존 진형에서 유추한 <span class="mut">추정</span>값입니다(구행진↔기형진 계열 1전열 / 언월진↔안형진 계열 2전열).`)}
  <div class="grid g-fm">${fmCards}</div>
 
  <h3 class="sub2">진형 요약표</h3>
