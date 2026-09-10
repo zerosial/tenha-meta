@@ -598,7 +598,7 @@ function renderMeta(){
  const th=(k,l,sub,cls)=>`<th class="num sortable ${cls||''} ${mState.sort===k?'on':''}" data-k="${k}">${l}${sub?`<span class="cnr">${sub}</span>`:''}</th>`;
  const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
  el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S2~S4 기준</span></h2>
- <p class="sub">중국 편성(T0·T1) <b>등장 횟수</b>를 한국 시즌으로 환산해 집계. 시즌 머리글로 정렬, 행 클릭으로 상세.</p>
+ <p class="sub">sgmdtx <b>집계</b> — 중국 편성(T0·T1) 등장 횟수를 한국 시즌으로 환산. 시즌 머리글로 정렬, 행 클릭으로 상세. <span class="mut">편성 주 자료는 <b>티어덱</b> 탭(철혈조참 시트).</span></p>
  <div class="kpis">
   <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>통산 <b>${g0.tot}회</b> · ${byTxt(g0)}</p></div>
   <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
@@ -724,7 +724,8 @@ function tacCn(t){const k=nk(t);if(KRTAC[k])return KRTAC[k];if(ALIAS.tac[k])retu
  /* 시트가 '영본·○○'처럼 변형 접두어를 붙여 적은 경우 — 본체를 찾아 변형 키로 되돌린다 */
  const m=/^(?:영본|경|전|연|금)[·・](.+)$/.exec(k);
  if(m){const b=KRTAC[m[1]]||ALIAS.tac[m[1]];
-  if(b)for(const p of ['镜','镜·','专·','衍·','金·'])if(TAC[p+b])return p+b;}
+  if(b){for(const p of ['镜','镜·','专·','衍·','金·'])if(TAC[p+b])return p+b;
+   return b;}}   /* 변형본 자료가 없으면 본체 도감으로 연결(표기는 시트 그대로) */
  return null;}
 const TACNM=[...new Set(Object.keys(KRTAC).concat(Object.keys(ALIAS.tac)))].filter(k=>k.length>1).sort((a,b)=>b.length-a.length);
 const BFTYPO={'기림':'기임','치국론론':'치국론','출사펴':'출사표','한녀':'한녀전','풍속':'풍속통의','논무':'논무','장서각도략':'장서각도략'};
@@ -740,7 +741,9 @@ function tdTierCls(t){return /^T0/.test(t)?'T0':/^T1(\.|$|-)/.test(t)&&!/^T1\.[2
 function tdChip(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');if(!t)return '';
  const cn=tacCn(t);
  if(!cn)return `<span class="tm nolink ${alt?'alt':''}">${alt?'↔':''}${esc(t)}</span>`;
- return `<span class="tm ${gradeCls(cn)} ${alt?'alt':''}" onclick="event.stopPropagation();tacModal('${cn}')">${alt?'↔':''}${esc(tName(cn))}</span>`;}
+ /* 시트가 '영본·○○' 변형본으로 적었는데 변형본 자료가 없으면 시트 표기를 살린다 */
+ const vr=/^(?:영본|경|전|연|금)[·・]/.test(nk(t))&&!/^(?:镜|专·|衍·|金·)/.test(cn);
+ return `<span class="tm ${gradeCls(cn)} ${alt?'alt':''}" onclick="event.stopPropagation();tacModal('${cn}')">${alt?'↔':''}${esc(vr?t:tName(cn))}</span>`;}
 function tdSk(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
   let main=String(l).replace(/[（(]([^）)]*)[）)]/g,(m,x)=>{alts.push(x);return ' ';});
   const op=main.search(/[（(]/);                        // 원문의 닫히지 않은 괄호 = 대체 표기
@@ -915,7 +918,7 @@ function renderTd(){
  const nOf=k=>(sea.groups||[]).filter(g=>g.kind===k).reduce((a,g)=>a+g.decks.length,0);
  const nT=nOf('tier'),nC=nOf('coex'),gs=tdGroups();
  el.innerHTML=`<h2 class="head serif">티어덱 · 출대 루트</h2>
- <p class="sub">중국 <b>철혈조참</b> 시즌별 강덱 합집·출대 루트(한국 시즌 기준). 카드의 <b>덱 상세</b>에서 전법·병서·특기 효과까지 펼쳐집니다.</p>
+ <p class="sub">중국 <b>철혈조참</b> 시트의 강덱 합집·출대 루트 — <b>편성 주 자료</b>(대만 기준을 한국 시즌으로 환산). 카드의 <b>덱 상세</b>에서 전법·병서·특기 효과까지 펼쳐집니다. <span class="mut">「시즌별 편성」은 sgmdtx <b>집계</b>라 출처가 다른 참고 자료입니다.</span></p>
  <div class="filters"><div class="spill" id="tdSea">${ss.map(x=>`<button data-s="${x.id}" class="${x.id===tdState.sea?'on':''}">한국 ${esc(x.label)} <span class="tn">${esc(x.cn_season)}</span></button>`).join('')}</div>
   ${sea.tr?'<span class="bnew">임시 번역</span>':'<span class="bok">번역 시트</span>'}</div>
  ${fold('티어 표기 읽는 법', `<b>표기</b> · <b>T0.3 &gt; T0.5 &gt; T0.8 &gt; T1 &gt; T1.2</b> 순으로 강함(숫자가 작을수록 상위) · <b>풀빨/풀돌·고돌파</b> = 돌파(각성) 수치가 높은 계정 전용 · <b>1군~5군</b> = 5팀 공존 편성의 출전 순서 · <b>↔ 점선 칩</b> = 원문의 괄호/대체 전법 · 회색 칩 = 도감에 없는 이름(임시 표기·병법 서술).
@@ -1073,7 +1076,7 @@ function gkBody(){
 let srState={sj:'S3',tier:'all'};
 function renderSrank(){
  const el=document.getElementById('tab-srank');
- el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub"><b>한국 시즌</b>별 장수·전법 등장 빈도.</p>
+ el.innerHTML=`<h2 class="head serif">시즌 랭킹</h2><p class="sub">sgmdtx <b>집계</b> — <b>한국 시즌</b>별 장수·전법 등장 빈도. <span class="mut">편성 주 자료는 <b>티어덱</b> 탭.</span></p>
  <div class="filters"><div class="spill" id="srSj">${KRSEA.map(([kr,cns])=>`<button data-s="${kr}" class="${kr===srState.sj?'on':''}" title="${krCnLabel(kr)}">한국 ${kr}</button>`).join('')}</div></div>
  <div class="filters"><div class="seg" id="srTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===srState.tier?'on':''}">${l}</button>`).join('')}</div><span class="mut" id="srCount"></span></div>
  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" id="srGrid"></div>`;
@@ -1095,7 +1098,7 @@ function renderSrank(){
 let seaState={sj:'S3',tier:'all',fac:'all'};
 function renderSeason(){
  const el=document.getElementById('tab-season');
- el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub"><b>한국 시즌</b>별 T0·T1 편성. <b>◈</b>=고유전법 · <span style="color:var(--leg);font-weight:800">노랑</span>=전설 <span style="color:var(--hero);font-weight:800">보라</span>=영웅 · <span class="cnsj">中 S○</span>=원래 중국 시즌.</p>
+ el.innerHTML=`<h2 class="head serif">시즌별 편성</h2><p class="sub">sgmdtx <b>집계</b> — 중국에서 실제로 쓰인 T0·T1 편성(<b>한국 시즌</b>별). <b>◈</b>=고유전법 · <span style="color:var(--leg);font-weight:800">노랑</span>=전설 <span style="color:var(--hero);font-weight:800">보라</span>=영웅 · <span class="cnsj">中 S○</span>=원래 중국 시즌. <span class="mut">덱을 고를 땐 <b>티어덱</b> 탭(철혈조참 시트)이 주 자료입니다.</span></p>
  <div class="filters"><div class="spill" id="sjpill">${KRSEA.map(([kr,cns])=>`<button data-sj="${kr}" class="${kr===seaState.sj?'on':''}" title="${krCnLabel(kr)}">한국 ${kr} <span class="tn">${cns.reduce((a,n)=>a+(SEA[n]||[]).length,0)}</span></button>`).join('')}</div></div>
  <div class="filters">
   <div class="seg" id="tierseg">${['all','T0','T1'].map(t=>`<button data-t="${t}" class="${t===seaState.tier?'on':''}">${t==='all'?'T0·T1':t}</button>`).join('')}</div>
