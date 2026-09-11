@@ -426,16 +426,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=45"></script>
-<script src="guides.js?v=44"></script>
-<script src="tierdecks.js?v=20"></script>
-<script src="gaecheok.js?v=30"></script>
-<script src="future.js?v=20"></script>
-<script src="gacha.js?v=21"></script>
-<script src="glossary.js?v=18"></script>
-<script src="yeoni.js?v=18"></script>
-<script src="system.js?v=18"></script>
-<script src="gk_official.js?v=18"></script>
+<script src="data.js?v=46"></script>
+<script src="guides.js?v=45"></script>
+<script src="tierdecks.js?v=21"></script>
+<script src="gaecheok.js?v=31"></script>
+<script src="future.js?v=21"></script>
+<script src="gacha.js?v=22"></script>
+<script src="glossary.js?v=19"></script>
+<script src="yeoni.js?v=19"></script>
+<script src="system.js?v=19"></script>
+<script src="gk_official.js?v=19"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -1479,12 +1479,23 @@ function fillTac(){
  else list.sort((a,b)=>(a.official===b.official?0:(a.official?-1:1))||(ord[a.ty]??9)-(ord[b.ty]??9));
  document.getElementById('tcount').textContent=list.length+'종';
  document.getElementById('tgrid').innerHTML=list.map(t=>{const eff=t.eff||'';return `<div class="tcard" onclick="tacModal('${t.cn}')">
-   <div class="th">${ticHtml(t.cn,'sm')}<span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${sjTag(t.sj)}</div>
+   <div class="th">${ticHtml(t.cn,'sm')}<span class="kn ${gradeCls(t.cn)?'g'+gradeCls(t.cn):''}" style="${t.grade==='전설'?'color:var(--leg)':t.grade==='영웅'?'color:var(--hero)':''}">${esc(t.kr)}</span>${CONFUSE[t.cn]?`<span class="cn" title="이름이 비슷한 전법이 있어 원문을 함께 표시합니다">${esc(t.cn)}</span>`:''}${t.self?`<span class="bself">본명·${esc(t.self)}</span>`:(t.official===false?'<span class="bnew">번역</span>':'')}${sjTag(t.sj)}</div>
    <div class="meta">${tyB(t.ty)} ${t.tx?esc(t.tx):''} ${t.grade?`· <span class="gr gr-${t.grade}">${t.grade}</span>`:''} ${t.gl?'· 발동 '+esc(t.gl):''}${t.target?' · '+esc(t.target):''}${t.arm&&t.arm!=='전 병종'?' · '+esc(t.arm):''}</div>
    <div class="eff ${t.eff?'':'cnonly'}">${esc(eff).slice(0,150)}${eff.length>150?'…':''}</div></div>`;}).join('')||'<p class="mut">결과 없음</p>';
 }
 
 /* ---------------- BINGFA (병법/韬略) DICTIONARY ---------------- */
+/* 이름이 한 글자만 다른 전법 — 카드에 원문을 붙여 구분한다 */
+const CONFUSE=(()=>{
+ const lev=(a,b)=>{if(Math.abs(a.length-b.length)>1)return 9;let p=[...Array(b.length+1).keys()];
+  for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)
+   c.push(Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]!==b[j-1]?1:0)));p=c;}return p[b.length];};
+ const arr=Object.entries(TAC).filter(([,v])=>!v.bf).map(([cn,v])=>[cn,nk(v.kr||'')]);
+ const out={};
+ for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){
+  const a=arr[i][1],b=arr[j][1];
+  if(a&&b&&a!==b&&a.length>=3&&lev(a,b)===1){out[arr[i][0]]=1;out[arr[j][0]]=1;}}
+ return out;})();
 const BFLBL={'전용':'무장 전용 병법(금서)','전용?':'무장 전용 병법(추정)','범용':'범용 병법','연의':'연의·장품 병법'};
 const BFNOEFF={'범용':'수치 미공개 · 등급별 구간형',
  '전용?':'효과 원문 미공개 · 후기 시즌 전용 금서 추정.',
