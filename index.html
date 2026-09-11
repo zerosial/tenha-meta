@@ -363,6 +363,9 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .synbox .syn .nm{font-weight:800;}
 /* bars list (meta) */
 .rowbar{display:grid;grid-template-columns:150px 1fr 34px;gap:9px;align-items:center;padding:3px 0;border-bottom:1px solid var(--line);}
+.rowbar.pk{grid-template-columns:minmax(130px,1fr) minmax(60px,1.1fr) 58px;}
+.rowbar.pk .num{white-space:nowrap;}
+@media(max-width:900px){.rowbar.pk{grid-template-columns:1fr 1fr 54px;}}
 .rowbar .lb b{font-weight:800;}.rowbar .lb .cn{font-size:10px;}
 .rowbar .bar{height:12px;background:var(--panel2);border-radius:2px;overflow:hidden;}
 .rowbar .bar>span{display:block;height:100%;background:var(--seal);}
@@ -423,16 +426,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=41"></script>
-<script src="guides.js?v=40"></script>
-<script src="tierdecks.js?v=16"></script>
-<script src="gaecheok.js?v=26"></script>
-<script src="future.js?v=16"></script>
-<script src="gacha.js?v=17"></script>
-<script src="glossary.js?v=14"></script>
-<script src="yeoni.js?v=14"></script>
-<script src="system.js?v=14"></script>
-<script src="gk_official.js?v=14"></script>
+<script src="data.js?v=44"></script>
+<script src="guides.js?v=43"></script>
+<script src="tierdecks.js?v=19"></script>
+<script src="gaecheok.js?v=29"></script>
+<script src="future.js?v=19"></script>
+<script src="gacha.js?v=20"></script>
+<script src="glossary.js?v=17"></script>
+<script src="yeoni.js?v=17"></script>
+<script src="system.js?v=17"></script>
+<script src="gk_official.js?v=17"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -549,7 +552,8 @@ function krFormsOf(kr){const e=KRSEA.find(x=>x[0]===kr);
 function krPill(kr){return '한국 '+kr+(KRPRED[kr]?'?':'');}
 function krCnLabel(kr){const e=KRSEA.find(x=>x[0]===kr);if(!e)return '';
  const c=e[1];return '中 '+(c.length>1?'S'+c[0]+'~S'+c[c.length-1]:'S'+c[0]);}
-let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt',born:''};   // born: '' | 'S1'~'S4' 출시 시즌 필터
+let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt',born:'',
+            pkFrom:2,pkBase:'full',pkTop:30};   // 픽률 순위 — 시작 시즌·분모 기준·표시 수
 function metaAgg(tier){
  const G={},T={},forms=[];
  KSEA.forEach(([kr,list],i)=>{
@@ -599,6 +603,54 @@ function metaRows(rows,isTac,max,forms,formsBy){
    <td><b ${badge}>${esc(o.kr||r.cn)}</b> ${isTac?tsjB(r.cn):sjBadge(r.cn)}${isTac?'':' '+facChip(r.cn)}</td>
    ${cells}<td class="num"><b>${r.tot}</b></td>
    <td class="mbar"><span style="width:${val(r)/top*100}%"></span></td></tr>`;}).join('');
+}
+/* ───── 픽률 순위 ─────
+   한국 S3~S6처럼 구간을 잡고, 그 안에서 편성에 얼마나 자주 들어갔는지로 줄 세운다.
+   분모는 기본이 '출시 이후 편성만' — 구간 중간에 나온 카드가 손해 보지 않게. */
+function metaPick(A){
+ const i0=mState.pkFrom, idx=[];for(let i=i0;i<KSEA.length;i++)idx.push(i);
+ const full=idx.reduce((a,i)=>a+A.forms[i],0)||1;
+ const sjNum=sj=>{const m=/^S(\d+)$/.exec(sj||'');return m?+m[1]:0;};
+ const calc=(rows,isTac)=>rows.map(r=>{
+   const O=isTac?(TAC[r.cn]||{}):(GEN[r.cn]||{});
+   const bs=sjNum(O.sj);
+   let hit=0, av=0;
+   idx.forEach(i=>{hit+=r.by[i]||0;
+     KSEA[i][1].forEach(s2=>{if(s2>=bs)av+=A.formsBy[s2]||0;});});
+   const base=mState.pkBase==='born'?(av||full):full;
+   return {cn:r.cn,kr:O.kr||r.cn,hit,base,full,part:av>0&&av<full,
+           pct:base?hit/base*100:0,tot:r.tot};})
+  .filter(x=>x.hit>=(mState.pkBase==='born'?3:1)).sort((a,b)=>b.pct-a.pct||b.hit-a.hit||b.tot-a.tot);
+ return {gen:calc(A.gen,false),tac:calc(A.tac,true),full,
+         label:KSEA[i0][0]+'~'+KSEA[KSEA.length-1][0]};
+}
+function metaPickHtml(A){
+ const P=metaPick(A), top=mState.pkTop;
+ const bar=(arr,isTac)=>{const mx=Math.max(1,...arr.slice(0,top).map(x=>x.pct));
+  return arr.slice(0,top).map((x,i)=>{
+   const o=isTac?(TAC[x.cn]||{}):(GEN[x.cn]||{});
+   const col=isTac?(o.grade==='전설'?'color:var(--leg)':o.grade==='영웅'?'color:var(--hero)':''):'';
+   return `<div class="rowbar pk" onclick="${isTac?`tacModal('${x.cn}')`:`genModal('${x.cn}')`}" style="cursor:pointer"
+     title="${esc(x.kr)} · ${x.hit}회 / ${x.base}편성 = ${x.pct.toFixed(1)}%${x.part?' (구간 전체 '+x.full+'편성 기준 '+(x.hit/x.full*100).toFixed(1)+'%)':''}">
+    <div class="lb"><span class="mut" style="font-variant-numeric:tabular-nums">${String(i+1).padStart(2,'0')}</span>
+     ${isTac?'':facChip(x.cn)} <b style="${col}">${esc(x.kr)}</b> ${isTac?tsjB(x.cn):sjBadge(x.cn)}</div>
+    <div class="bar"><span style="width:${x.pct/mx*100}%"></span></div>
+    <b class="num">${x.pct.toFixed(1)}<span class="mut" style="font-weight:400">%</span>${x.part?'<span class="mut">*</span>':''}</b></div>`;}).join('')
+   ||'<span class="mut">데이터 없음</span>';};
+ const segFrom=KSEA.map(([kr],i)=>i<KSEA.length-1?`<button data-f="${i}" class="${i===mState.pkFrom?'on':''}">${kr}~</button>`:'').join('');
+ return `<h3 class="sub2" style="margin-top:26px">한국 ${P.label} 픽률 순위 <span class="mut" style="font-weight:400">— 그 구간 편성에 얼마나 자주 들어갔나</span></h3>
+ <div class="filters">
+  <div class="seg" id="mPkFrom" title="시작 시즌">${segFrom}</div>
+  <div class="seg" id="mPkBase">${[['born','출시 이후 편성 분모'],['full','구간 전체 편성 분모']].map(([k,l])=>`<button data-b="${k}" class="${k===mState.pkBase?'on':''}">${l}</button>`).join('')}</div>
+  <div class="seg" id="mPkTop">${[20,30,50].map(v=>`<button data-n="${v}" class="${v===mState.pkTop?'on':''}">TOP ${v}</button>`).join('')}</div>
+  <span class="mut">구간 ${P.full}개 편성 · T0·T1 ${mState.tier==='all'?'전체':mState.tier}</span>
+ </div>
+ <div class="grid g-pair">
+  <div style="min-width:0"><h4 style="margin:0 0 4px">장수 픽률</h4>${bar(P.gen,false)}</div>
+  <div style="min-width:0"><h4 style="margin:0 0 4px">전법 픽률</h4>${bar(P.tac,true)}</div>
+ </div>
+ <div class="mut" style="margin-top:6px">픽률 = 그 구간 T0·T1 편성 가운데 몇 %에 들어갔나. <b>*</b> = 구간 중간에 출시돼 분모가 구간의 일부(마우스를 올리면 구간 전체 기준 비율도 나옵니다). 전법은 고유전법·병법을 뺀 채용 기준. 위의 <b>T0·T1</b> 버튼이 여기에도 적용됩니다.
+ <b>출시 이후 편성 분모</b>는 늦게 나온 카드를 공평하게 보지만 표본이 얇아질 수 있어 <b>3회 미만은 뺍니다</b>.</div>`;
 }
 function renderMeta(){
  const el=document.getElementById('tab-meta');
@@ -652,7 +704,11 @@ function renderMeta(){
  <div class="mut" style="margin-top:6px"><b>출시 ${KSEA[0][0]}~${KSEA[KLAST][0]} 버튼</b> = 그 시즌에 <b>새로 나온</b> 장수·전법만 골라 봅니다(칩 숫자 = 해당 시즌 출시 종수). 열은 항상 시즌별 사용량입니다.</div>
  <div class="mut" style="margin-top:3px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5 <span class="ksw k6"></span>S6 <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
  <div class="mut" style="margin-top:3px"><b>채용률</b>은 <b>출시 이후 편성만 분모</b>로 계산합니다 — 구간(예: 한국 S3 = 中 S4~S8) 끝에 나온 무장이 불리하게 보이지 않도록. 분모가 구간의 일부인 칸에는 <b>*</b>가 붙고, 툴팁에 구간 전체 기준 비율도 함께 나옵니다.</div>
- <div class="mut" style="margin-top:3px"><b>·</b> = 그 시즌에 있었지만 T0·T1 편성에 채용 0 · <b>–</b> = 그 시즌에는 아직 미출시(출시 시즌은 이름 옆 배지) · 칸에 마우스를 올리면 회수/편성수/비율이 나옵니다.</div>`;
+ <div class="mut" style="margin-top:3px"><b>·</b> = 그 시즌에 있었지만 T0·T1 편성에 채용 0 · <b>–</b> = 그 시즌에는 아직 미출시(출시 시즌은 이름 옆 배지) · 칸에 마우스를 올리면 회수/편성수/비율이 나옵니다.</div>
+ ${metaPickHtml(A)}`;
+ document.getElementById('mPkFrom').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.pkFrom=+b.dataset.f;renderMeta();};
+ document.getElementById('mPkBase').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.pkBase=b.dataset.b;renderMeta();};
+ document.getElementById('mPkTop').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.pkTop=+b.dataset.n;renderMeta();};
  const fill=()=>{document.getElementById('mBody').innerHTML=
    metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',80,A.forms,A.formsBy)
    ||`<tr><td colspan="${KSEA.length+3}" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
