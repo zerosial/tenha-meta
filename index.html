@@ -327,7 +327,8 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .mtb tr.msum td.mut{font-weight:700;}
 .mtb th .cnr{display:block;font-size:9px;font-weight:700;opacity:.75;}
 .mtb th.k2{color:var(--wei);}.mtb th.k3{color:var(--hero);}.mtb th.k4{color:var(--bronze);}
-.mtb th.k1{color:var(--jade);}
+.mtb th.k1{color:var(--jade);}.mtb th.k5,.mtb th.k6{color:var(--rare);}
+.mtb th.est{opacity:.82;}
 .mtb tr.pred td:first-child{border-left:3px solid var(--new);}
 .mtb td.mbar>span{display:block;height:9px;border-radius:2px;background:var(--seal);min-width:1px;}
 .tdinfo{border:1px solid var(--line2);border-left:4px solid var(--jade);border-radius:6px;background:var(--panel);margin:12px 0;}
@@ -351,7 +352,7 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .sjb.tr::after{content:"·번";font-size:7.5px;opacity:.8;}
 .ksw{display:inline-block;width:8px;height:8px;border-radius:2px;vertical-align:-1px;margin-right:3px;}
 .ksw.k1{background:var(--jade);}.ksw.k2{background:var(--wei);}.ksw.k3{background:var(--hero);}
-.ksw.k4{background:var(--bronze);}.ksw.k5{background:var(--rare);}
+.ksw.k4{background:var(--bronze);}.ksw.k5,.ksw.k6{background:var(--rare);}
 .tsj{font-size:8.5px;font-weight:800;color:var(--faint);margin-left:3px;opacity:.85;}
 .tsj.k1{color:var(--jade);}.tsj.k2{color:var(--wei);}.tsj.k3{color:var(--hero);}
 .tsj.k4{color:var(--bronze);}.tsj.k5,.tsj.k6{color:var(--rare);}
@@ -422,16 +423,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=33"></script>
-<script src="guides.js?v=32"></script>
-<script src="tierdecks.js?v=8"></script>
-<script src="gaecheok.js?v=18"></script>
-<script src="future.js?v=8"></script>
-<script src="gacha.js?v=9"></script>
-<script src="glossary.js?v=6"></script>
-<script src="yeoni.js?v=6"></script>
-<script src="system.js?v=6"></script>
-<script src="gk_official.js?v=6"></script>
+<script src="data.js?v=37"></script>
+<script src="guides.js?v=36"></script>
+<script src="tierdecks.js?v=12"></script>
+<script src="gaecheok.js?v=22"></script>
+<script src="future.js?v=12"></script>
+<script src="gacha.js?v=13"></script>
+<script src="glossary.js?v=10"></script>
+<script src="yeoni.js?v=10"></script>
+<script src="system.js?v=10"></script>
+<script src="gk_official.js?v=10"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -532,10 +533,16 @@ function genModal(cn){const g=GEN[cn]||{};const sk=TAC[g.skill]||{};
  </div>`);}
 
 /* ---------------- META (한국 시즌 환산 · 한국 S1~S4 = 中 S1~S11) ---------------- */
-const KSEA=[['S2',[2,3]],['S3',[4,5,6,7,8]],['S4',[9,10,11]]];   // 한국 S2~S4 = 中 S2~S11
-/* 시즌을 보는 탭(시즌별 편성·시즌 랭킹)은 전부 한국 서버 기준으로 묶는다.
+/* 시즌을 보는 탭(시즌별 편성·시즌 랭킹·메타)은 전부 한국 서버 기준으로 묶는다.
    중국 시즌 번호는 각 편성 카드의 배지와 툴팁에 남는다. */
 const KRSEA=CN2KR.map(([a,b,kr])=>[kr, SEASONS.filter(n=>n>=a&&n<=b)]).filter(x=>x[1].length);
+/* 메타 집계 열 = 자료가 있는 한국 시즌 전부(S5 이후는 中 풀 기준 예상 구간) */
+const KSEA=KRSEA.map(([kr,list])=>[kr,list]);
+const KLAST=KSEA.length-1;
+/* 中 구간 전체를 받지 못한 시즌 = 자료가 일부뿐 (예: 한국 S6는 中 S15~S17 중 S15만) */
+const KPART=Object.fromEntries(CN2KR.map(([a,b,kr])=>{
+ const got=(KSEA.find(x=>x[0]===kr)||[,[]])[1];
+ return [kr, got.length? b-a+1-got.length : 0];}));
 function krFormsOf(kr){const e=KRSEA.find(x=>x[0]===kr);
  return e?e[1].flatMap(n=>(SEA[n]||[]).map(f=>({...f,_cn:n}))):[];}
 function krCnLabel(kr){const e=KRSEA.find(x=>x[0]===kr);if(!e)return '';
@@ -554,7 +561,7 @@ function metaAgg(tier){
         const y=T[t]||(T[t]={cn:t,tot:0,by:{}});y.tot++;y.by[i]=(y.by[i]||0)+1;});
     });});});
   forms.push(n);});
- const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[2]||0)-(a.by[2]||0));
+ const srt=o=>Object.values(o).sort((a,b)=>b.tot-a.tot||(b.by[KLAST]||0)-(a.by[KLAST]||0));
  const formsBy={};
  KSEA.forEach(([kr,list])=>list.forEach(s2=>{formsBy[s2]=(SEA[s2]||[]).filter(f=>tier==='all'||f.tier===tier).length;}));
  return {gen:srt(G),tac:srt(T),forms:forms,formsBy:formsBy};
@@ -595,22 +602,25 @@ function renderMeta(){
  const el=document.getElementById('tab-meta');
  const A=metaAgg(mState.tier);
  const g0=A.gen[0]||{cn:'',tot:0,by:{}}, t0=A.tac[0]||{cn:'',tot:0,by:{}};
- const rise=A.gen.map(r=>({r,d:(r.by[2]||0)-(r.by[1]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
+ /* 편성 표본이 20건 미만인 끝 시즌은 흔들림이 커서 급상승 기준에서 뺀다 */
+ let ri=KLAST; while(ri>1&&A.forms[ri]<20)ri--;
+ const rB=ri, rA=Math.max(0,ri-1);
+ const rise=A.gen.map(r=>({r,d:(r.by[rB]||0)-(r.by[rA]||0)})).sort((a,b)=>b.d-a.d)[0]||{r:{cn:'',by:{}},d:0};
  const cnOf=i=>'中 '+(KSEA[i][1].length>1?'S'+KSEA[i][1][0]+'~S'+KSEA[i][1][KSEA[i][1].length-1]:'S'+KSEA[i][1][0]);
- const BORN=['S1','S2','S3','S4'];
+ const BORN=KSEA.map(([kr])=>kr);
  const bornCnt=b=>(mState.view==='gen'?A.gen:A.tac).filter(r=>{const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===b;}).length;
  const th=(k,l,sub,cls)=>`<th class="num sortable ${cls||''} ${mState.sort===k?'on':''}" data-k="${k}">${l}${sub?`<span class="cnr">${sub}</span>`:''}</th>`;
  const byTxt=r=>KSEA.map(([kr],i)=>kr+' '+(r.by&&r.by[i]||0)).join(' · ');
- el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 S2~S4 기준</span></h2>
- <p class="sub">sgmdtx <b>집계</b> — 중국 편성(T0·T1) 등장 횟수를 한국 시즌으로 환산. 시즌 머리글로 정렬, 행 클릭으로 상세. <span class="mut">편성 주 자료는 <b>티어덱</b> 탭(철혈조참 시트).</span></p>
+ el.innerHTML=`<h2 class="head serif">메타 요약 <span class="mut" style="font-size:12px">한국 ${KSEA[0][0]}~${KSEA[KLAST][0]} 기준</span></h2>
+ <p class="sub">sgmdtx <b>집계</b> — 중국 편성(T0·T1) 등장 횟수를 한국 시즌으로 환산. 시즌 머리글로 정렬, 행 클릭으로 상세. <span class="mut">편성 주 자료는 <b>티어덱</b> 탭(철혈조참 시트) · <b>S5 이후</b>는 아직 한국에 안 온 中 시즌이라 <b>예상</b>입니다.</span></p>
  <div class="kpis">
   <div class="kpi"><h4>👑 최다 등장 장수</h4><div class="big">${esc((GEN[g0.cn]||{}).kr||'-')}</div><p>통산 <b>${g0.tot}회</b> · ${byTxt(g0)}</p></div>
   <div class="kpi"><h4>🏆 최다 등장 전법</h4><div class="big">${esc((TAC[t0.cn]||{}).kr||'-')}</div><p>통산 <b>${t0.tot}회</b> 채용 · ${byTxt(t0)}</p></div>
-  <div class="kpi"><h4>📈 한국 S4 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>S3 ${rise.r.by&&rise.r.by[1]||0}회 → S4 ${rise.r.by&&rise.r.by[2]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
+  <div class="kpi"><h4>📈 한국 ${KSEA[rB][0]} 급상승</h4><div class="big">${esc((GEN[rise.r.cn]||{}).kr||'-')}</div><p>${KSEA[rA][0]} ${rise.r.by&&rise.r.by[rA]||0}회 → ${KSEA[rB][0]} ${rise.r.by&&rise.r.by[rB]||0}회 (<b>+${rise.d}</b>) · 다음 시즌 대비 지표</p></div>
  </div>
  <details class="tdinfo"><summary><b>이 사이트의 시즌 기준</b> — 한국 ↔ 대만 ↔ 중국 환산 · 연의 시스템 · SP 표기</summary>
   <div class="tdinfo-b">
-   <p><b class="tdh2">환산</b> 한국 <b>S2</b> = 대만 S3 = 中 S2~S3 · 한국 <b>S3</b> = 대만 S4(業鑄山河, 中 S9 대본) = 中 S4~S8 <span class="mut">신규 무장 16 · 전법 16</span> · 한국 <b>S4</b> = 대만 S5(南郡烽起, 中 S10 대본) = 中 S9~S11 <span class="mut">신규 무장 7 · 전법 9</span> · <span class="mut">(예상) 한국 S5 = 中 S12~S14</span>. 중국 열은 <b>무장·전법 풀 기준</b>이고 시나리오(맵·시즌 시스템)는 대만이 중국 최신 것을 그대로 씁니다.</p>
+   <p><b class="tdh2">환산</b> 한국 <b>S2</b> = 대만 S3 = 中 S2~S3 · 한국 <b>S3</b> = 대만 S4(業鑄山河, 中 S9 대본) = 中 S4~S8 <span class="mut">신규 무장 16 · 전법 16</span> · 한국 <b>S4</b> = 대만 S5(南郡烽起, 中 S10 대본) = 中 S9~S11 <span class="mut">신규 무장 7 · 전법 9</span> · <span class="mut">(예상) 한국 <b>S5</b> = 中 S12~S14 · 한국 <b>S6</b> = 中 S15~S17(현재 S15까지만 공개)</span>. 메타 요약은 이 환산으로 <b>한국 S1~S6</b>을 전부 집계하며, 예상 구간은 열 머리글에 <b>?</b>가 붙습니다. 중국 열은 <b>무장·전법 풀 기준</b>이고 시나리오(맵·시즌 시스템)는 대만이 중국 최신 것을 그대로 씁니다.</p>
    <p><b class="tdh2">배지</b> 장수·전법의 출시 시즌 배지는 <b>한국 기준으로 환산</b>해 표시합니다(툴팁에 중국 시즌). 헤더의 <b>시즌 韓/中</b> 버튼으로 원래 표기로 전환할 수 있고, 예상 구간은 <b>S5?</b>처럼 물음표가 붙습니다.</p>
    <p><b class="tdh2">연의</b> 한국 S3(대만 S4)부터 들어오는 <b>시즌 시스템</b>입니다. 역사 사건이 해금될 때 <b>정군경무에서 2명 중 1명</b>의 무장 특성을 활성화하고, <b>방향 2택</b>에 따라 그 무장의 <b>고유 전법과 병종이 바뀌며</b> 특성별 <b>전용 연의 도략</b>이 붙습니다. 티어덱의 「연의 원소(장궁병)」 같은 표기가 이것입니다.</p>
    <p><b class="tdh2">SP</b> 원본과 <b>별개 무장</b>(스탯·고유·병종 전부 다름)이라 도감에서도 따로 셉니다. 현재 4명 —
@@ -619,7 +629,9 @@ function renderMeta(){
     연의판은 별개 무장이 아니라 기존 무장의 특성 활성화라 도감 항목이 따로 생기지 않습니다.</p>
    <p><button class="tbtn" onclick="show('ref')">환산표·카드팩 목록·근거 링크 보기 → 참고 탭</button></p>
   </div></details>
- <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.</div>
+ <div class="note"><b>집계 범위</b> · ${KSEA.map(([kr],i)=>`한국 ${kr}${KRPRED[kr]?'<span class="mut">(예상)</span>':''}(${cnOf(i).replace('中 ','中')}) ${A.forms[i]}개 편성`).join(' · ')} — T0·T1만, T2 제외. 시즌마다 편성 표본 수가 다르니 <b>채용률</b> 보기를 함께 쓰세요. <b>장수</b>는 편성 1건당 1회, <b>전법</b>은 고유전법·병법 제외 채용 횟수.
+  ${KSEA.filter(([kr])=>KPART[kr]>0).map(([kr])=>{const r=CN2KR.find(x=>x[2]===kr);
+   return `<br><b>한국 ${kr}</b>은 예상 구간 <b>中 S${r[0]}~S${r[1]}</b> 중 ${krCnLabel(kr).replace('中 ','')}까지만 나와 있어(${KPART[kr]}개 시즌 미출시) 표본이 얕습니다 — 경향만 보세요.`;}).join('')}</div>
  <div class="filters">
   <div class="seg" id="mBorn" title="출시 시즌(한국 환산)으로 걸러 봅니다">${[['','출시 전체']].concat(BORN.map(b=>[b,b])).map(([k,l])=>`<button data-b="${k}" class="${mState.born===k?'on':''}">${l}${k?` <span class="tn">${bornCnt(k)}</span>`:''}</button>`).join('')}</div>
   <div class="seg" id="mTier">${[['all','T0·T1'],['T0','T0'],['T1','T1']].map(([k,l])=>`<button data-t="${k}" class="${k===mState.tier?'on':''}">${l}</button>`).join('')}</div>
@@ -629,19 +641,19 @@ function renderMeta(){
   ${mState.sort!=='tot'?`<button class="tbtn" id="mReset">정렬 초기화(합계)</button>`:''}
  </div>
  <div class="scroll"><table class="mtb">
-  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${KSEA.map(([kr],i)=>th(i,'한국 '+kr,cnOf(i),'k'+kr.slice(1))).join('')}${th('tot','합계')}<th></th></tr>
+  <thead><tr><th>${mState.view==='gen'?'장수':'전법'}</th>${KSEA.map(([kr],i)=>th(i,'한국 '+kr+(KRPRED[kr]?'?':''),cnOf(i),'k'+kr.slice(1)+(KRPRED[kr]?' est':''))).join('')}${th('tot','합계')}<th></th></tr>
    <tr class="msum"><td>${mState.born?`출시 한국 ${mState.born} ${mState.view==='gen'?'장수':'전법'}만`:(mState.view==='gen'?'시즌 합계(장수 슬롯)':'시즌 합계(전법 채용)')}</td>
     ${KSEA.map(([kr],i)=>`<td class="num">${(mState.view==='gen'?A.gen:A.tac).filter(r=>{if(!mState.born)return true;const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===mState.born;}).reduce((a,r)=>a+(r.by[i]||0),0)}</td>`).join('')}
     <td class="num">${(mState.view==='gen'?A.gen:A.tac).filter(r=>{if(!mState.born)return true;const k=krSj((mState.view==='gen'?(GEN[r.cn]||{}):(TAC[r.cn]||{})).sj);return k&&k.kr===mState.born;}).reduce((a,r)=>a+r.tot,0)}</td>
     <td class="mut">${KSEA.map(([kr],i)=>kr+' '+A.forms[i]+'편성').join(' · ')}</td></tr></thead>
   <tbody id="mBody"></tbody></table></div>
- <div class="mut" style="margin-top:6px"><b>출시 S1~S4 버튼</b> = 그 시즌에 <b>새로 나온</b> 장수·전법만 골라 봅니다(칩 숫자 = 해당 시즌 출시 종수). 열은 항상 시즌별 사용량입니다.</div>
- <div class="mut" style="margin-top:3px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5+ <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
+ <div class="mut" style="margin-top:6px"><b>출시 ${KSEA[0][0]}~${KSEA[KLAST][0]} 버튼</b> = 그 시즌에 <b>새로 나온</b> 장수·전법만 골라 봅니다(칩 숫자 = 해당 시즌 출시 종수). 열은 항상 시즌별 사용량입니다.</div>
+ <div class="mut" style="margin-top:3px"><b>배지 색(출시 시즌·한국 환산)</b> <span class="ksw k1"></span>S1 <span class="ksw k2"></span>S2 <span class="ksw k3"></span>S3 <span class="ksw k4"></span>S4 <span class="ksw k5"></span>S5 <span class="ksw k6"></span>S6 <span class="mut">(예상 구간은 흰 테두리+물음표, 뒤에 <b>·번</b>은 한국 미수록 임시 번역)</span></div>
  <div class="mut" style="margin-top:3px"><b>채용률</b>은 <b>출시 이후 편성만 분모</b>로 계산합니다 — 구간(예: 한국 S3 = 中 S4~S8) 끝에 나온 무장이 불리하게 보이지 않도록. 분모가 구간의 일부인 칸에는 <b>*</b>가 붙고, 툴팁에 구간 전체 기준 비율도 함께 나옵니다.</div>
  <div class="mut" style="margin-top:3px"><b>·</b> = 그 시즌에 있었지만 T0·T1 편성에 채용 0 · <b>–</b> = 그 시즌에는 아직 미출시(출시 시즌은 이름 옆 배지) · 칸에 마우스를 올리면 회수/편성수/비율이 나옵니다.</div>`;
  const fill=()=>{document.getElementById('mBody').innerHTML=
    metaRows(mState.view==='gen'?A.gen:A.tac,mState.view==='tac',80,A.forms,A.formsBy)
-   ||`<tr><td colspan="6" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
+   ||`<tr><td colspan="${KSEA.length+3}" class="mut">조건에 맞는 항목이 없습니다.</td></tr>`;};
  document.getElementById('mBorn').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.born=b.dataset.b;renderMeta();};
  document.getElementById('mTier').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.tier=b.dataset.t;renderMeta();};
  document.getElementById('mMode').onclick=e=>{const b=e.target.closest('button');if(!b)return;mState.mode=b.dataset.m;renderMeta();};
