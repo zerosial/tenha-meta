@@ -423,16 +423,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=38"></script>
-<script src="guides.js?v=37"></script>
-<script src="tierdecks.js?v=13"></script>
-<script src="gaecheok.js?v=23"></script>
-<script src="future.js?v=13"></script>
-<script src="gacha.js?v=14"></script>
-<script src="glossary.js?v=11"></script>
-<script src="yeoni.js?v=11"></script>
-<script src="system.js?v=11"></script>
-<script src="gk_official.js?v=11"></script>
+<script src="data.js?v=41"></script>
+<script src="guides.js?v=40"></script>
+<script src="tierdecks.js?v=16"></script>
+<script src="gaecheok.js?v=26"></script>
+<script src="future.js?v=16"></script>
+<script src="gacha.js?v=17"></script>
+<script src="glossary.js?v=14"></script>
+<script src="yeoni.js?v=14"></script>
+<script src="system.js?v=14"></script>
+<script src="gk_official.js?v=14"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -1593,6 +1593,84 @@ function gcPack(){return GC.packs.find(p=>p.id===gcState.pack)||GC.packs[0];}
 function gcName(x){return GEN[x]?GEN[x].kr:(TAC[x]?tName(x):x);}
 /* 제외를 반영해 등급 합계를 남은 항목에 재분배.
    제외한 항목도 목록에는 남긴다(확률 null) — 안 그러면 되돌릴 방법이 없다. */
+/* ───── 메타 기준 제외 추천 ─────
+   카드팩은 무장 1·전법 1을 제외할 수 있고, 빠진 몫은 남은 카드로 재분배된다.
+   그래서 '안 쓰는 카드'를 빼는 것이 곧 원하는 카드의 확률을 올리는 일이다.
+   순위 기준은 한국 S4 이후(= 지금부터 올 시즌)의 채용률, 동률이면 통산 등장 횟수. */
+const GCREC_FROM=3;                       // KSEA 인덱스 3 = 한국 S4
+function gcRank(pk){
+ const A=metaAgg('all'), gm={}, tm={};
+ A.gen.forEach(r=>gm[r.cn]=r); A.tac.forEach(r=>tm[r.cn]=r);
+ const base=A.forms.slice(GCREC_FROM).reduce((a,b)=>a+b,0)||1;
+ const mk=(cn,src,kr)=>{const r=src[cn]||{tot:0,by:{}};
+  let rec=0;for(let i=GCREC_FROM;i<KSEA.length;i++)rec+=r.by[i]||0;
+  return {cn,kr,rec,pct:rec/base*100,tot:r.tot||0,by:KSEA.map((_,i)=>r.by[i]||0)};};
+ /* 같은 값이면 ① 마지막으로 쓰인 시즌이 빠른 쪽을 아래로 ② 비중이 큰 카드를 아래로
+    — 비중이 클수록 빼냈을 때 남은 카드로 넘어가는 확률이 많다(흔함 18 > 보통 15 > 귀함 8). */
+ const last=x=>{for(let i=x.by.length-1;i>=0;i--)if(x.by[i])return i;return -1;};
+ const srt=(a,b)=>b.rec-a.rec||b.tot-a.tot||last(b)-last(a)
+   ||(TIERW[a.tier]||0)-(TIERW[b.tier]||0)||a.kr.localeCompare(b.kr);
+ const same=(a,b)=>a&&b&&a.rec===b.rec&&a.tot===b.tot&&last(a)===last(b)&&(TIERW[a.tier]||0)===(TIERW[b.tier]||0);
+ const gens=pk.legGens.map(([cn,t])=>({...mk(cn,gm,(GEN[cn]||{}).kr||cn),tier:t})).sort(srt);
+ const tacs=pk.legTacs.map(cn=>mk(cn,tm,(TAC[cn]||{}).kr||cn)).sort(srt);
+ /* 맨 아래와 조건이 완전히 같은 카드 = 어느 쪽을 빼도 결과가 같다 */
+ const alt=a=>a.slice(0,-1).filter(x=>same(x,a[a.length-1])).map(x=>x.kr);
+ return {base,gens,tacs,genAlt:alt(gens),tacAlt:alt(tacs)};
+}
+function gcRecOf(pk){const R=gcRank(pk);
+ return {R, gen:R.gens[R.gens.length-1], tac:R.tacs[R.tacs.length-1]};}
+function gcApplyRec(){const pk=gcPack(),r=gcRecOf(pk);
+ gcState.ex[pk.id]={gen:r.gen&&r.gen.cn,tac:r.tac&&r.tac.cn};renderGacha();}
+function gcClearRec(){gcState.ex[gcPack().id]={};renderGacha();}
+function gcCopyRec(){const pk=gcPack(),{R,gen,tac}=gcRecOf(pk);
+ const line=x=>`${x.kr} (한국 S4~ ${x.rec}회 ${x.pct.toFixed(1)}% · 통산 ${x.tot}회)`;
+ const txt=[`[${pk.name}] 메타 기준 제외 추천`,
+  `· 무장 제외 → ${line(gen)}${R.genAlt.length?` (또는 ${R.genAlt.join('·')} — 조건 동일)`:''}`,
+  `· 전법 제외 → ${line(tac)}${R.tacAlt.length?` (또는 ${R.tacAlt.join('·')} — 조건 동일)`:''}`,
+  '',
+  '무장 우선순위',
+  ...R.gens.map((x,i)=>`${i+1}. ${line(x)}`),
+  '',
+  '전법 우선순위',
+  ...R.tacs.map((x,i)=>`${i+1}. ${line(x)}`),
+  '',
+  `기준 · sgmdtx 편성 집계 · 한국 S4~S6 ${R.base}개 편성 · 확률 공시 ${GC.updated}`].join('\n');
+ if(navigator.clipboard)navigator.clipboard.writeText(txt);
+ const b=document.getElementById('gcCopy');if(b){b.textContent='복사됨';setTimeout(()=>b.textContent='공략글용 텍스트 복사',1500);}}
+function gcRecHtml(){
+ const pk=gcPack(), {R,gen,tac}=gcRecOf(pk), ex=gcState.ex[pk.id]||{};
+ const on=ex.gen===gen.cn&&ex.tac===tac.cn;
+ /* 제외 전후로 1순위 카드 확률이 얼마나 오르는지 */
+ const keep=gcState.ex[pk.id];
+ gcState.ex[pk.id]={};const r0=gcRates(pk,'full');
+ gcState.ex[pk.id]={gen:gen.cn,tac:tac.cn};const r1=gcRates(pk,'full');
+ gcState.ex[pk.id]=keep;
+ const pick=(arr0,arr1,cn)=>[(arr0.find(x=>x[0]===cn)||[])[1],(arr1.find(x=>x[0]===cn)||[])[1]];
+ const [g0,g1]=pick(r0.gens,r1.gens,R.gens[0].cn), [t0,t1]=pick(r0.tacs,r1.tacs,R.tacs[0].cn);
+ const up=(a,b)=>a?`<b>${a.toFixed(4)}%</b> → <b style="color:var(--seal)">${b.toFixed(4)}%</b> <span class="mut">(+${((b/a-1)*100).toFixed(1)}%)</span>`:'-';
+ const row=(x,i,last)=>`<tr class="${last?'gcex':''}" onclick="${x.tier?`genModal('${x.cn}')`:`tacModal('${x.cn}')`}" style="cursor:pointer">
+   <td class="num mut">${i+1}</td><td><b>${esc(x.kr)}</b>${last?' <span class="bnew">제외 추천</span>':''}</td>
+   <td class="num">${x.rec}</td><td class="num">${x.pct.toFixed(1)}<span class="mut">%</span></td>
+   <td class="num mut">${x.tot}</td><td class="mut" style="font-size:10.5px">${x.by.join('·')}</td></tr>`;
+ const tbl=(title,arr)=>`<div style="min-width:0"><h4 style="margin:0 0 4px">${title}</h4>
+  <div class="scroll"><table class="mtb" style="width:100%"><thead><tr><th></th><th>${title.slice(0,2)}</th><th class="num">한국 S4~</th><th class="num">채용률</th><th class="num">통산</th><th>시즌별 ${KSEA.map(([k])=>k.slice(1)).join('·')}</th></tr></thead>
+  <tbody>${arr.map((x,i)=>row(x,i,i===arr.length-1)).join('')}</tbody></table></div></div>`;
+ return `<div class="note" style="border-left-color:var(--seal)">
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+   <b>제외 추천 · 메타 기준</b> <span class="mut">${esc(pk.name)} — 카드팩은 <b>무장 1·전법 1</b>을 제외할 수 있고, 빠진 확률은 남은 카드로 넘어갑니다.</span>
+   <span style="flex:1"></span>
+   <button class="tbtn" onclick="${on?'gcClearRec()':'gcApplyRec()'}">${on?'제외 해제':'이대로 제외 적용'}</button>
+   <button class="tbtn" id="gcCopy" onclick="gcCopyRec()">공략글용 텍스트 복사</button>
+  </div>
+  <div style="margin-top:6px">
+   <b>무장 제외 →</b> <b style="color:var(--seal)">${esc(gen.kr)}</b> <span class="mut">한국 S4~ ${gen.rec}회 · 통산 ${gen.tot}회${R.genAlt.length?` · 조건이 같은 ${R.genAlt.map(esc).join('·')}을(를) 빼도 결과는 같습니다`:''}</span>
+   &nbsp;·&nbsp; <b>전법 제외 →</b> <b style="color:var(--seal)">${esc(tac.kr)}</b> <span class="mut">한국 S4~ ${tac.rec}회 · 통산 ${tac.tot}회${R.tacAlt.length?` · 조건이 같은 ${R.tacAlt.map(esc).join('·')}도 동일`:''}</span>
+  </div>
+  <div class="mut" style="margin-top:3px">적용하면 1순위 <b>${esc(R.gens[0].kr)}</b> ${up(g0,g1)} · 1순위 전법 <b>${esc(R.tacs[0].kr)}</b> ${up(t0,t1)}</div>
+  <div class="grid g-pair" style="margin-top:10px">${tbl('무장 우선순위',R.gens)}${tbl('전법 우선순위',R.tacs)}</div>
+  <div class="mut" style="margin-top:6px">순위 기준 · <b>한국 S4 이후</b>(지금부터 올 시즌) T0·T1 편성 등장 횟수 → 동률이면 통산. 모수 ${R.base}개 편성. 표를 누르면 도감이 열립니다.</div>
+ </div>`;
+}
 function gcRates(pk,which){
  const T=GC.total[which],ex=gcState.ex[pk.id]||{};
  const left=pk.legGens.filter(([cn])=>cn!==ex.gen);
@@ -1613,6 +1691,7 @@ function renderGacha(){
  const el=document.getElementById('tab-gacha');
  el.innerHTML=`<h2 class="head serif">뽑기 기댓값</h2>
  <p class="sub">명장 카드팩을 <b>N번 뽑으면 평균 몇 장</b> 나오는지. 출처 <a href="${GC.doc}" target="_blank" rel="noopener">한국 공홈 확률 공시</a> · ${esc(GC.updated||'')}</p>
+ <div id="gcRec"></div>
  ${fold('계산 방식과 천장 — 자세히', (GC.how||[]).map(x=>`<div style="margin-bottom:5px">· ${x}</div>`).join(''))}
  ${GC.xval?`<details class="tdinfo"><summary><b>${GC.xval.title}</b></summary><div class="tdinfo-b">
   <div class="scroll"><table class="mtb"><thead><tr>${GC.xval.head.map((h,i)=>`<th class="${i?'num':''}">${h}</th>`).join('')}</tr></thead>
@@ -1644,6 +1723,7 @@ function gcSetTier(id,cn,t){const p=GC.packs.find(x=>x.id===id);const g=p.legGen
 function gcSetEx(id,kind,cn){const e=gcState.ex[id]=gcState.ex[id]||{};e[kind]=(e[kind]===cn?null:cn);gcBody();}
 function gcBody(){
  const pk=gcPack(),n=gcState.n,mode=gcState.mode,pity=gcState.pity;
+ {const r=document.getElementById('gcRec');if(r)r.innerHTML=gcRecHtml();}
  const R=gcRates(pk, mode==='full'?'full':'base');
  const ex=gcState.ex[pk.id]||{};
  const KS=[1,3,6];
