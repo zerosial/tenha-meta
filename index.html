@@ -107,6 +107,7 @@ select.fsel{font-family:inherit;font-size:12px;font-weight:700;padding:5px 10px;
 .frow .gi{flex:1;min-width:0;}
 .frow .gn{font-weight:800;font-size:13.5px;}
 .frow .role{font-size:10px;color:var(--faint);}
+.tdvar{display:inline-block;font-size:9.5px;font-weight:800;color:var(--seal);border:1px solid var(--seal);border-radius:3px;padding:0 4px;line-height:1.45;vertical-align:1px;}
 .frow .sig{font-size:11px;color:var(--seal);font-weight:700;margin-top:1px;}
 .frow .tacmini{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
 .tacmini .tm{font-size:10.5px;background:var(--panel);border:1px solid var(--line2);border-radius:100px;padding:0 7px;cursor:pointer;color:var(--ink);}
@@ -426,16 +427,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=47"></script>
-<script src="guides.js?v=46"></script>
-<script src="tierdecks.js?v=22"></script>
-<script src="gaecheok.js?v=32"></script>
-<script src="future.js?v=22"></script>
-<script src="gacha.js?v=23"></script>
-<script src="glossary.js?v=20"></script>
-<script src="yeoni.js?v=20"></script>
-<script src="system.js?v=20"></script>
-<script src="gk_official.js?v=20"></script>
+<script src="data.js?v=49"></script>
+<script src="guides.js?v=48"></script>
+<script src="tierdecks.js?v=24"></script>
+<script src="gaecheok.js?v=34"></script>
+<script src="future.js?v=24"></script>
+<script src="gacha.js?v=25"></script>
+<script src="glossary.js?v=22"></script>
+<script src="yeoni.js?v=22"></script>
+<script src="system.js?v=22"></script>
+<script src="gk_official.js?v=22"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -873,14 +874,31 @@ function tdBookChips(g){return ['book','nd1','nd2'].map(k=>(g[k]||[]).map(v=>{
    const lb=`<b class="bfp">병</b> ${gold?'<b style="font-size:9px;color:var(--leg)">금</b> ':''}${esc(n)}`;
    return i==null?`<span class="tm min">${lb}</span>`:`<span class="tm" onclick="event.stopPropagation();bfModal(${i})">${lb}</span>`;
   }).join('')).join('');}
+/* 시트 이름 칸에 박힌 변형 정보 — 전직·연의는 병종을, '○ 전환'은 진영을 바꾼다 */
+const FACKR={'위':'wei','촉':'shu','오':'wu','군':'qun'};
+function tdVar(kr){const s=String(kr||'');let m,unit=null,fac=null;const tag=[];
+ if((m=/전직-([가-힣]+병)/.exec(s))){unit=m[1];tag.push('전직');}
+ else if(/^연의/.test(s)){tag.push('연의');if((m=/\(([가-힣]+병)\)/.exec(s)))unit=m[1];}
+ if((m=/\((위|촉|오|군) 전환\)/.exec(s))){fac=FACKR[m[1]];tag.push(m[1]+' 전환');}
+ return {unit,fac,tag};}
+/* 진영이 바뀐 경우엔 바뀐 진영으로 칩을 그린다 */
+function tdFacChip(cn,v){const f=(v&&v.fac)||(GEN[cn]||{}).faction;
+ return f?`<span class="chip f-${f}"${v&&v.fac?' title="진영 전환 — 도감 기본 진영과 다릅니다"':''}>${FAC[f]}</span>`:'';}
+/* 이름 뒤 꼬리표 — 무엇이 바뀌었는지 한눈에 */
+function tdVarTag(v){if(!v||!v.tag.length)return '';
+ return ` <span class="tdvar" title="시트 표기 그대로 — 도감 기본값과 다릅니다">${esc(v.tag.join('·'))}</span>`;}
+/* 카드의 병종 자리 — 시트가 병종 행을 주면 그대로, 없으면 전직·연의 병종 → 도감 기본 순 */
+function tdUnitHtml(g,cn,v){const own=tdRole(g);if(own)return esc(own);
+ if(v&&v.unit)return `<b style="color:var(--seal)" title="도감 기본 ${esc((GEN[cn]||{}).bing||'-')}">${esc(v.unit)}</b>`;
+ return esc((GEN[cn]||{}).bing||'');}
 function tdCard(d,i){
- const gens=d.gens.map(g=>{const cn=tdCn(g.kr),G=GEN[cn]||{};
+ const gens=d.gens.map(g=>{const cn=tdCn(g.kr),G=GEN[cn]||{},V=tdVar(g.kr);
    const vari=/연의|전환|전직/.test(g.kr);
    const sig=G.skill?`<span class="tm sig ${gradeCls(G.skill)}" title="${vari?'연의 특성·전직 표기 — 실제 고유 전법·병종은 원본과 다를 수 있습니다':''}" onclick="event.stopPropagation();tacModal('${G.skill}')">◈ ${esc(tName(G.skill))}${vari?'*':''}</span>`:'';
    return `<div class="frow" ${cn?`onclick="event.stopPropagation();genModal('${cn}')"`:''}>
      ${cn?avHtml(cn,'sm'):'<span class="av sm"></span>'}
-     <div class="gi"><span class="gn">${cn?facChip(cn):''} ${esc(cn?GEN[cn].kr:g.kr)}</span> ${cn?sjBadge(cn):''}
-      <span class="role">${esc(tdRole(g))}</span>
+     <div class="gi"><span class="gn">${cn?tdFacChip(cn,V):''} ${esc(cn?GEN[cn].kr:g.kr)}</span>${tdVarTag(V)} ${cn?sjBadge(cn):''}
+      <span class="role">${tdUnitHtml(g,cn,V)}</span>
       <div class="tacmini">${sig}${tdSk(g.sk1)}${tdSk(g.sk2)}${tdBookChips(g)}</div></div></div>`;}).join('');
  return `<div class="fcard">
   <div class="fh" style="cursor:pointer" onclick="tdModal(${i})">
@@ -946,7 +964,7 @@ function tdSpecRows(lines){return (lines||[]).map(l=>String(l).split(/[\/、,\s]
 function tdSec(lb,html){return html?`<div class="tdsec">${esc(lb)}</div>${html}`:'';}
 function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
  const cns=d.gens.map(g=>tdCn(g.kr));
- const gens=d.gens.map((g,k)=>{const cn=cns[k],G=GEN[cn]||{},sk=TAC[G.skill]||{};
+ const gens=d.gens.map((g,k)=>{const cn=cns[k],G=GEN[cn]||{},sk=TAC[G.skill]||{},V=tdVar(g.kr);
    const picks=tdSkKeys([].concat(g.sk1||[],g.sk2||[])).map(tdTacRow).join('');
    const altk=[];(g.alt||[]).forEach(x=>tdInlineKeys(x).forEach(k=>altk.push(k)));
    const alt=altk.map(tdTacRow).join('');
@@ -958,7 +976,7 @@ function tdModal(i){const d=(window._tdList||[])[i];if(!d)return;
      .map(r=>`<div class="k">${r[0]}</div><div>${r[0]==='장비 속성'?r[1]:esc(String(r[1]))}</div>`).join('');
    return `<div class="fcg">
      <div style="display:flex;gap:9px;align-items:center;margin-bottom:6px">${cn?avHtml(cn,'lg'):''}
-       <div><div style="font-weight:800;font-size:14px">${cn?facChip(cn):''} ${esc(cn?GEN[cn].kr:g.kr)} ${cn?sjBadge(cn):''} ${G.bing?`<span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(G.bing)}</span>`:''}</div>
+       <div><div style="font-weight:800;font-size:14px">${cn?tdFacChip(cn,V):''} ${esc(cn?GEN[cn].kr:g.kr)}${tdVarTag(V)} ${cn?sjBadge(cn):''} ${(V.unit||G.bing)?`<span class="chip" style="background:var(--panel2);color:${V.unit?'var(--seal)':'var(--soft)'}"${V.unit&&G.bing?` title="도감 기본 병종 ${esc(G.bing)}"`:''}>${esc(V.unit||G.bing)}</span>`:''}</div>
        <div class="mut" style="font-size:10px">${[tdRole(g)?esc(tdRole(g)):'',cn?`무${G.wl||'-'}·지${G.zl||'-'}·통${G.ts||'-'}·선${G.xg||'-'}`:''].filter(Boolean).join(' · ')}</div>
        ${G.skill?`<div class="sig" style="font-size:11px;color:var(--seal);font-weight:700;cursor:pointer" onclick="tacModal('${G.skill}')">◈ 고유 · ${esc(tName(G.skill))}</div>`:''}</div>
      </div>
