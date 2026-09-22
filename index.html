@@ -427,16 +427,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=49"></script>
-<script src="guides.js?v=48"></script>
-<script src="tierdecks.js?v=24"></script>
-<script src="gaecheok.js?v=34"></script>
-<script src="future.js?v=24"></script>
-<script src="gacha.js?v=25"></script>
-<script src="glossary.js?v=22"></script>
-<script src="yeoni.js?v=22"></script>
-<script src="system.js?v=22"></script>
-<script src="gk_official.js?v=22"></script>
+<script src="data.js?v=52"></script>
+<script src="guides.js?v=51"></script>
+<script src="tierdecks.js?v=27"></script>
+<script src="gaecheok.js?v=37"></script>
+<script src="future.js?v=27"></script>
+<script src="gacha.js?v=28"></script>
+<script src="glossary.js?v=25"></script>
+<script src="yeoni.js?v=25"></script>
+<script src="system.js?v=25"></script>
+<script src="gk_official.js?v=25"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -503,8 +503,15 @@ function toggleTheme(){const r=document.documentElement;const c=r.getAttribute('
 function openModal(html,wide){const m=document.getElementById('modal');m.innerHTML=html;m.classList.toggle('wide',!!wide);document.getElementById('ov').classList.add('on');}
 function closeModal(){document.getElementById('ov').classList.remove('on');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-function tacModal(cn){const t=TAC[cn]||{};const eff=t.eff?esc(t.eff):'상세 효과 정보 없음.';
- const bfTag=t.bf?`<span class="chip" style="background:var(--panel2);color:var(--jade)">${esc(t.bflbl||'병법')}</span>`:'';
+/* 변형본(镜·专·衍·金)의 본체 — 변형본에 효과가 없으면 본체 효과를 쓴다 */
+function tacBase(cn){const m=/^(镜·|专·|衍·|金·|镜)(.+)$/.exec(cn||'');
+ if(!m)return null;const b=m[2];return TAC[b]&&!TAC[b].bf?b:null;}
+function tacNoEff(t){return !t||!t.eff||/효과 원문 미공개|정보 없음/.test(t.eff);}
+function tacModal(cn){const t0=TAC[cn]||{};const base=tacNoEff(t0)?tacBase(cn):null;
+ const t=base?{...TAC[base],kr:t0.kr,sj:t0.sj||TAC[base].sj,bf:null,bflbl:null}:t0;
+ const eff=(t.eff?esc(t.eff):'상세 효과 정보 없음.')+(base?`<div class="mut" style="margin-top:6px;font-size:11.5px">※ 변형본 — 차이가 공개돼 있지 않아 <b onclick="tacModal('${base}')" style="cursor:pointer;text-decoration:underline">본체 「${esc(TAC[base].kr)}」</b> 효과로 표시합니다.</div>`:'');
+ const bfTag=t.bf?`<span class="chip" style="background:var(--panel2);color:var(--jade)">${esc(t.bflbl||'병법')}</span>`
+   :(t0.tlbl?`<span class="chip" style="background:var(--panel2);color:var(--seal)">${esc(t0.tlbl)}</span>`:'');
  const own=((t.bfown&&t.bfown.length)?`<div class="mut" style="margin-top:8px">전용 무장 · <b>${t.bfown.map(esc).join(' / ')}</b></div>`:'')
   +(t.rec?`<div class="mut" style="margin-top:6px">韓 공식 추천 · <b>${esc(t.rec)}</b></div>`:'');
  const cn0=t.effcn?`<div class="mut cn" style="margin-top:8px;font-size:12px;line-height:1.5">原文 ${esc(t.effcn)}</div>`:'';
@@ -913,7 +920,10 @@ function tdCard(d,i){
 
 /* 전법 이름 → 도감 키 (칩 대신 효과행을 그리기 위한 것) */
 function tdKey(t,alt){t=String(t||'').replace(/[（()）\[\]]/g,' ').replace(/^[\s\\]+|[\s\\]+$/g,'');
- if(!t)return null;const cn=tacCn(t);return {cn,kr:cn?tName(cn):t,alt:!!alt};}
+ if(!t)return null;const cn=tacCn(t);
+ /* 시트가 '영본·○○'로 적었는데 변형본 항목이 없어 본체로 이어진 경우 — 이름은 시트 표기 그대로 */
+ const vr=!!cn&&/^(?:영본|전용|연의|금)[·・]/.test(t)&&!/^(?:镜|专·|衍·|金·)/.test(cn);
+ return {cn,kr:vr?t:(cn?tName(cn):t),alt:!!alt,vr};}
 function tdSkKeys(lines){const out=[];(lines||[]).forEach(l=>{const alts=[];
   let main=String(l).replace(/[（(]([^）)]*)[）)]/g,(m,x)=>{alts.push(x);return ' ';});
   const op=main.search(/[（(]/);
@@ -937,11 +947,11 @@ function tdEff(x){const e=x&&x.eff;if(!e)return '';
 function tdTacRow(k){
  if(!k.cn)return `<div class="tdtr nolink"><b>${k.alt?'↔ ':''}${esc(k.kr)}</b>
    <div class="mut" style="font-size:10.5px">도감에 없는 이름 · 원문 표기</div></div>`;
- const x=TAC[k.cn]||{};
+ const x0=TAC[k.cn]||{},bb=tacNoEff(x0)?tacBase(k.cn):null,x=bb?TAC[bb]:x0;
  const col=x.grade==='전설'?'color:var(--leg)':x.grade==='영웅'?'color:var(--hero)':'';
  return `<div class="tdtr${k.alt?' alt':''}" onclick="event.stopPropagation();tacModal('${k.cn}')">
-  <b style="font-size:12px;${col}">${k.alt?'↔ ':''}${esc(tName(k.cn))}</b> ${x.ty?tyB(x.ty):''}${tsjB(k.cn)}${isNewTac(k.cn)?' <span class="bnew">번역</span>':''}
-  ${tdEff(x)?`<div style="font-size:11px;color:var(--soft)">${esc(tdEff(x))}</div>`:''}</div>`;}
+  <b style="font-size:12px;${col}">${k.alt?'↔ ':''}${esc(k.vr?k.kr:tName(k.cn))}</b> ${x.ty?tyB(x.ty):''}${tsjB(k.cn)}${isNewTac(k.cn)?' <span class="bnew">번역</span>':''}
+  ${tdEff(x)?`<div style="font-size:11px;color:var(--soft)">${(bb||k.vr)?'<span class="mut">(본체 효과) </span>':''}${esc(tdEff(x))}</div>`:''}</div>`;}
 /* 병서도 같은 형식으로 */
 function tdBookKeys(g){const out=[];['book','nd1','nd2'].forEach(k=>(g[k]||[]).forEach(v=>{
   const gold=/^[금金][·.]/.test(v);const n=cangBook(String(v).replace(/^[금金][·.]\s*/,'').trim(),g.kr);
