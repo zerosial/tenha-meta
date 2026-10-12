@@ -394,6 +394,10 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 .modal .x{margin-left:auto;font-size:18px;cursor:pointer;color:var(--faint);border:none;background:none;}
 .footer{max-width:1180px;margin:24px auto 0;padding:14px 16px;border-top:1px solid var(--line2);font-size:11px;color:var(--faint);}
 @media(max-width:640px){.slots{grid-template-columns:1fr;}.kpis{grid-template-columns:1fr;}.rowbar{grid-template-columns:120px 1fr 30px;}}
+.w1ul{margin:4px 0 0;padding-left:16px;font-size:11.5px;line-height:1.6;color:var(--soft)}
+.w1ul li{margin:3px 0}
+.w1num{display:flex;gap:10px;font-size:11px;color:var(--soft);margin:2px 0 4px}
+.w1num b{color:var(--seal)}
 </style>
 </head>
 <body>
@@ -409,6 +413,7 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
 </header>
 <main>
  <section id="tab-meta"></section>
+ <section id="tab-w1"></section>
  <section id="tab-season"></section>
  <section id="tab-td"></section>
  <section id="tab-gk"></section>
@@ -427,16 +432,17 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=53"></script>
-<script src="guides.js?v=52"></script>
-<script src="tierdecks.js?v=28"></script>
-<script src="gaecheok.js?v=38"></script>
-<script src="future.js?v=28"></script>
-<script src="gacha.js?v=29"></script>
-<script src="glossary.js?v=26"></script>
-<script src="yeoni.js?v=26"></script>
-<script src="system.js?v=26"></script>
-<script src="gk_official.js?v=26"></script>
+<script src="data.js?v=54"></script>
+<script src="guides.js?v=53"></script>
+<script src="tierdecks.js?v=29"></script>
+<script src="w1.js?v=2"></script>
+<script src="gaecheok.js?v=39"></script>
+<script src="future.js?v=29"></script>
+<script src="gacha.js?v=30"></script>
+<script src="glossary.js?v=27"></script>
+<script src="yeoni.js?v=27"></script>
+<script src="system.js?v=27"></script>
+<script src="gk_official.js?v=27"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -487,12 +493,12 @@ function isNewTac(cn){const t=TAC[cn];return t&&t.official===false;}
 function gradeCls(cn){const g=(TAC[cn]||{}).grade;return g==='전설'?'leg':(g==='영웅'?'hero':'');}
 
 /* ---------------- TABS ---------------- */
-const TABS=[['meta','메타'],['td','티어덱'],['gk','개척 가이드'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['gacha','뽑기'],['sys','시스템'],['guide','공략·팁'],['ref','참고']];
+const TABS=[['meta','메타'],['w1','W1 시즌'],['td','티어덱'],['gk','개척 가이드'],['season','시즌별 편성'],['srank','시즌 랭킹'],['builder','덱빌더'],['tac','전법 도감'],['bf','병법 도감'],['gen','장수 도감'],['gacha','뽑기'],['sys','시스템'],['guide','공략·팁'],['ref','참고']];
 let built={};
 function show(id){
  TABS.forEach(([k])=>{document.getElementById('tab-'+k).classList.toggle('on',k===id);});
  [...document.querySelectorAll('#tabs button')].forEach(b=>b.classList.toggle('on',b.dataset.k===id));
- if(!built[id]){({meta:renderMeta,td:renderTd,gk:renderGk,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,gacha:renderGacha,sys:renderSys,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
+ if(!built[id]){({meta:renderMeta,w1:renderW1,td:renderTd,gk:renderGk,season:renderSeason,srank:renderSrank,builder:renderBuilder,tac:renderTac,bf:renderBf,gen:renderGen,gacha:renderGacha,sys:renderSys,guide:renderGuide,ref:renderRef}[id])();built[id]=1;}
  location.hash=id;
 }
 (function(){const b=document.getElementById('sjBtn');if(b)b.textContent=sjMode==='kr'?'시즌 韓':'시즌 中';})();
@@ -852,7 +858,7 @@ function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
  const rows=(f.pos||[]).map((r,ri)=>`<div class="sgrow"><div class="sglb" data-pos="${ri===0?'전열':'후열'}">${ri===0?'전열':'후열'}</div>${
    String(r).split('').map(c=>`<div class="sgc ${c==='o'?(ri===0?'fr':'bk'):'empty'}"></div>`).join('')}</div>`).join('');
  openModal(`<div class="mh"><b style="font-size:16px">${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span>
-  ${f.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}<button class="x" onclick="closeModal()">×</button></div>
+  ${f.sj==='S3'?'<span class="bnew">한국 S2 신규</span>':'<span class="bok">S1</span>'}<button class="x" onclick="closeModal()">×</button></div>
  <div class="mb"><div class="mut">전열 ${f.front} / 후열 ${3-f.front} · 피격률 ${(f.hit||[]).join(' / ')||'-'} · ${esc(f.unlock||'')}</div>
   <div class="sgrid">${rows}</div>
   <div class="fmfeat">${(f.feats||[]).map(esc).join('<br>')}</div>
@@ -1399,7 +1405,7 @@ function tslot(i,j){const t=deckTacs[i][j];const x=t?(TAC[t]||{}):null;
 function drawDeck(){
  const S=shape();
  document.getElementById('shapeSel').value=deckShapeIdx;
- document.getElementById('shapeInfo').innerHTML=`전열 ${S.front}·후열 ${3-S.front} · 피격 ${S.hit.join('/')}%${S.est?'<span class="mut">(추정)</span>':''} · ${esc(S.feat)}${S.sj==='S3'?' <span class="bnew">S3 신규</span>':''}`;
+ document.getElementById('shapeInfo').innerHTML=`전열 ${S.front}·후열 ${3-S.front} · 피격 ${S.hit.join('/')}%${S.est?'<span class="mut">(추정)</span>':''} · ${esc(S.feat)}${S.sj==='S3'?' <span class="bnew">한국 S2 신규</span>':''}`;
  const mm=document.getElementById('shapeMap');
  if(mm) mm.innerHTML=`<div class="mut" style="font-size:10.5px;margin-bottom:4px"><b>${esc(S.name)}</b> 배치 — 전열 3칸·후열 3칸 중 채워진 칸이 실제 자리 (해금 ${esc(S.unlock||'-')})</div>`
   +shapeGridHtml(S,deck.map((cn,i)=>cn?((GEN[cn]||{}).kr||cn):'빈 자리'));
@@ -1938,12 +1944,113 @@ function renderSys(){
     <div style="font-size:11.5px;line-height:1.55">${esc(x.eff)}</div></div>`;}).join('')}</div>`:''}`;
 }
 
+/* ---------------- W1 「천하의 패업」 시즌 ---------------- */
+function w1Tac(cn){const t=TAC[cn]||{};
+ return `<span class="tm ${gradeCls(cn)}" onclick="event.stopPropagation();tacModal('${cn}')" title="${esc(t.eff||'')}">${esc(t.kr||cn)}</span>`;}
+function w1Gen(cn){const g=GEN[cn]||{};
+ return `<span class="tm" onclick="event.stopPropagation();genModal('${cn}')">${esc(g.kr||cn)}</span>`;}
+function renderW1(){
+ const el=document.getElementById('tab-w1'), W=window.W1||{};
+ if(!W.name){el.innerHTML='<h2 class="head serif">W1 시즌</h2><p class="sub">자료를 불러오지 못했습니다.</p>';return;}
+ const row=(a,b)=>`<tr><td style="white-space:nowrap"><b>${a}</b></td><td>${b}</td></tr>`;
+ const eqrows=arr=>(arr||[]).map(e=>`<tr><td><b>${esc(e.name)}</b><div class="mut" style="font-size:9.5px">${esc(e.tag||'')}</div></td><td class="mut" style="font-size:11px">${esc(e.desc)}</td></tr>`).join('');
+ const packs=(W.packs||[]).map(p=>`<div class="fmcard">
+   <div class="fmh"><b>${esc(p.name)}</b> <span class="mut" style="margin-left:auto;font-size:10px">전설 무장 8 · 전법 8</span></div>
+   <div style="padding:6px 0"><div class="mut" style="font-size:10.5px;margin-bottom:3px">전설 무장</div>
+    <div class="tacmini">${p.gens.map(w1Gen).join('')}</div></div>
+   <div style="padding:6px 0;border-top:1px dashed var(--line)"><div class="mut" style="font-size:10.5px;margin-bottom:3px">전설 전법</div>
+    <div class="tacmini">${p.tacs.map(w1Tac).join('')}</div></div>
+   <div class="mut" style="font-size:10.5px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line2)">${esc(p.hero)}</div>
+  </div>`).join('');
+ const bld=(W.buildings||[]).map(b=>`<div class="fmcard">
+   <div class="fmh"><b>${esc(b.name)}</b> <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(b.tag)}</span></div>
+   <ul class="w1ul">${b.items.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+ const jobs=(W.jobs||[]).map(j=>`<div class="fmcard">
+   <div class="fmh"><b>${esc(j.job)}</b> <span class="cn">${esc(j.cn)}</span>
+     <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(j.pos)}</span></div>
+   <div class="w1num"><span>초반 <b>${esc(j.early)}</b></span><span>중후반 <b>${esc(j.late)}</b></span></div>
+   ${j.skills.map(sk=>`<div style="padding:6px 0;border-top:1px dashed var(--line)">
+     <b style="font-size:12.5px">${esc(sk[0])}</b>
+     <div style="font-size:11px;color:var(--soft);line-height:1.55;margin-top:2px">${sk[1]}</div></div>`).join('')}
+   ${j.tip?`<div class="fmex" style="margin-top:6px">Tips · ${esc(j.tip)}</div>`:''}
+   <div class="mut" style="font-size:11px;line-height:1.55;margin-top:6px;padding-top:6px;border-top:1px solid var(--line2)">${j.note}</div>
+   <div style="font-size:10.5px;margin-top:6px;line-height:1.6"><b>공격</b> ${esc(j.atk)}<br><b>수비</b> ${esc(j.def)}</div>
+  </div>`).join('');
+ const decks=(W.decks||[]).map(d=>`<div class="fcard">
+   <div class="fh"><span class="shape serif">${esc(d.shape)}</span><span class="mut" style="font-weight:700">${esc(d.title)}</span></div>
+   ${d.gens.map(g=>`<div class="frow" onclick="genModal('${g.cn}')">
+     ${avHtml(g.cn,'sm')}
+     <div class="gi"><span class="gn">${facChip(g.cn)} ${esc((GEN[g.cn]||{}).kr||g.cn)}</span>
+      <div class="tacmini"><span class="tm sig">◈ ${esc(g.self)}</span>${g.tacs.map(w1Tac).join('')}</div></div></div>`).join('')}
+   <div class="fmdesc" style="padding:8px 10px 10px">${d.desc}${d.warn?`<div class="mut" style="margin-top:5px">※ ${d.warn}</div>`:''}</div>
+  </div>`).join('');
+ el.innerHTML=`<h2 class="head serif">${esc(W.name)}</h2>
+ <p class="sub">${esc(W.sub)} — 운영사가 배포한 <b>공식 시즌 공략 PDF</b>를 정리했습니다. 전법·무장 이름은 PDF 편성 스크린샷에 찍힌 <b>한국 공식 표기</b>입니다.</p>
+ <div class="note">출처 · ${(W.src||[]).map(s=>s.u?`<a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a>`:`<b>${esc(s.t)}</b>`).join(' · ')}
+  <div class="mut" style="margin-top:4px">${esc(((W.src||[])[0]||{}).n||'')}</div></div>
+
+ <h3 class="sub2">시즌 개요</h3>
+ <div class="scroll"><table class="mtb"><tbody>${(W.overview||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+
+ <h3 class="sub2">카드팩 <span class="mut" style="font-weight:400">신규 전설 무장 16 · 전법 16</span></h3>
+ <div class="note">${W.packNote} <a href="#gacha" onclick="show('gacha');return false;">뽑기 탭에서 계산 →</a></div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(330px,1fr))">${packs}</div>
+
+ <h3 class="sub2">직업 콘텐츠 <span class="mut" style="font-weight:400">6직업 신규 스킬 · 추천 동맹 정원 · 스킬 조합</span></h3>
+ <div class="note">이번 시즌 직업은 <b>초기 스킬 1종 + 선택 스킬 6종 중 4종만 활성</b>하는 방식이라, 같은 직업 안에서도 공격형·수비형으로 갈립니다. 아래 정원은 공식 공략의 권장치입니다 — ${W.jobTotal}</div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))">${jobs}</div>
+
+ <h3 class="sub2">직업 조합 운용</h3>
+ <div class="scroll"><table class="mtb"><tbody>${(W.jobPlay||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+
+ <h3 class="sub2">직업 변경(전직)</h3>
+ <div class="scroll"><table class="mtb"><tbody>${((W.jobChange||{}).rows||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+
+ <h3 class="sub2">신규 건물 <span class="mut" style="font-weight:400">동맹 기술 「신의 솜씨」 필요</span></h3>
+ <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))">${bld}</div>
+
+ <h3 class="sub2">신규 시스템 · 인덕 통치</h3>
+ <div class="note">효과를 가진 성지 — <b>${esc((W.indeok||{}).cities||'')}</b>. 점령한 동맹은 점령 기간 동안 아래 두 효과를 받습니다.</div>
+ <div class="scroll"><table class="mtb"><tbody>${((W.indeok||{}).rows||[]).map(x=>row('['+esc(x[0])+']',x[1])).join('')}</tbody></table></div>
+
+ <h3 class="sub2">진격 루트</h3>
+ <div class="scroll"><table class="mtb"><thead><tr><th>시점</th><th>관문 봉인 해제</th></tr></thead><tbody>${((W.route||{}).gates||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+ <div class="scroll" style="margin-top:8px"><table class="mtb"><tbody>${((W.route||{}).steps||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+
+ <h3 class="sub2">시즌 초반 개척</h3>
+ <div class="note">시즌 상점 교환 — 전부 사면 <b>${esc(W.opening.shop.total)}</b>가 듭니다.</div>
+ <div class="scroll"><table class="mtb"><thead><tr><th>분류</th><th>교환</th><th>명예</th></tr></thead><tbody>
+  ${(W.opening.shop.rows||[]).map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td style="white-space:nowrap">${x[2]}</td></tr>`).join('')}</tbody></table></div>
+ <ul class="w1ul" style="margin-top:6px">${(W.opening.shop.notes||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
+ <div class="scroll" style="margin-top:8px"><table class="mtb"><tbody>${(W.opening.rows||[]).map(x=>row(esc(x[0]),x[1])).join('')}</tbody></table></div>
+ <div class="note" style="margin-top:8px">5~12레벨 토지별 개척 편성은 <a href="#gk" onclick="show('gk');return false;">개척 가이드 탭</a>에 시즌별로 정리돼 있습니다.</div>
+
+ <h3 class="sub2">초기 추천 조합 <span class="mut" style="font-weight:400">공식 PDF 편성 그대로</span></h3>
+ <div class="grid g-forms">${decks}</div>
+
+ <h3 class="sub2">패업 결산</h3>
+ <div class="scroll"><table class="mtb"><thead><tr><th>구분</th><th>조건</th><th>보상</th></tr></thead><tbody>
+  ${(W.settle||[]).map(s=>`<tr><td style="white-space:nowrap"><b>${esc(s.name)}</b></td><td>${s.cond}</td><td>${s.rew}</td></tr>`).join('')}</tbody></table></div>
+
+ <h3 class="sub2">이전 시즌 직업 자료 <span class="mut" style="font-weight:400">S1 기본 지령 · S2 직업 숙련 · 군략건축</span></h3>
+ ${fold('직업 기본 지령 19종 — S1부터 그대로 유지', `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(330px,1fr))">${(D.JOBS||[]).map(j=>`
+   <div class="fmcard"><div class="fmh"><b>${esc(j.job)}</b> <span class="cn">${esc(j.cn)}</span> <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(j.role)}</span></div>
+    <div class="fmdesc" style="margin:4px 0 8px">${esc(j.concept)}</div>
+    ${j.skills.map(sk=>`<div style="padding:6px 0;border-top:1px dashed var(--line)"><b style="font-size:12.5px">${esc(sk.kr)}</b> <span class="cn" style="font-size:10.5px">${esc(sk.cn)}</span>
+      <div style="font-size:11px;color:var(--soft);line-height:1.5;margin-top:2px">${esc(sk.eff)}</div></div>`).join('')}
+    <div class="mut" style="font-size:10.5px;margin-top:8px;padding-top:6px;border-top:1px solid var(--line2)">${esc(j.title)}</div></div>`).join('')}</div>`)}
+ ${fold('직업 숙련 6종 — 한국 S2 풍운재기 추가 · 칭호 3급', `<div class="note">칭호 <b>3급</b>에서 숙련 스킬이, <b>1·2·4·5급</b>에서 숙련 특성이 자동 활성됩니다. 사용 횟수는 활성 즉시 1회 지급 · 자동 회복 · 기본 최대 2회 저장.</div>
+   <div class="scroll"><table><tbody>${eqrows(D.EQUIP.mastery)}</tbody></table></div>`)}
+ ${fold('군략건축 6종 — 한국 S2 추가 · 동맹 관원이 건설', `<div class="scroll"><table><tbody>${eqrows(D.EQUIP.almm)}</tbody></table></div>`)}
+ <div class="note" style="margin-top:10px">시즌별 직업 변화 비교표와 칭호·재능 구조는 <a href="#guide" onclick="guideCat='job23';built.guide=0;show('guide');return false;">공략·팁 → 직업 변화</a>에 있습니다.</div>`;
+}
+
 /* ---------------- REFERENCE ---------------- */
 function renderRef(){
  const el=document.getElementById('tab-ref');
  const fmCards=SHAPES.map(sh=>`<div class="fmcard">
    <div class="fmh"><b>${esc(sh.name)}</b> <span class="cn">${esc(sh.cn||'')}</span>
-    ${sh.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}
+    ${sh.sj==='S3'?'<span class="bnew">한국 S2 신규</span>':'<span class="bok">S1</span>'}
     <span class="mut" style="margin-left:auto;font-size:10px">전열 ${sh.front} · 후열 ${3-sh.front}</span></div>
    <div class="mut" style="font-size:10.5px">해금 · ${esc(sh.unlock||'-')}${sh.est?` <span style="color:var(--new)">· 피격률${sh.posEst?'·배치':''} 추정</span>`:''}</div>
    ${shapeGridHtml(sh)}
@@ -1951,15 +2058,16 @@ function renderRef(){
    <div class="fmdesc">${esc(sh.desc||'')}</div>
    ${sh.ex?`<div class="fmex">중국 서버 예시 편성 · ${esc(sh.ex)}</div>`:''}
   </div>`).join('');
- const forms=D.FORMS.map(f=>`<tr><td><b>${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span> ${f.sj==='S3'?'<span class="bnew">S3 신규</span>':'<span class="bok">S1</span>'}</td><td class="num">${f.front} / ${3-f.front}</td><td class="num">${(f.hit||[]).map(h=>h||'-').join(' / ')}${f.est?' <span class="mut">추정</span>':''}</td><td class="mut">${esc(f.unlock||'-')}</td><td class="mut">${(f.feats||[]).map(esc).join('<br>')}</td></tr>`).join('');
+ const forms=D.FORMS.map(f=>`<tr><td><b>${esc(f.name)}</b> <span class="cn">${esc(f.cn||'')}</span> ${f.sj==='S3'?'<span class="bnew">한국 S2 신규</span>':'<span class="bok">S1</span>'}</td><td class="num">${f.front} / ${3-f.front}</td><td class="num">${(f.hit||[]).map(h=>h||'-').join(' / ')}${f.est?' <span class="mut">추정</span>':''}</td><td class="mut">${esc(f.unlock||'-')}</td><td class="mut">${(f.feats||[]).map(esc).join('<br>')}</td></tr>`).join('');
  const eq=(arr)=>arr.map(e=>`<tr><td><b>${esc(e.name)}</b>${e.tag?`<div class="mut" style="font-size:9.5px">${esc(e.tag)}</div>`:''}</td><td class="mut" style="font-size:11px">${esc(e.desc)}</td></tr>`).join('');
- el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub"><b>시즌 환산표(한국↔대만↔중국)·미래시 카드팩</b> · 진형(배치·피격률·해금) · 직업 지령 19종 · 직업숙련 기능 · 군략건축 · 병종 특성 · 장비 특기(대장간/말시장) 글로서리. <span class="bnew">S3 신규</span> <span class="bok">S1</span> 배지로 시즌을 구분하고, 원문 한자 스킬명은 한국어로 풀어 병기했습니다.</p>
+ el.innerHTML=`<h2 class="head serif">참고 자료</h2><p class="sub"><b>시즌 환산표(한국↔대만↔중국)·미래시 카드팩</b> · 진형(배치·피격률·해금) · 병종 특성 · 장비 특기(대장간/말시장) 글로서리. 직업 자료는 <b>W1 시즌</b> 탭에 모았습니다.</p>
 
  ${futureHtml()}
 
- <h3 class="sub2">진형 배치 <span class="mut" style="font-weight:400">전 8종 (S1 6종 + S3 신규 2종)</span></h3>
+ <h3 class="sub2">진형 배치 <span class="mut" style="font-weight:400">전 8종 (S1 6종 + 한국 S2 신규 2종)</span></h3>
  ${fold('배치 도식 읽는 법', `<b>배치 읽는 법</b> — 편성은 무장 3명이며, 진형이 <b>전열 3칸 · 후열 3칸(총 6칸) 중 어느 칸을 쓰는지</b>를 정합니다. 아래 도식의 채워진 칸이 실제 배치 자리이고, 칸 안 숫자는 <b>슬롯 번호와 그 자리의 피격률</b>입니다. <b>좌·중·우 위치는 진형마다 다르며</b>(예: 어린진은 전열 좌측 1칸 + 후열 중앙·우측 2칸) 도식은 실제 배치 모양을 그대로 옮긴 것입니다. 다만 <b>전투 계산에 반영되는 것은 전열/후열 구분과 슬롯별 피격률</b>이며 좌·우 자체에는 별도 보정이 없습니다.<br>
-  <b>S3 신규 2종</b>은 <b>연구소 연구 없이 시즌 진입 즉시 사용</b> 가능합니다. 효과 수치는 확정이나 <b>위치별 피격률·배치 모양은 공식 미공개</b>여서, 효과 구조가 같은 기존 진형에서 유추한 <span class="mut">추정</span>값입니다(구행진↔기형진 계열 1전열 / 언월진↔안형진 계열 2전열).`)}
+  <b>신규 2종(구행진·언월진)</b>은 <b>한국 S2 풍운재기</b>에 들어왔고 <b>연구소 연구 없이 바로 사용</b>합니다. 효과는 공식 공략 기준으로 <b>구행진 = 전열 받는 피해 8% 감소 · 후열 연타율 25% 증가</b>, <b>언월진 = 전열 주는 피해 14% 증가 · 후열 받는 피해 5% 감소</b>이며, <b>위치별 피격률·배치 모양만 미공개</b>라 구성이 같은 기존 진형에서 유추한 <span class="mut">추정</span>값입니다(구행진↔기형진 계열 1전열 / 언월진↔안형진 계열 2전열).<br>
+  <b>공식 권장 조합</b> — 구행진은 <b>마운록·악진·견희</b> 연타 조합(마운록에 예리한 통찰을 얹으면 악진·견희·병법 보너스로 피해 90%까지, 구행진+정의의 희생+강철의 의지로 연타율 100%까지), 언월진은 <b>악진 + 딜러 2명을 전열에</b> 두는 구성(예: 여포·진궁·악진).`)}
  <div class="grid g-fm">${fmCards}</div>
 
  <h3 class="sub2">진형 요약표</h3>
@@ -1969,24 +2077,7 @@ function renderRef(){
  <div class="note">S2의 <b>병종 승급</b>(무장 35레벨 · 동전 50,000)로 기본 병종(방패·기·창·궁) → 고급병종 8종으로 진화하면 아래 특성이 붙습니다. 이어 <b>병종 특화</b>(40레벨 · 동전 30,000)에서 특화 1개를 고르며, 통용 특화·특수 특화 2계열이 있고 해금한 특화 간에는 무료로 전환됩니다. <b>시즌 내 기본 병종으로 되돌릴 수 없으니</b> 승급 선택은 신중히. 병종 상성(방패병→궁병→창병→기병→방패병)은 그대로입니다.</div>
  <div class="scroll"><table><tbody>${eq(D.EQUIP.troop||[])}</tbody></table></div>
 
- <h3 class="sub2">직업 지령(직업스킬) <span class="bok">S1</span> <span class="mut" style="font-weight:400">6직업 · 19종 상세효과</span></h3>
- <div class="note">각 직업이 지도 위에서 쓰는 <b>기본 지령 전체</b>입니다. <b>S1부터 존재하며 S2·S3에도 그대로 유지</b>되고, S3에서 여기에 숙련 기능 1종이 더해집니다. 원문이 4자 한자라 <b>한국어로 풀어 쓰고 원문을 병기</b>했습니다. 직함 단계가 오르면 아래 지령들의 효과가 강해집니다.</div>
- <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(330px,1fr))">${(D.JOBS||[]).map(j=>`
-  <div class="fmcard">
-   <div class="fmh"><b>${esc(j.job)}</b> <span class="cn">${esc(j.cn)}</span> <span class="chip" style="background:var(--panel2);color:var(--soft)">${esc(j.role)}</span></div>
-   <div class="fmdesc" style="margin:4px 0 8px">${esc(j.concept)}</div>
-   ${j.skills.map(sk=>`<div style="padding:6px 0;border-top:1px dashed var(--line)">
-     <b style="font-size:12.5px">${esc(sk.kr)}</b> <span class="cn" style="font-size:10.5px">${esc(sk.cn)}</span>
-     <div style="font-size:11px;color:var(--soft);line-height:1.5;margin-top:2px">${esc(sk.eff)}</div></div>`).join('')}
-   <div class="mut" style="font-size:10.5px;margin-top:8px;padding-top:6px;border-top:1px solid var(--line2)">${esc(j.title)}</div>
-  </div>`).join('')}</div>
-
- <h3 class="sub2">직업숙련 기능 <span class="bnew">S3 신규</span> <span class="mut" style="font-weight:400">직업별 전용 1종</span></h3>
- <div class="note">직업 <b>직함 3단계</b> 도달 시 자동 활성. 사용권은 활성 즉시 1회 지급 · 24시간마다 1회 회복 · 최대 2회 저장. 자세한 직함·재능 구조는 <a href="#guide" onclick="guideCat='job23';built.guide=0;show('guide');return false;">공략·팁 → 직업스킬 S2·S3 변화</a> 참고.</div>
- <div class="scroll"><table><tbody>${eq(D.EQUIP.mastery||[])}</tbody></table></div>
-
- <h3 class="sub2">군략건축 <span class="bnew">S2 신규</span> <span class="mut" style="font-weight:400">6종 + 주의</span></h3>
- <div class="scroll"><table><tbody>${eq(D.EQUIP.almm||[])}</tbody></table></div>
+ <div class="note">직업 자료(기본 지령 19종 · 직업 숙련 · 군략건축 · 이번 시즌 직업 개편)는 <a href="#w1" onclick="show('w1');return false;"><b>W1 시즌</b> 탭</a>으로 모았습니다.</div>
 
  <h3 class="sub2">특기 획득·이월 규칙 <span class="bnew">S2 신규</span></h3>
  <div class="scroll"><table><tbody>${eq(D.EQUIP.scroll||[])}</tbody></table></div>
