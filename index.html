@@ -427,16 +427,16 @@ td{padding:5px 8px;border-bottom:1px solid var(--line);}
  데이터: sgmdtx.com(中 편성·전법·장수) · <a href="https://sanmou-wiki.vercel.app/" target="_blank" rel="noopener">三謀資料庫</a>(무장·전법 원본 표기·카드 아이콘·상태 용어) · 티어덱=铁血雕馋 강덱합집·출대루트(한국 S2~S4 = 中·台 S3~S5) · 힛파/biligames(한글) · say-bot 덱시뮬 참고 · 메타 요약은 中·台 S1~S5만 집계 · 도감은 S1~S15 · 신규 항목은 임시 번역(색표시) · 개인 학습용
 </div>
 <div class="overlay" id="ov" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
-<script src="data.js?v=52"></script>
-<script src="guides.js?v=51"></script>
-<script src="tierdecks.js?v=27"></script>
-<script src="gaecheok.js?v=37"></script>
-<script src="future.js?v=27"></script>
-<script src="gacha.js?v=28"></script>
-<script src="glossary.js?v=25"></script>
-<script src="yeoni.js?v=25"></script>
-<script src="system.js?v=25"></script>
-<script src="gk_official.js?v=25"></script>
+<script src="data.js?v=53"></script>
+<script src="guides.js?v=52"></script>
+<script src="tierdecks.js?v=28"></script>
+<script src="gaecheok.js?v=38"></script>
+<script src="future.js?v=28"></script>
+<script src="gacha.js?v=29"></script>
+<script src="glossary.js?v=26"></script>
+<script src="yeoni.js?v=26"></script>
+<script src="system.js?v=26"></script>
+<script src="gk_official.js?v=26"></script>
 <script>
 const D=window.DATA, TAC=D.TAC, GEN=D.GEN, SEA=D.SEASONS, SYN=D.SYN, META=D.META, BF=D.BF||[];
 /* 선택 영역을 잡아끌면 브라우저가 그 부분(초상·칩·글씨)의 반투명 사본을 커서에 붙여 끌고 다니면서
@@ -558,8 +558,10 @@ function krFormsOf(kr){const e=KRSEA.find(x=>x[0]===kr);
  return e?e[1].flatMap(n=>(SEA[n]||[]).map(f=>({...f,_cn:n}))):[];}
 /* 시즌 칩 라벨 — 예상 구간은 ?를 붙여 구분한다 */
 function krPill(kr){return '한국 '+kr+(KRPRED[kr]?'?':'');}
+/* 한국 서버의 공식 시즌 이름 — 공지·확률 공시 표기. 3시즌은 S가 아니라 W1로 공시된다. */
+const KRNAME={S2:'풍운재기', S3:'W1 등극 시즌 「천하의 패업」'};
 function krCnLabel(kr){const e=KRSEA.find(x=>x[0]===kr);if(!e)return '';
- const c=e[1];return '中 '+(c.length>1?'S'+c[0]+'~S'+c[c.length-1]:'S'+c[0]);}
+ const c=e[1];return '中 '+(c.length>1?'S'+c[0]+'~S'+c[c.length-1]:'S'+c[0])+(KRNAME[kr]?' · '+KRNAME[kr]:'');}
 let mState={tier:'all',sort:'tot',q:'',view:'gen',mode:'cnt',born:'',
             pkFrom:2,pkBase:'full',pkTop:30};   // 픽률 순위 — 시작 시즌·분모 기준·표시 수
 function metaAgg(tier){
@@ -857,7 +859,7 @@ function fmModalByName(n){const f=FMBY[nk(n)];if(!f){return;}
   <div class="fmdesc">${esc(f.desc||'')}</div>${f.ex?`<div class="fmex">예 · ${esc(f.ex)}</div>`:''}</div>`);}
 
 /* 카드 · 모달 — 시즌별 편성(fcardHtml/fcModal)과 동일 양식 */
-const GALIAS={'황보숭':'SP 황보숭','손견2':'SP 손견','주유2':'SP 주유'};   // 시트·카드팩 표기 → 실명
+const GALIAS={'손견2':'SP 손견','주유2':'SP 주유'};   // 시트·카드팩 표기 → 실명
 function tdCn(kr){const a=GALIAS[nk(kr)];if(a&&GKR[nk(a)])return GKR[nk(a)];
  const k=nk(kr);if(GKR[k])return GKR[k];
  if(ALIAS.gen[k])return ALIAS.gen[k];
@@ -1014,7 +1016,10 @@ function tdToBuilder(i){const d=(window._tdList||[])[i];if(!d)return;
  closeModal();built.builder=0;show('builder');}
 
 /* 렌더 */
-const GKR={};Object.keys(GEN).forEach(cn=>{const k=nk((GEN[cn]||{}).kr);if(k&&!(k in GKR))GKR[k]=cn;});
+/* 이름→원문 색인. 동명이카드(황보숭: 전설 皇甫嵩2 / 영웅 皇甫嵩)는 전설 쪽을 먼저 둔다 —
+   시트·공략이 이름만 적을 때 가리키는 건 시즌 신규 전설 카드다. */
+const GKR={};Object.keys(GEN).forEach(cn=>{const g=GEN[cn]||{},k=nk(g.kr);if(!k)return;
+ const cur=GKR[k];if(!cur||((GEN[cur]||{}).grade!=='전설'&&g.grade==='전설'))GKR[k]=cn;});
 let tdState={sea:'',kind:'',grp:'all',q:''};
 function tdSeasons(){return TD.seasons||[];}
 function tdSea(){const ss=tdSeasons();return ss.find(s=>s.id===tdState.sea)||ss[0]||{groups:[]};}
@@ -1653,6 +1658,8 @@ function renderEV(){
 const GC=window.GACHA||{packs:[]};
 let gcState={pack:'p1',n:300,mode:'full',pity:20,ex:{}};
 const TIERW={a:8,b:15,c:18};
+/* 가중치 — 구간 글자(a/b/c)거나, 공시에 실린 무장별 확률값(숫자) 그대로 */
+const tw=t=>typeof t==='number'?t:(TIERW[t]||0);
 /* 이항분포 P(X>=k) */
 function pAtLeast(n,p,k){
  if(p<=0||n<=0)return 0; if(k<=0)return 1; if(k>n)return 0;
@@ -1704,8 +1711,8 @@ function gcRank(pk){
     — 비중이 클수록 빼냈을 때 남은 카드로 넘어가는 확률이 많다(흔함 18 > 보통 15 > 귀함 8). */
  const last=x=>{for(let i=x.by.length-1;i>=0;i--)if(x.by[i])return i;return -1;};
  const srt=(a,b)=>b.rec-a.rec||b.tot-a.tot||last(b)-last(a)
-   ||(TIERW[a.tier]||0)-(TIERW[b.tier]||0)||a.kr.localeCompare(b.kr);
- const same=(a,b)=>a&&b&&a.rec===b.rec&&a.tot===b.tot&&last(a)===last(b)&&(TIERW[a.tier]||0)===(TIERW[b.tier]||0);
+   ||tw(a.tier)-tw(b.tier)||a.kr.localeCompare(b.kr);
+ const same=(a,b)=>a&&b&&a.rec===b.rec&&a.tot===b.tot&&last(a)===last(b)&&tw(a.tier)===tw(b.tier);
  const gens=pk.legGens.map(([cn,t])=>({...mk(cn,gm,(GEN[cn]||{}).kr||cn),tier:t})).sort(srt);
  const tacs=pk.legTacs.map(cn=>mk(cn,tm,(TAC[cn]||{}).kr||cn)).sort(srt);
  /* 맨 아래와 조건이 완전히 같은 카드 = 어느 쪽을 빼도 결과가 같다 */
@@ -1769,10 +1776,10 @@ function gcRecHtml(){
 function gcRates(pk,which){
  const T=GC.total[which],ex=gcState.ex[pk.id]||{};
  const left=pk.legGens.filter(([cn])=>cn!==ex.gen);
- const sw=left.reduce((a,[,t])=>a+TIERW[t],0);
+ const sw=left.reduce((a,[,t])=>a+tw(t),0);
  const nTac=pk.legTacs.filter(cn=>cn!==ex.tac).length;
  return {
-  gens:pk.legGens.map(([cn,t])=>[cn, cn===ex.gen?null:T.legGen*TIERW[t]/sw, t]),
+  gens:pk.legGens.map(([cn,t])=>[cn, cn===ex.gen?null:T.legGen*tw(t)/sw, t]),
   tacs:pk.legTacs.map(cn=>[cn, cn===ex.tac?null:T.legTac/nTac]),
   legGenTot:T.legGen, legTacTot:T.legTac, T
  };
@@ -1888,7 +1895,7 @@ function gcBody(){
    <div><div class="mut" style="font-weight:700;margin-bottom:4px">희귀 무장 ${pk.rareGens.length}종</div>${flat(pk.rareGens,R.T.rareGen/pk.rareGens.length)}</div>
    <div><div class="mut" style="font-weight:700;margin-bottom:4px">희귀 전법 ${pk.rareTacs.length}종</div>${flat(pk.rareTacs,R.T.rareTac/pk.rareTacs.length)}</div>
   </div>`:`<div class="mut" style="margin-top:8px">영웅·희귀 등급은 이 카드팩의 구성이 공개되지 않아 <b>등급 합계만</b> 위 요약에 넣었습니다.</div>`}
- ${v?`<div class="mut" style="margin-top:10px">공시 원문 대조 — 전설 무장 천장 포함 <b>${v.legGen.a}% / ${v.legGen.b}% / ${v.legGen.c}%</b> · 기본 <b>${v.baseGen.a}% / ${v.baseGen.b}% / ${v.baseGen.c}%</b>, 전설 전법 천장 포함 <b>${v.legTac}%</b> · 기본 <b>${v.baseTac}%</b>. 위 표의 계산값과 같은지 확인용입니다.</div>`:''}
+ ${v?`<div class="mut" style="margin-top:10px">공시 원문 대조 — 전설 무장 천장 포함 <b>${v.legGen.join('% / ')}%</b> · 기본 <b>${v.baseGen.join('% / ')}%</b>, 전설 전법 천장 포함 <b>${v.legTac}%</b> · 기본 <b>${v.baseTac}%</b>. 위 표의 계산값과 같은지 확인용입니다.</div>`:''}
  ${fold('이 카드팩 자료의 한계', (GC.caveat||[]).map(x=>`<div style="margin-bottom:4px">· ${x}</div>`).join(''))}`;
 }
 
